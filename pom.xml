@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.cloudbees</groupId>
+    <artifactId>cloudbees-internal-parent</artifactId>
+    <version>2</version>
+    <relativePath />
+  </parent>
+
+  <groupId>com.cloudbees.sdk</groupId>
+  <artifactId>bees-sdk-parent</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>CloudBees SDK Parent POM</name>
+  <description>'bees' command and its ecosystem</description>
+
+  <modules>
+    <module>cloudbees-boot</module>
+    <module>cloudbees-api-sdk</module>
+    <module>sdk-plugins</module>
+    <module>assembly</module>
+  </modules>
+
+  <repositories>
+    <repository>
+      <id>cloudbees-internal</id>
+      <url>https://repo-internal.cloudbees.com</url>
+    </repository>
+    <repository><!-- only needed because of draconian checksum policy -->
+      <id>repository-cloudbees.forge.cloudbees.com</id>
+      <url>https://repository-cloudbees.forge.cloudbees.com/snapshot/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+</project>
