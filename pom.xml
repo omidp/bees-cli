@@ -21,6 +21,7 @@
     <module>cloudbees-api-sdk</module>
     <module>cloudbees-sdk-cli</module>
     <module>sdk-plugins</module>
+    <module>warbler-plugin</module>
     <module>assembly</module>
   </modules>
 
