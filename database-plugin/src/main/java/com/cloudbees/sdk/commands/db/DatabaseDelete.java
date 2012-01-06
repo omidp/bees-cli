@@ -1,7 +1,9 @@
-package com.cloudbees.sdk.commands;
+package com.cloudbees.sdk.commands.db;
 
 import com.cloudbees.api.DatabaseDeleteResponse;
 import com.cloudbees.api.StaxClient;
+import com.cloudbees.sdk.CLICommand;
+import com.cloudbees.sdk.commands.Command;
 import com.cloudbees.sdk.utils.Helper;
 
 import java.io.IOException;
@@ -9,6 +11,7 @@ import java.io.IOException;
 /**
  * @Author: Fabian Donze
  */
+@CLICommand("db:delete")
 public class DatabaseDelete extends Command {
     private Boolean force;
 

@@ -21,9 +21,11 @@
     <module>driver</module>
     <module>api</module>
     <module>sdk-plugins</module>
+    <module>assembly</module>
+
     <module>app-plugin</module>
     <module>static-plugin</module>
-    <module>assembly</module>
+    <module>database-plugin</module>
   </modules>
 
   <build>

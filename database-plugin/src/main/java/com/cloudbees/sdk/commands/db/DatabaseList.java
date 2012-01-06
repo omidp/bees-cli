@@ -1,12 +1,15 @@
-package com.cloudbees.sdk.commands;
+package com.cloudbees.sdk.commands.db;
 
 
 import com.cloudbees.api.DatabaseListResponse;
 import com.cloudbees.api.StaxClient;
+import com.cloudbees.sdk.CLICommand;
+import com.cloudbees.sdk.commands.Command;
 
 /**
  * @Author: Fabian Donze
  */
+@CLICommand("db:list")
 public class DatabaseList extends Command {
     private String account;
 
