@@ -20,7 +20,7 @@ public final class GAV {
         String[] tokens = id.split(":");
         if (tokens.length!=3)   throw new IllegalArgumentException("Expected GROUPID:ARTIFACTID:VERSION but got '"+id+"'");
         this.groupId    = tokens[0];
-        this.artifactId = tokens[2];
+        this.artifactId = tokens[1];
         this.version    = tokens[2];
     }
 
