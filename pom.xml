@@ -17,9 +17,9 @@
   <description>'bees' command and its ecosystem</description>
 
   <modules>
-    <module>cloudbees-boot</module>
-    <module>cloudbees-api-sdk</module>
-    <module>cloudbees-sdk-cli</module>
+    <module>boot</module>
+    <module>driver</module>
+    <module>api</module>
     <module>sdk-plugins</module>
     <module>static-plugin</module>
     <module>assembly</module>
