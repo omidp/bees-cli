@@ -31,8 +31,6 @@ public abstract class Command extends ICommand {
 
     private Boolean showAll;
 
-    private Properties properties;
-
     private CommandLineParser parser;
 
     private List<CommandOption> options;
@@ -482,26 +480,7 @@ public abstract class Command extends ICommand {
 
     // TODO: remove this after revisiting Init command
     protected Properties getConfigProperties() {
-        if (properties == null) {
-            // Read SDK config file
-            Map<String, String> params = new HashMap<String, String>();
-            if (getKey() != null)
-                params.put("key", getKey());
-            if (getSecret() != null)
-                params.put("secret", getSecret());
-            if (getServer() != null)
-                params.put("server", getServer());
-            if (getProxyHost() != null)
-                params.put("proxy.host", getProxyHost());
-            if (getProxyPort() != null)
-                params.put("proxy.port", getProxyPort());
-            if (getProxyUser() != null)
-                params.put("proxy.user", getProxyUser());
-            if (getProxyPassword() != null)
-                params.put("proxy.password", getProxyPassword());
-            properties = Helper.initConfigProperties(getLocalRepository(), false, Helper.EMAIL_CREDENTIALS, params, isVerbose());
-        }
-        return properties;
+        return beesClientFactory.getConfigProperties();
     }
 
     protected void setApiserver(String apiserver) {

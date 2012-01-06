@@ -49,7 +49,7 @@ public class BeesClientFactory implements HasOptions {
     private Properties properties;
 
     @Inject
-    DirectoryStructure directoryStructure;
+    UserConfiguration config;
 
     public StaxClient get() throws IOException {
         initCredentials();
@@ -79,33 +79,38 @@ public class BeesClientFactory implements HasOptions {
     private void initCredentials() throws IOException
     {
         if (key == null) {
-            key = Helper.promptFor("Enter your CloudBees API key: ",true);
+            key = Helper.promptFor("Enter your CloudBees API key: ", true);
         }
         if (secret == null) {
             secret = PasswordHelper.prompt("Enter your CloudBees Api secret: ");
         }
     }
 
-    protected Properties getConfigProperties() {
+    public Properties getConfigProperties() {
         if (properties == null) {
             // Read SDK config file
-            Map<String, String> params = new HashMap<String, String>();
-            if (key != null)
-                params.put("key", key);
-            if (secret != null)
-                params.put("secret", secret);
-            if (server != null)
-                params.put("server", server);
-            if (proxyHost != null)
-                params.put("proxy.host", proxyHost);
-            if (proxyPort != null)
-                params.put("proxy.port", proxyPort);
-            if (proxyUser != null)
-                params.put("proxy.user", proxyUser);
-            if (proxyPassword != null)
-                params.put("proxy.password", proxyPassword);
-            properties = Helper.initConfigProperties(directoryStructure.localRepository, false, Helper.EMAIL_CREDENTIALS, params, false); // TODO
+            Map<String, String> params = getParameters();
+            properties = config.load(UserConfiguration.EMAIL_CREDENTIALS, params, false); // TODO: verbose flag
         }
         return properties;
+    }
+
+    /**
+     * See {@link UserConfiguration} for parameters vs config properties
+     */
+    public Map<String, String> getParameters() {
+        Map<String, String> params = new HashMap<String, String>();
+        add(params, "key", key);
+        add(params, "secret", secret);
+        add(params, "server", server);
+        add(params, "proxy.host", proxyHost);
+        add(params, "proxy.port", proxyPort);
+        add(params, "proxy.user", proxyUser);
+        add(params, "proxy.password", proxyPassword);
+        return params;
+    }
+
+    private void add(Map<String, String> params, String key, String value) {
+        if (value!=null)    params.put(key,value);
     }
 }

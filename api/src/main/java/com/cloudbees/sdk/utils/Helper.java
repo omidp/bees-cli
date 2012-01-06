@@ -17,9 +17,6 @@ import java.util.zip.ZipEntry;
  * @Author: Fabian Donze
  */
 public class Helper {
-    public static int EMAIL_CREDENTIALS = 0;
-    public static int KEYS_CREDENTIALS = 1;
-
     public static String promptForAppId() throws IOException {
         return promptFor("Enter application ID (ex: account/appname) : ", true);
     }
@@ -42,108 +39,6 @@ public class Helper {
         BufferedReader inputReader = new BufferedReader(new InputStreamReader(System.in));
         System.out.print(message);
         return inputReader.readLine();
-    }
-
-    public static Properties initConfigProperties(File localRepoDir, boolean force, int credentialType, Map<String, String> paramaters, boolean verbose) {
-        Properties properties = new Properties();
-        File userConfigFile = new File(localRepoDir, "bees.config");
-        if (force || !loadProperties(userConfigFile, properties)) {
-            System.out.println();
-            System.out.println("You have not created a CloudBees configuration profile, let's create one now...");
-
-            try {
-                String server = paramaters.get("server");
-                if (server == null)
-                    server = "https://api.cloudbees.com/api";
-                properties.setProperty("bees.api.url", server);
-                String key = paramaters.get("key");
-                String secret = paramaters.get("secret");
-                String domain = paramaters.get("domain");
-                if (key == null || secret == null) {
-                    if (credentialType == KEYS_CREDENTIALS) {
-                        System.out.println("Go to https://grandcentral.cloudbees.com/user/keys to retrieve your API key");
-                        System.out.println();
-                    } else if (credentialType == EMAIL_CREDENTIALS) {
-                        String email = paramaters.get("email");
-                        if (email == null)
-                            email = Helper.promptFor("Enter your CloudBees account email address: ", true);
-                        String password = paramaters.get("password");
-                        if (password == null) {
-                            password = PasswordHelper.prompt("Enter your CloudBees account password: ");
-                        }
-
-                        // Get the API key & secret
-                        BeesClientConfiguration beesClientConfiguration = new BeesClientConfiguration(server, "1", "0", "xml", "1.0");
-                        // Set proxy information
-                        beesClientConfiguration.setProxyHost(paramaters.get("proxy.host"));
-                        if (paramaters.get("proxy.port") != null)
-                            beesClientConfiguration.setProxyPort(Integer.parseInt(paramaters.get("proxy.port")));
-                        beesClientConfiguration.setProxyUser(paramaters.get("proxy.user"));
-                        beesClientConfiguration.setProxyPassword(paramaters.get("proxy.password"));
-
-                        StaxClient staxClient = new StaxClient(beesClientConfiguration);
-                        staxClient.setVerbose(verbose);
-                        AccountKeysResponse response = staxClient.accountKeys(domain, email, password);
-                        key = response.getKey();
-                        secret = response.getSecret();
-
-                        // Get the default account name
-                        beesClientConfiguration.setApiKey(key);
-                        beesClientConfiguration.setSecret(secret);
-                        staxClient = new StaxClient(beesClientConfiguration);
-                        staxClient.setVerbose(verbose);
-                        AccountListResponse listResponse = staxClient.accountList();
-                        List<AccountInfo> accounts = listResponse.getAccounts();
-                        if (accounts.size() == 1) {
-                            domain = accounts.get(0).getName();
-                        } else {
-                            String accountsString = null;
-                            for (AccountInfo info: accounts) {
-                                if (accountsString == null)
-                                    accountsString = info.getName();
-                                else
-                                    accountsString += "," + info.getName();
-                            }
-                            System.out.println("You have several accounts: " + accountsString);
-                            domain = Helper.promptFor("Enter your default CloudBees account name : ", true);
-                        }
-                    }
-                }
-
-                if (key == null) key = Helper.promptFor("Enter your CloudBees API key: ", true);
-                if (secret == null) secret = Helper.promptFor("Enter your CloudBees secret: ", true);
-                if (domain == null) domain = Helper.promptFor("Enter your default CloudBees account name: ", true);
-
-                properties.setProperty("bees.api.key", key);
-                properties.setProperty("bees.api.secret", secret);
-                properties.setProperty("bees.project.app.domain", domain);
-                if (paramaters.get("proxy.host") != null)
-                    properties.setProperty("bees.api.proxy.host", paramaters.get("proxy.host"));
-                if (paramaters.get("proxy.port") != null)
-                    properties.setProperty("bees.api.proxy.port", paramaters.get("proxy.port"));
-                if (paramaters.get("proxy.user") != null)
-                    properties.setProperty("bees.api.proxy.user", paramaters.get("proxy.user"));
-                if (paramaters.get("proxy.password") != null)
-                    properties.setProperty("bees.api.proxy.password", paramaters.get("proxy.password"));
-
-                if (!userConfigFile.getParentFile().exists())
-                    userConfigFile.getParentFile().mkdirs();
-
-                FileOutputStream fos = new FileOutputStream(userConfigFile);
-                properties.store(fos, "CloudBees SDK config");
-                fos.close();
-
-            } catch (BeesClientException e) {
-                String errCode = e.getError().getErrorCode();
-                if (errCode != null && errCode.equals("AuthFailure"))
-                    throw new BeesSecurityException("Authentication failure, please check credentials!", e);
-                else
-                    throw new RuntimeException(e.getMessage(), e);
-            } catch (Exception e) {
-                throw new RuntimeException("Cannot create configuration", e);
-            }
-        }
-        return properties;
     }
 
     public static String getArchiveApplicationId() {

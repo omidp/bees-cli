@@ -1,9 +1,10 @@
 package com.cloudbees.sdk.commands;
 
+import com.cloudbees.sdk.UserConfiguration;
 import com.cloudbees.sdk.utils.Helper;
 
+import javax.inject.Inject;
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -16,6 +17,9 @@ public class Init extends Command {
     private String account;
     private Boolean force;
     private Boolean useKeys;
+
+    @Inject
+    UserConfiguration config;
 
     public Init() {
     }
@@ -93,32 +97,20 @@ public class Init extends Command {
                 }
             }
 
-            Map<String, String> params = new HashMap<String, String>();
-            if (getEmail() != null)
-                params.put("email", getEmail());
-            if (getPassword() != null)
-                params.put("password", getPassword());
-            if (getAccount() != null)
-                params.put("domain", getAccount());
-            if (getKey() != null)
-                params.put("key", getKey());
-            if (getSecret() != null)
-                params.put("secret", getSecret());
-            if (getServer() != null)
-                params.put("server", getServer());
-            if (getProxyHost() != null)
-                params.put("proxy.host", getProxyHost());
-            if (getProxyPort() != null)
-                params.put("proxy.port", getProxyPort());
-            if (getProxyUser() != null)
-                params.put("proxy.user", getProxyUser());
-            if (getProxyPassword() != null)
-                params.put("proxy.password", getProxyPassword());
-            int credentialType = getUseKeys() == null ? Helper.EMAIL_CREDENTIALS : Helper.KEYS_CREDENTIALS;
-            return Helper.initConfigProperties(getLocalRepository(), true, credentialType, params, isVerbose());
+            Map<String, String> params = beesClientFactory.getParameters();
+            add(params, "email", getEmail());
+            add(params, "password", getPassword());
+            add(params, "domain", getAccount());
+
+            int credentialType = getUseKeys() == null ? UserConfiguration.EMAIL_CREDENTIALS : UserConfiguration.KEYS_CREDENTIALS;
+            return config.create(credentialType, params, isVerbose());
         } catch (Exception e) {
             throw new RuntimeException("Initialization failure: " + e.getMessage(), e);
         }
+    }
+
+    private void add(Map<String, String> params, String key, String value) {
+        if (value!=null)    params.put(key,value);
     }
 
     @Override
