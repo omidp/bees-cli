@@ -1,9 +1,12 @@
 package com.cloudbees.sdk;
 
 import com.cloudbees.api.BeesClientException;
+import com.cloudbees.sdk.annotations.CLICommandImpl;
 import com.cloudbees.sdk.commands.AntTargetCommandsModule;
 import com.cloudbees.sdk.utils.Helper;
+import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
+import com.google.inject.Provider;
 import com.staxnet.appserver.utils.XmlHelper;
 import com.staxnet.repository.LocalRepository;
 import hudson.util.VersionNumber;
@@ -59,7 +62,22 @@ public class Bees {
         DefaultPlexusContainer plexus = new DefaultPlexusContainer(
             new DefaultContainerConfiguration(),
             new CLICommandModule(getClass().getClassLoader()),
-            new AntTargetCommandsModule()
+            new AntTargetCommandsModule(),
+            new AbstractModule() {
+                @Override
+                protected void configure() {
+                    alias("getsource", "app:getsource");
+                }
+
+                private void alias(String from, final String to) {
+                    bind(ICommand.class).annotatedWith(new CLICommandImpl(from))
+                        .toProvider(new Provider<ICommand>() {
+                            public ICommand get() {
+                                return commandService.getCommand(to);
+                            }
+                        });
+                }
+            }
         );
 
         injector = plexus.lookup(Injector.class);
