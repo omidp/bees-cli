@@ -18,7 +18,14 @@ public class DirectoryStructure {
 
     public DirectoryStructure() {
         this.sdkRepository = new File(System.getProperty("bees.home"), "conf");
-        this.localRepository = new File(getLocalRepository(), "lib");
+        this.localRepository = getLocalRepository();
+    }
+
+    /**
+     * This directory contains additional jar files to be made available to the bees SDK's main classloader.
+     */
+    public File getLibDir() {
+        return new File(localRepository,"lib");
     }
 
     private File getLocalRepository() {
