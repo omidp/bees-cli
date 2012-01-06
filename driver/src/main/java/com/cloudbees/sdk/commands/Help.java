@@ -46,14 +46,9 @@ public class Help extends AbstractCommand {
         return 1;
     }
 
-    @Override
-    public void printHelp(List<String> args) {
-        // TODO: do we support "bees help help"?
-    }
-    
     public void printHelp(boolean all) {
         System.out.println(commandService.getHelp(getClass().getClassLoader().getResource(help_file_name), "subcommands:", all));
     }
-    
+
     private final static String help_file_name = "beesHelp.txt";
 }
