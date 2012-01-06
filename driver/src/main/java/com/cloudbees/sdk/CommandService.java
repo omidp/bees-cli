@@ -28,6 +28,7 @@ import org.sonatype.aether.util.filter.ScopeDependencyFilter;
 import org.sonatype.aether.util.graph.PreorderNodeListGenerator;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -46,12 +47,12 @@ import java.util.logging.Logger;
 /**
  *
  */
+@Singleton
 public class CommandService {
     static final String NL = System.getProperty("line.separator");
 
     List<CommandProperties> commandProperties;
-    File localRepository;
-    File sdkRepository;
+    DirectoryStructure structure;
     String fileExtension;
     boolean localRepoLoaded;
 
@@ -63,15 +64,14 @@ public class CommandService {
 
     @Inject
     public CommandService(DirectoryStructure structure) {
-        this.localRepository = structure.localRepository;
-        this.sdkRepository = structure.sdkRepository;
         this.fileExtension = ".bees";
+        this.structure = structure;
         localRepoLoaded = false;
         loadCommandProperties();
     }
 
     public void loadCommandProperties() {
-        commandProperties = loadCommandFiles(sdkRepository, fileExtension);
+        commandProperties = loadCommandFiles(structure.sdkRepository, fileExtension);
     }
 
     private ArrayList<CommandProperties> loadCommandFiles(File dir, String fileExtension) {
@@ -114,7 +114,7 @@ public class CommandService {
         // Look for additional command definition in the local repository
         if (commandProp == null) {
             if (!localRepoLoaded) {
-                List<CommandProperties> localRepoCmds = loadCommandFiles(localRepository, fileExtension);
+                List<CommandProperties> localRepoCmds = loadCommandFiles(structure.getLibDir(), fileExtension);
                 localRepoLoaded = true;
                 commandProperties.addAll(localRepoCmds);
                 commandProp = getCommandProperties(name, localRepoCmds);
@@ -161,7 +161,7 @@ public class CommandService {
             DependencyResult r = resolveDependencies(a);
     
             URLClassLoader cl = createClassLoader(r.getRoot());
-            injector = createChildModule(injector,cl);
+            injector = createChildModule(injector, cl);
         }
         Provider<ICommand> p;
         try {
@@ -243,7 +243,7 @@ public class CommandService {
     public String getHelp(URL helpTitleFile, String groupHelp, boolean all) {
         StringBuffer sb = new StringBuffer(getHelpTitle(helpTitleFile));
         Map<String, List<CommandProperties>> map = new LinkedHashMap<String, List<CommandProperties>>();
-        if (!localRepoLoaded) commandProperties.addAll(loadCommandFiles(localRepository, fileExtension));
+        if (!localRepoLoaded) commandProperties.addAll(loadCommandFiles(structure.getLibDir(), fileExtension));
         for (CommandProperties cmd: commandProperties) {
             if (cmd.getGroup() != null && (!cmd.isExperimental() || all)) {
                 List<CommandProperties> list = map.get(cmd.getGroup());
