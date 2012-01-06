@@ -13,6 +13,9 @@ import java.util.List;
  * @author Kohsuke Kawaguchi
  */
 public abstract class AbstractCommand extends ICommand {
+    @Inject
+    Verbose verbose;
+    
     public abstract int main() throws Exception;
 
     @Override

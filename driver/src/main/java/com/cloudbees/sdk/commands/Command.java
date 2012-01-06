@@ -4,16 +4,25 @@ import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.BeesClientFactory;
 import com.cloudbees.sdk.CommandProperties;
 import com.cloudbees.sdk.ICommand;
-import com.cloudbees.sdk.utils.Helper;
+import com.cloudbees.sdk.Verbose;
 import com.staxnet.repository.LocalRepository;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 
 import javax.inject.Inject;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * @Author: Fabian Donze
@@ -26,8 +35,6 @@ public abstract class Command extends ICommand {
     private String help;
 
     private String output;
-
-    private Boolean verbose;
 
     private Boolean showAll;
 
@@ -51,6 +58,9 @@ public abstract class Command extends ICommand {
     
     @Inject
     BeesClientFactory beesClientFactory;
+
+    @Inject
+    private Verbose verbose;
 
     public Command() {
         addDefaultOptions = true;
@@ -438,11 +448,11 @@ public abstract class Command extends ICommand {
     }
 
     public boolean isVerbose() {
-        return verbose == null ? false : verbose;
+        return verbose.isVerbose();
     }
 
     public void setVerbose(Boolean verbose) {
-        this.verbose = verbose;
+        this.verbose.setVerbose(verbose!=null && verbose);
     }
 
     protected boolean showAllOption() {

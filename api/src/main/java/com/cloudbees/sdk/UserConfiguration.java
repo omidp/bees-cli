@@ -45,6 +45,9 @@ import java.util.Properties;
 public class UserConfiguration {
     @Inject
     DirectoryStructure directoryStructure;
+    
+    @Inject
+    Verbose verbose;
 
     /**
      * Loads the configuration, by creating it if necessary.
@@ -52,12 +55,12 @@ public class UserConfiguration {
      * @param parameters
      *      used only if we are to create configuration.
      */
-    public Properties load(int credentialType, Map<String,String> parameters, boolean verbose) {
+    public Properties load(int credentialType, Map<String,String> parameters) {
         File userConfigFile = getConfigFile();
         
         Properties properties = new Properties();
         if (!Helper.loadProperties(userConfigFile, properties)) {
-            properties = create(credentialType, parameters, verbose);
+            properties = create(credentialType, parameters);
         }
 
         return properties;
@@ -70,7 +73,7 @@ public class UserConfiguration {
     /**
      * Creates a new configuration file.
      */
-    public Properties create(int credentialType, Map<String, String> paramaters, boolean verbose) {
+    public Properties create(int credentialType, Map<String, String> paramaters) {
         Properties properties = new Properties();
         System.out.println();
         System.out.println("You have not created a CloudBees configuration profile, let's create one now...");
@@ -106,7 +109,7 @@ public class UserConfiguration {
                     beesClientConfiguration.setProxyPassword(paramaters.get("proxy.password"));
 
                     StaxClient staxClient = new StaxClient(beesClientConfiguration);
-                    staxClient.setVerbose(verbose);
+                    staxClient.setVerbose(verbose.isVerbose());
                     AccountKeysResponse response = staxClient.accountKeys(domain, email, password);
                     key = response.getKey();
                     secret = response.getSecret();
@@ -115,7 +118,7 @@ public class UserConfiguration {
                     beesClientConfiguration.setApiKey(key);
                     beesClientConfiguration.setSecret(secret);
                     staxClient = new StaxClient(beesClientConfiguration);
-                    staxClient.setVerbose(verbose);
+                    staxClient.setVerbose(verbose.isVerbose());
                     AccountListResponse listResponse = staxClient.accountList();
                     List<AccountInfo> accounts = listResponse.getAccounts();
                     if (accounts.size() == 1) {

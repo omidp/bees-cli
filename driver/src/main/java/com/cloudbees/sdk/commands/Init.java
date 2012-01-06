@@ -103,7 +103,7 @@ public class Init extends Command {
             add(params, "domain", getAccount());
 
             int credentialType = getUseKeys() == null ? UserConfiguration.EMAIL_CREDENTIALS : UserConfiguration.KEYS_CREDENTIALS;
-            return config.create(credentialType, params, isVerbose());
+            return config.create(credentialType, params);
         } catch (Exception e) {
             throw new RuntimeException("Initialization failure: " + e.getMessage(), e);
         }
