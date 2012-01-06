@@ -2,7 +2,6 @@ package com.cloudbees.sdk.commands;
 
 import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.BeesClientFactory;
-import com.cloudbees.sdk.CommandProperties;
 import com.cloudbees.sdk.ICommand;
 import com.cloudbees.sdk.Verbose;
 import com.staxnet.repository.LocalRepository;
@@ -49,8 +48,6 @@ public abstract class Command extends ICommand {
     private File localRepository;
 
     private String description;
-
-    private CommandProperties commandProperties;
 
     private List<String> parameters;
 
@@ -476,14 +473,6 @@ public abstract class Command extends ICommand {
         this.output = output;
     }
 
-    public CommandProperties getCommandProperties() {
-        return commandProperties;
-    }
-
-    public void setCommandProperties(CommandProperties commandProperties) {
-        this.commandProperties = commandProperties;
-    }
-
     protected boolean isTextOutput() {
         return getOutput().equals("txt");
     }
@@ -539,7 +528,7 @@ public abstract class Command extends ICommand {
     }
 
     private String getDescription() {
-        return commandProperties!=null ? commandProperties.getDescription() : null;
+        return null;    // TODO
     }
 
 }

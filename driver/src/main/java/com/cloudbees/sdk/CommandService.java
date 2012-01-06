@@ -1,14 +1,12 @@
 package com.cloudbees.sdk;
 
 import com.cloudbees.sdk.annotations.CLICommandImpl;
-import com.cloudbees.sdk.commands.Command;
-import com.cloudbees.sdk.utils.Helper;
+import com.google.inject.Binding;
 import com.google.inject.ConfigurationException;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provider;
-import com.thoughtworks.xstream.XStream;
 import net.java.sezpoz.Index;
 import net.java.sezpoz.IndexItem;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
@@ -31,15 +29,13 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -51,10 +47,7 @@ import java.util.logging.Logger;
 public class CommandService {
     static final String NL = System.getProperty("line.separator");
 
-    List<CommandProperties> commandProperties;
     DirectoryStructure structure;
-    String fileExtension;
-    boolean localRepoLoaded;
 
     @Inject
     private Injector injector;
@@ -63,81 +56,15 @@ public class CommandService {
     private RepositorySystem rs;
 
     @Inject
+    private InstalledPluginList installedPluginList;
+
+    @Inject
     public CommandService(DirectoryStructure structure) {
-        this.fileExtension = ".bees";
         this.structure = structure;
-        localRepoLoaded = false;
-        loadCommandProperties();
     }
-
-    public void loadCommandProperties() {
-        commandProperties = loadCommandFiles(structure.sdkRepository, fileExtension);
-    }
-
-    private ArrayList<CommandProperties> loadCommandFiles(File dir, String fileExtension) {
-        ArrayList<CommandProperties> commandProperties = new ArrayList<CommandProperties>();
-
-        String[] files = Helper.getFiles(dir, fileExtension);
-        if (files != null) {
-            for (String file: files) {
-                commandProperties.addAll(loadCommands(new File(dir, file)));
-            }
-        }
-
-        return  commandProperties;
-    }
-
-    private ArrayList<CommandProperties> loadCommands(File commandFile) {
-        ArrayList<CommandProperties> commandProperties = new ArrayList<CommandProperties>();
-
-        FileReader reader = null;
-        try {
-            reader = new FileReader(commandFile);
-            Commands commands = (Commands) createXStream().fromXML(reader);
-            commandProperties.addAll(commands.getProperties());
-        }
-        catch (IOException ex){
-            System.err.println("ERROR: Cannot find file: " + commandFile);
-        }
-        finally {
-            if (reader != null) try {
-                reader.close();
-            } catch (IOException ignored) {}
-        }
-
-        return commandProperties;
-    }
+    
 
     public ICommand getCommand(String name) {
-        CommandProperties commandProp = getCommandProperties(name, commandProperties);
-
-        // Look for additional command definition in the local repository
-        if (commandProp == null) {
-            if (!localRepoLoaded) {
-                List<CommandProperties> localRepoCmds = loadCommandFiles(structure.getLibDir(), fileExtension);
-                localRepoLoaded = true;
-                commandProperties.addAll(localRepoCmds);
-                commandProp = getCommandProperties(name, localRepoCmds);
-            }
-        }
-        Command command;
-
-        if (commandProp != null) {
-            List<String> parameters = getCommandParameters(commandProp.getClassName());
-            String cmdClassName = parameters.get(0);
-            if (parameters.size() > 1) {
-                String[] params = new String[parameters.size()-1];
-                for (int i=1; i<parameters.size(); i++) {
-                    params[i-1] = parameters.get(i);
-                }
-                command = getCommand(cmdClassName, params);
-            } else {
-                command = getCommand(cmdClassName, null);
-            }
-            command.setCommandProperties(commandProp);
-            return command;
-        }
-
         try {
             return performModernLookup(name);
         } catch (Exception e) {
@@ -236,31 +163,39 @@ public class CommandService {
         req.addRepository(new RemoteRepository("central", "default", "http://repo1.maven.org/maven2/"));
     }
 
-    public int getCount() {
-        return commandProperties.size();
-    }
-
     public String getHelp(URL helpTitleFile, String groupHelp, boolean all) {
-        StringBuffer sb = new StringBuffer(getHelpTitle(helpTitleFile));
-        Map<String, List<CommandProperties>> map = new LinkedHashMap<String, List<CommandProperties>>();
-        if (!localRepoLoaded) commandProperties.addAll(loadCommandFiles(structure.getLibDir(), fileExtension));
-        for (CommandProperties cmd: commandProperties) {
-            if (cmd.getGroup() != null && (!cmd.isExperimental() || all)) {
-                List<CommandProperties> list = map.get(cmd.getGroup());
+        StringBuilder sb = new StringBuilder(getHelpTitle(helpTitleFile));
+
+        Map<String,List<Binding<?>>> map = new HashMap<String, List<Binding<?>>>();
+        
+        for (Binding<?> b : injector.getAllBindings().values()) {
+            if (ICommand.class.isAssignableFrom(b.getKey().getTypeLiteral().getRawType())) {
+                Class<?> cmd = b.getProvider().get().getClass();
+                if (!cmd.isAnnotationPresent(CLICommand.class))
+                    continue;
+                CommandGroup group = cmd.getAnnotation(CommandGroup.class);
+
+                if (cmd.isAnnotationPresent(Experimental.class) && !all)
+                    continue;
+
+                String key = group == null ? "" : group.value();
+                List<Binding<?>> list = map.get(key);
                 if (list == null) {
-                    list = new ArrayList<CommandProperties>();
-                    map.put(cmd.getGroup(), list);
+                    list = new ArrayList<Binding<?>>();
+                    map.put(key, list);
                 }
-                list.add(cmd);
+                list.add(b);
             }
         }
-
+        
         for (String group: map.keySet()) {
             sb.append(NL).append(group).append(" ").append(groupHelp).append(NL);
-            for (CommandProperties cmd: map.get(group)) {
-                sb.append("    ").append(cmd.getName());
-                if (cmd.getDescription() != null)
-                    sb.append("      ").append(cmd.getDescription()).append(NL);
+            for (Binding<?> b : map.get(group)) {
+                Class<?> cmd = b.getProvider().get().getClass();
+                sb.append("    ").append(cmd.getAnnotation(CLICommand.class).value());
+                CommandDescription description = cmd.getAnnotation(CommandDescription.class);
+                if (description != null)
+                    sb.append("      ").append(description.value()).append(NL);
                 else
                     sb.append(NL);
             }
@@ -287,61 +222,6 @@ public class CommandService {
             } catch (IOException ignored) {}
         }
         return sb;
-    }
-
-    private CommandProperties getCommandProperties(String commandName, List<CommandProperties> commandProperties) {
-        for (CommandProperties cmd: commandProperties) {
-            if (commandName.matches(cmd.getPattern()))
-                return cmd;
-        }
-
-        return null;
-    }
-
-    private List<String> getCommandParameters(String str) {
-        List<String> parameters = new ArrayList<String>();
-        int i1 = str.indexOf('(');
-        int i2 = str.indexOf(')');
-        if (i1 > -1 && i2 > -1) {
-            parameters.add(str.substring(0, i1));
-            String p = str.substring(i1+1, i2);
-            String[] ps = p.split(",");
-            for (String p1 : ps) {
-                parameters.add(p1.trim());
-            }
-        } else {
-            parameters.add(str);
-        }
-        return parameters;
-    }
-
-    private Command getCommand(String className, String[] parameters) {
-        Command command = null;
-        try {
-            Class cl = Class.forName(className);
-            if (parameters != null) {
-                Class[] types = new Class[parameters.length];
-                for (int i=0; i<parameters.length; i++) {
-                    types[i] = String.class;
-                }
-                Constructor constructor = cl.getConstructor(types);
-                command = (Command) constructor.newInstance((Object[]) parameters);
-            } else {
-                Constructor constructor = cl.getConstructor((Class<?>[]) null);
-                command = (Command) constructor.newInstance();
-            }
-        } catch (Exception e) {
-            System.err.println("cannot initialize command: " + className);
-            e.printStackTrace();
-        }
-        return command;
-    }
-
-    private static XStream createXStream() {
-        XStream xstream = new XStream();
-        xstream.processAnnotations(Commands.class);
-        xstream.processAnnotations(CommandProperties.class);
-        return xstream;
     }
 
     private static final Logger LOGGER = Logger.getLogger(CommandService.class.getName());

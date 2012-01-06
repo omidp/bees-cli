@@ -24,6 +24,7 @@
     <module>assembly</module>
 
     <module>app-plugin</module>
+    <module>migrate-plugin</module>
     <module>static-plugin</module>
     <module>database-plugin</module>
   </modules>
