@@ -1,9 +1,12 @@
 package com.cloudbees.sdk.commands;
 
 
+import com.cloudbees.sdk.CLICommand;
+
 /**
  * @Author: Fabian Donze
  */
+@CLICommand("deploy")
 public class ProjectDeploy extends AntTarget {
     private String message;
     private String environment;

@@ -1,9 +1,12 @@
 package com.cloudbees.sdk.commands;
 
 
+import com.cloudbees.sdk.CLICommand;
+
 /**
  * @Author: Fabian Donze
  */
+@CLICommand(value="ant")
 public class ProjectAntTarget extends AntTarget {
     public ProjectAntTarget() {
         super(null);

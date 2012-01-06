@@ -1,9 +1,12 @@
 package com.cloudbees.sdk.commands;
 
 
+import com.cloudbees.sdk.CLICommand;
+
 /**
  * @Author: Fabian Donze
  */
+@CLICommand("run")
 public class ProjectRun extends AntTarget {
     private String port;
     private String environment;
