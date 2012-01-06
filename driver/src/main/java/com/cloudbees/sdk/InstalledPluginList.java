@@ -1,63 +1,67 @@
 package com.cloudbees.sdk;
 
+import com.cloudbees.sdk.utils.Helper;
 import org.apache.commons.io.IOUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 /**
  * Encapsulates access to the persisted installed plugins list (~/.bees/plugins-list)
  *
+ * This table is a look up table from command prefix (such as 'app' or 'db') to its implementation.
+ * 
+ * 
  * @author Kohsuke Kawaguchi
  */
 @Singleton
 public class InstalledPluginList {
     @Inject
     DirectoryStructure structure;
-    
-    private List<GAV> get() throws IOException {
-        List<GAV> list = new ArrayList<GAV>();
-        
-        File f = new File(structure.localRepository, "plugins-list");
-        BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(f),"UTF-8"));
-        try {
-            String line;
-            while ((line=r.readLine())!=null) {
-                if (line.startsWith("#"))   continue;
-                list.add(new GAV(line.trim()));
-            }
-        } finally {
-            IOUtils.closeQuietly(r);
-        }
-        return list;
+
+    public GAV get(String prefix) throws IOException {
+        return get().get(prefix);
     }
     
-    public synchronized void add(GAV gav) throws IOException {
-        List<GAV> list = get();
-        if (!list.contains(gav))
-            list.add(gav);
-        set(list);
+    public Map<String,GAV> get() throws IOException {
+        Properties data = new Properties();
+        Helper.loadProperties(getDataFile(),data);
+
+        Map<String,GAV> r = new HashMap<String,GAV>();
+        for (Entry<Object, Object> e : data.entrySet()) {
+            r.put((String)e.getKey(), new GAV((String)e.getValue()));
+        }
+        
+        return r;
     }
 
-    public synchronized void set(List<GAV> list) throws FileNotFoundException, UnsupportedEncodingException {
-        File f = new File(structure.localRepository, "plugins-list");
-        PrintWriter w = new PrintWriter(f,"UTF-8");
+    private File getDataFile() {
+        return new File(structure.localRepository, "plugins-list");
+    }
+
+    public synchronized void add(String prefix, GAV gav) throws IOException {
+        Map<String,GAV> data = get();
+        if (!gav.equals(data.put(prefix, gav)))
+            set(data);
+    }
+
+    public synchronized void set(Map<String,GAV> data) throws IOException {
+        Properties props = new Properties();
+        for (Entry<String, GAV> e : data.entrySet()) {
+            props.put(e.getKey(),e.getValue().toString());
+        }
+        FileOutputStream out = new FileOutputStream(getDataFile());
         try {
-            for (GAV i : list) {
-                w.println(i);
-            }
+            props.store(out,"Command prefix -> artifact lookup table");
         } finally {
-            IOUtils.closeQuietly(w);
+            IOUtils.closeQuietly(out);
         }
     }
 }

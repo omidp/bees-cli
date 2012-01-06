@@ -84,8 +84,13 @@ public class CommandService {
         String[] tokens = name.split(":");
         if (tokens.length>1) {
             // commands that are not built-in
-            Artifact a = mapCommandToArtifact(tokens[0]);
-            DependencyResult r = resolveDependencies(a);
+            GAV gav = installedPluginList.get(tokens[0]);
+            if (gav==null) {
+                gav = mapCommandToArtifact(tokens[0]);
+                if (gav!=null)
+                    installedPluginList.add(tokens[0],gav);
+            }
+            DependencyResult r = resolveDependencies(toArtifact(gav));
     
             URLClassLoader cl = createClassLoader(r.getRoot());
             injector = createChildModule(injector, cl);
@@ -112,13 +117,13 @@ public class CommandService {
     /**
      * Each sub-command maps to an artifact.
      */
-    protected Artifact mapCommandToArtifact(String prefix) {
+    protected GAV mapCommandToArtifact(String prefix) {
         // TODO: figure out why 'LATEST' isn't working
-        // TODO: do this properly later by reading a table and
-        if (prefix.equals("app"))
-            return new DefaultArtifact("com.cloudbees.sdk", "sdk-plugins", "jar", "0.8-SNAPSHOT");
-
-        return new DefaultArtifact("org.cloudbees.sdk.plugins", prefix + "-plugin", "jar", "1.0-SNAPSHOT");
+        return new GAV("org.cloudbees.sdk.plugins", prefix + "-plugin", "LATEST");
+    }
+    
+    private static Artifact toArtifact(GAV gav) {
+        return new DefaultArtifact(gav.groupId,gav.artifactId,"jar",gav.version);
     }
 
     private DependencyResult resolveDependencies(Artifact a) throws DependencyCollectionException, DependencyResolutionException {
