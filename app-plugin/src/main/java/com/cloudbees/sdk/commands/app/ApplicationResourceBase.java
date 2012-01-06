@@ -1,4 +1,4 @@
-package com.cloudbees.sdk.commands;
+package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.sdk.services.ServiceBase;
 import com.cloudbees.sdk.utils.Helper;

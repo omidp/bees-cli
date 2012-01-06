@@ -1,8 +1,9 @@
-package com.cloudbees.sdk.commands;
+package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.ServiceResourceBindResponse;
 import com.cloudbees.api.ServiceResourceInfo;
 import com.cloudbees.api.StaxClient;
+import com.cloudbees.sdk.CLICommand;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.Map;
 /**
  * @Author: Fabian Donze
  */
+@CLICommand("app:resource:create")
 public class ApplicationResourceCreate extends ApplicationResourceBase {
     private String bind;
 

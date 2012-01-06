@@ -1,15 +1,17 @@
-package com.cloudbees.sdk.commands;
+package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.ResourceBindingInfo;
 import com.cloudbees.api.ServiceResourceBindingListResponse;
 import com.cloudbees.api.StaxClient;
-import com.cloudbees.sdk.commands.ApplicationBase;
+import com.cloudbees.sdk.CLICommand;
+import com.cloudbees.sdk.commands.app.ApplicationBase;
 
 import java.util.Map;
 
 /**
  * @Author: Fabian Donze
  */
+@CLICommand("app:bindings")
 public class ApplicationBindingList extends ApplicationBase {
 
     public ApplicationBindingList() {

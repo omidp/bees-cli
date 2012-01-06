@@ -1,5 +1,6 @@
-package com.cloudbees.sdk.commands;
+package com.cloudbees.sdk.commands.app;
 
+import com.cloudbees.sdk.commands.Command;
 import com.cloudbees.sdk.utils.Helper;
 import java.io.IOException;
 

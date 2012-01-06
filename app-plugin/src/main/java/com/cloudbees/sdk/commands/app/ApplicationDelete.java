@@ -1,12 +1,14 @@
-package com.cloudbees.sdk.commands;
+package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.ApplicationDeleteResponse;
 import com.cloudbees.api.StaxClient;
+import com.cloudbees.sdk.CLICommand;
 import com.cloudbees.sdk.utils.Helper;
 
 /**
  * @Author: Fabian Donze
  */
+@CLICommand("app:delete")
 public class ApplicationDelete extends ApplicationBase {
     private Boolean force;
 

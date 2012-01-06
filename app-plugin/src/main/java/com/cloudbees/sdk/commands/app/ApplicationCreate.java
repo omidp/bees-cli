@@ -1,6 +1,7 @@
-package com.cloudbees.sdk.commands;
+package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.*;
+import com.cloudbees.sdk.CLICommand;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Map;
 /**
  * @Author: Fabian Donze
  */
+@CLICommand("app:create")
 public class ApplicationCreate extends ApplicationBase {
     private Boolean withCD;
     private Boolean withCI;

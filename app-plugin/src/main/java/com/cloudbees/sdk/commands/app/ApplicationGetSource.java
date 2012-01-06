@@ -1,8 +1,9 @@
-package com.cloudbees.sdk.commands;
+package com.cloudbees.sdk.commands.app;
 
 
 import com.cloudbees.api.ApplicationGetSourceUrlResponse;
 import com.cloudbees.api.StaxClient;
+import com.cloudbees.sdk.CLICommand;
 import com.cloudbees.sdk.utils.Helper;
 import com.staxnet.appserver.utils.ZipHelper;
 
@@ -12,6 +13,7 @@ import java.io.FileInputStream;
 /**
  * @Author: Fabian Donze
  */
+@CLICommand("getsource")
 public class ApplicationGetSource extends ApplicationBase {
     private Boolean force;
     private String dir;

@@ -1,11 +1,13 @@
-package com.cloudbees.sdk.commands;
+package com.cloudbees.sdk.commands.app;
 
 
 import com.cloudbees.api.StaxClient;
+import com.cloudbees.sdk.CLICommand;
 
 /**
  * @Author: Fabian Donze
  */
+@CLICommand("app:tail")
 public class ApplicationTail extends ApplicationBase {
 
     private String logname;

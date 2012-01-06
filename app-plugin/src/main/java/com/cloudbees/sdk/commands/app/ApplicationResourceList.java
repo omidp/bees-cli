@@ -1,8 +1,9 @@
-package com.cloudbees.sdk.commands;
+package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.ServiceResourceInfo;
 import com.cloudbees.api.ServiceResourceListResponse;
 import com.cloudbees.api.StaxClient;
+import com.cloudbees.sdk.CLICommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Map;
 /**
  *
  */
+@CLICommand("app:resource:list")
 public class ApplicationResourceList extends ApplicationResourceBase {
     private String type;
 

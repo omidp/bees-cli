@@ -185,7 +185,7 @@ public class CommandService {
     /**
      * Each sub-command maps to an artifact.
      */
-    private Artifact mapCommandToArtifact(String prefix) {
+    protected Artifact mapCommandToArtifact(String prefix) {
         // TODO: figure out why 'LATEST' isn't working
         // TODO: do this properly later by reading a table and
         if (prefix.equals("app"))

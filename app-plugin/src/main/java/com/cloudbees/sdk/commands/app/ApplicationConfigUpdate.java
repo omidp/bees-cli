@@ -1,9 +1,9 @@
-package com.cloudbees.sdk.commands;
+package com.cloudbees.sdk.commands.app;
 
 
 import com.cloudbees.api.ApplicationConfigUpdateResponse;
 import com.cloudbees.api.StaxClient;
-import com.cloudbees.sdk.commands.ApplicationBase;
+import com.cloudbees.sdk.CLICommand;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +12,7 @@ import java.util.Map;
 /**
  *
  */
+@CLICommand("app:update")
 public class ApplicationConfigUpdate extends ApplicationBase {
     private Map<String, String> settings;
 

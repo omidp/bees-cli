@@ -1,16 +1,18 @@
-package com.cloudbees.sdk.commands;
+package com.cloudbees.sdk.commands.app;
 
-import com.cloudbees.api.ApplicationRestartResponse;
+import com.cloudbees.api.ApplicationStatusResponse;
 import com.cloudbees.api.StaxClient;
+import com.cloudbees.sdk.CLICommand;
 import com.cloudbees.sdk.utils.Helper;
 
 /**
  * @Author: Fabian Donze
  */
-public class ApplicationRestart extends ApplicationBase {
+@CLICommand("app:stop")
+public class ApplicationStop extends ApplicationBase {
     private Boolean force;
 
-    public ApplicationRestart() {
+    public ApplicationStop() {
         setArgumentExpected(0);
     }
 
@@ -18,10 +20,9 @@ public class ApplicationRestart extends ApplicationBase {
         this.force = force;
     }
 
-    @Override
     protected boolean preParseCommandLine() {
         if (super.preParseCommandLine()) {
-            addOption( "f", "force", false, "force restart without prompting" );
+            addOption( "f", "force", false, "force stop without prompting" );
             return true;
         }
         return false;
@@ -42,21 +43,21 @@ public class ApplicationRestart extends ApplicationBase {
         }
 
         if (force == null || !force.booleanValue()) {
-            if (!Helper.promptMatches("Are you sure you want to restart this application [" + appid + "]: (y/n) ", "[yY].*")) {
+            if (!Helper.promptMatches("Are you sure you want to stop this application [" + appid + "]: (y/n) ", "[yY].*")) {
                 return true;
             }
         }
 
         StaxClient client = getStaxClient();
-        ApplicationRestartResponse res = client.applicationRestart(appid);
+        ApplicationStatusResponse res = client.applicationStop(appid);
 
         if (isTextOutput()) {
-            if(res.isRestarted())
-                System.out.println("application restarted - " + appid);
+            if(res.getStatus().equalsIgnoreCase("stopped"))
+                System.out.println("application stopped - " + appid);
             else
-                System.out.println("application could not be restarted");
+                System.out.println("application could not be stopped, current status: " + res.getStatus());
         } else
-            printOutput(res, ApplicationRestartResponse.class);
+            printOutput(res, ApplicationStatusResponse.class);
 
         return true;
     }

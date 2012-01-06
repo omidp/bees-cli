@@ -1,9 +1,10 @@
-package com.cloudbees.sdk.commands;
+package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.ApplicationDeployArchiveResponse;
 import com.cloudbees.api.HashWriteProgress;
 import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.CLICommand;
+import com.cloudbees.sdk.commands.Command;
 import com.cloudbees.sdk.utils.Helper;
 import com.staxnet.ant.ApplicationHelper;
 import com.staxnet.appserver.config.AppConfig;

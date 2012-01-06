@@ -21,6 +21,7 @@
     <module>driver</module>
     <module>api</module>
     <module>sdk-plugins</module>
+    <module>app-plugin</module>
     <module>static-plugin</module>
     <module>assembly</module>
   </modules>

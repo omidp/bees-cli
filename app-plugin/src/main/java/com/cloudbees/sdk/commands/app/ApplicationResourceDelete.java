@@ -1,11 +1,13 @@
-package com.cloudbees.sdk.commands;
+package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.*;
+import com.cloudbees.sdk.CLICommand;
 import com.cloudbees.sdk.utils.Helper;
 
 /**
  * @Author: Fabian Donze
  */
+@CLICommand("app:resource:delete")
 public class ApplicationResourceDelete extends ApplicationResourceBase {
     private Boolean force;
 

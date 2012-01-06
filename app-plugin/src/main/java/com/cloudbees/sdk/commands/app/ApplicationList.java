@@ -1,7 +1,9 @@
-package com.cloudbees.sdk.commands;
+package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.ApplicationListResponse;
 import com.cloudbees.api.StaxClient;
+import com.cloudbees.sdk.CLICommand;
+import com.cloudbees.sdk.commands.Command;
 import com.cloudbees.sdk.utils.Helper;
 
 import java.io.IOException;
@@ -10,6 +12,7 @@ import java.util.Map;
 /**
  * @Author: Fabian Donze
  */
+@CLICommand("app:list")
 public class ApplicationList extends Command {
     private String account;
 
