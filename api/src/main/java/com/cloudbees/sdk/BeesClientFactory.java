@@ -52,9 +52,11 @@ public class BeesClientFactory implements HasOptions {
     UserConfiguration config;
 
     public StaxClient get() throws IOException {
-        initCredentials();
-        
         Properties properties = getConfigProperties();
+
+        if (key==null)      key = properties.getProperty("bees.api.key");
+        if (secret==null)   secret = properties.getProperty("bees.api.secret");
+        initCredentials();
 
         String apiUrl;
         if (server != null)
@@ -90,7 +92,7 @@ public class BeesClientFactory implements HasOptions {
         if (properties == null) {
             // Read SDK config file
             Map<String, String> params = getParameters();
-            properties = config.load(UserConfiguration.EMAIL_CREDENTIALS, params, false); // TODO: verbose flag
+            properties = config.load(UserConfiguration.EMAIL_CREDENTIALS, params);
         }
         return properties;
     }
