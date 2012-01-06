@@ -19,6 +19,7 @@
   <modules>
     <module>cloudbees-boot</module>
     <module>cloudbees-api-sdk</module>
+    <module>cloudbees-sdk-cli</module>
     <module>sdk-plugins</module>
     <module>assembly</module>
   </modules>
