@@ -51,6 +51,9 @@ public class BeesClientFactory implements HasOptions {
     @Inject
     UserConfiguration config;
 
+    @Inject
+    Verbose verbose;
+
     public StaxClient get() throws IOException {
         Properties properties = getConfigProperties();
 
@@ -74,7 +77,7 @@ public class BeesClientFactory implements HasOptions {
         beesClientConfiguration.setProxyPassword(properties.getProperty("bees.api.proxy.password", proxyPassword));
 
         StaxClient staxClient = new StaxClient(beesClientConfiguration);
-        staxClient.setVerbose(false);   // TODO
+        staxClient.setVerbose(verbose.isVerbose());
         return  staxClient;
     }
 
