@@ -2,10 +2,14 @@ package com.cloudbees.sdk.commands;
 
 
 import com.cloudbees.api.StaxClient;
+import com.cloudbees.sdk.CLICommand;
+import com.cloudbees.sdk.Experimental;
 
 /**
  * @Author: Fabian Donze
  */
+@CLICommand("call")
+@Experimental
 public class Call extends Command {
     String[] otherArgs;
 

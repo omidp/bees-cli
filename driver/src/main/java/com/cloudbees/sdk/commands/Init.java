@@ -1,5 +1,6 @@
 package com.cloudbees.sdk.commands;
 
+import com.cloudbees.sdk.CLICommand;
 import com.cloudbees.sdk.UserConfiguration;
 import com.cloudbees.sdk.utils.Helper;
 
@@ -11,6 +12,7 @@ import java.util.Properties;
 /**
  * @Author: Fabian Donze
  */
+@CLICommand("init")
 public class Init extends Command {
     private String email;
     private String password;
