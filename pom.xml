@@ -25,6 +25,19 @@
     <module>assembly</module>
   </modules>
 
+  <build>
+    <resources>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <directory>${basedir}/src/filter/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
+
   <repositories>
     <repository>
       <id>cloudbees-internal</id>
