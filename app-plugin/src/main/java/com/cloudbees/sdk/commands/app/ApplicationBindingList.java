@@ -4,6 +4,7 @@ import com.cloudbees.api.ResourceBindingInfo;
 import com.cloudbees.api.ServiceResourceBindingListResponse;
 import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.CLICommand;
+import com.cloudbees.sdk.CommandGroup;
 import com.cloudbees.sdk.commands.app.ApplicationBase;
 
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.Map;
 /**
  * @Author: Fabian Donze
  */
+@CommandGroup("Application")
 @CLICommand("app:bindings")
 public class ApplicationBindingList extends ApplicationBase {
 

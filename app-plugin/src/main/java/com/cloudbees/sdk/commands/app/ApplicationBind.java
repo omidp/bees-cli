@@ -3,6 +3,7 @@ package com.cloudbees.sdk.commands.app;
 import com.cloudbees.api.ServiceResourceBindResponse;
 import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.CLICommand;
+import com.cloudbees.sdk.CommandGroup;
 import com.cloudbees.sdk.services.ServiceBase;
 import com.cloudbees.sdk.utils.Helper;
 
@@ -11,6 +12,7 @@ import java.io.IOException;
 /**
  * @Author: Fabian Donze
  */
+@CommandGroup("Application")
 @CLICommand("app:bind")
 public class ApplicationBind extends ServiceBase {
     /**

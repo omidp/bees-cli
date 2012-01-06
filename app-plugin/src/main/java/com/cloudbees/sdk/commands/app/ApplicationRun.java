@@ -1,6 +1,7 @@
 package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.sdk.CLICommand;
+import com.cloudbees.sdk.CommandGroup;
 import com.cloudbees.sdk.commands.Command;
 import com.cloudbees.sdk.utils.Helper;
 import com.cloudbees.utils.ZipHelper;
@@ -20,6 +21,7 @@ import java.util.zip.ZipFile;
 /**
  * @Author: Fabian Donze
  */
+@CommandGroup("Application")
 @CLICommand("app:run")
 public class ApplicationRun extends Command {
 

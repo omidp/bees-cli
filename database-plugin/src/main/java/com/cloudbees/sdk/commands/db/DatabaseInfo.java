@@ -2,6 +2,7 @@ package com.cloudbees.sdk.commands.db;
 
 import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.CLICommand;
+import com.cloudbees.sdk.CommandGroup;
 import com.cloudbees.sdk.commands.Command;
 import com.cloudbees.sdk.utils.Helper;
 import com.staxnet.ant.StringHelper;
@@ -11,6 +12,7 @@ import java.io.IOException;
 /**
  * @Author: Fabian Donze
  */
+@CommandGroup("Database")
 @CLICommand("db:info")
 public class DatabaseInfo extends Command {
     private Boolean password;

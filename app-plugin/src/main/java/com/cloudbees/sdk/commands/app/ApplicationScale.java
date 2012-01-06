@@ -3,10 +3,12 @@ package com.cloudbees.sdk.commands.app;
 import com.cloudbees.api.ApplicationScaleResponse;
 import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.CLICommand;
+import com.cloudbees.sdk.CommandGroup;
 
 /**
  * @Author: Fabian Donze
  */
+@CommandGroup("Application")
 @CLICommand("app:scale")
 public class ApplicationScale extends ApplicationBase {
     private String up;

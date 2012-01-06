@@ -2,6 +2,7 @@ package com.cloudbees.sdk.commands;
 
 import com.cloudbees.sdk.AbstractCommand;
 import com.cloudbees.sdk.CLICommand;
+import com.cloudbees.sdk.CommandGroup;
 import com.cloudbees.sdk.CommandService;
 import com.cloudbees.sdk.ICommand;
 import org.kohsuke.args4j.Argument;
@@ -16,6 +17,7 @@ import java.util.List;
  * 
  * @author Kohsuke Kawaguchi
  */
+@CommandGroup("SDK")
 @CLICommand("help")
 public class Help extends AbstractCommand {
     @Inject

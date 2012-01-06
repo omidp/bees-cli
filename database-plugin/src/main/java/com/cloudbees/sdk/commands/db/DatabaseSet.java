@@ -3,6 +3,7 @@ package com.cloudbees.sdk.commands.db;
 import com.cloudbees.api.DatabaseSetPasswordResponse;
 import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.CLICommand;
+import com.cloudbees.sdk.CommandGroup;
 import com.cloudbees.sdk.commands.Command;
 import com.cloudbees.sdk.utils.Helper;
 
@@ -11,6 +12,7 @@ import java.io.IOException;
 /**
  * @Author: Fabian Donze
  */
+@CommandGroup("Database")
 @CLICommand("db:set")
 public class DatabaseSet extends Command {
     private String password;

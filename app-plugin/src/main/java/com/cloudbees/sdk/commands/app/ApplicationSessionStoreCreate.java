@@ -1,12 +1,14 @@
 package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.sdk.CLICommand;
+import com.cloudbees.sdk.CommandGroup;
 
 import java.util.Map;
 
 /**
  * @author Fabian Donze
  */
+@CommandGroup("Application")
 @CLICommand("app:session-store:create")
 public class ApplicationSessionStoreCreate extends ApplicationResourceCreate {
     private String size;

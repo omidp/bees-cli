@@ -169,7 +169,7 @@ public class CommandService {
         Map<String,List<Binding<?>>> map = new HashMap<String, List<Binding<?>>>();
         
         for (Binding<?> b : injector.getAllBindings().values()) {
-            if (ICommand.class.isAssignableFrom(b.getKey().getTypeLiteral().getRawType())) {
+            if (ICommand.class==b.getKey().getTypeLiteral().getRawType()) {
                 Class<?> cmd = b.getProvider().get().getClass();
                 if (!cmd.isAnnotationPresent(CLICommand.class))
                     continue;

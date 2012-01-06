@@ -3,11 +3,13 @@ package com.cloudbees.sdk.commands.app;
 import com.cloudbees.api.ApplicationRestartResponse;
 import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.CLICommand;
+import com.cloudbees.sdk.CommandGroup;
 import com.cloudbees.sdk.utils.Helper;
 
 /**
  * @Author: Fabian Donze
  */
+@CommandGroup("Application")
 @CLICommand("app:restart")
 public class ApplicationRestart extends ApplicationBase {
     private Boolean force;

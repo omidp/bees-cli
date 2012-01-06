@@ -1,6 +1,7 @@
 package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.sdk.CLICommand;
+import com.cloudbees.sdk.CommandGroup;
 
 import java.io.File;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Map;
 /**
  * @author Fabian Donze
  */
+@CommandGroup("Application")
 @CLICommand("app:router:create")
 public class ApplicationRouterCreate extends ApplicationResourceCreate {
     private String certificate;

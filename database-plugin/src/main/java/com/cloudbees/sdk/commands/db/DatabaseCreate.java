@@ -3,12 +3,14 @@ package com.cloudbees.sdk.commands.db;
 import com.cloudbees.api.DatabaseCreateResponse;
 import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.CLICommand;
+import com.cloudbees.sdk.CommandGroup;
 import com.cloudbees.sdk.commands.Command;
 import com.cloudbees.sdk.utils.Helper;
 
 /**
  * @Author: Fabian Donze
  */
+@CommandGroup("Database")
 @CLICommand("db:create")
 public class DatabaseCreate extends Command {
     private String databaseName;
