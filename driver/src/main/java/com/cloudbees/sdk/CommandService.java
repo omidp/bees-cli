@@ -8,7 +8,6 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provider;
-import com.google.inject.multibindings.Multibinder;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.sonatype.aether.RepositoryException;
 import org.sonatype.aether.RepositorySystem;
@@ -128,7 +127,7 @@ public class CommandService {
         final List<Module> childModules = new ArrayList<Module>();
         childModules.add(new ExtensionFinder(cl) {
             @Override
-            protected <T> void bind(Class<? extends T> impl, Class<T> extensionPoint, Multibinder<T> mbinder) {
+            protected <T> void bind(Class<? extends T> impl, Class<T> extensionPoint) {
                 if (impl.getClassLoader()!=cl)  return; // only add newly discovered stuff
 
                 // install CLIModules
@@ -142,7 +141,7 @@ public class CommandService {
                     }
                     return;
                 }
-                super.bind(impl,extensionPoint,mbinder);
+                super.bind(impl,extensionPoint);
             }
         });
 
