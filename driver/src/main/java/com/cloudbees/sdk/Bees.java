@@ -17,6 +17,7 @@ import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.sonatype.aether.RepositorySystem;
+import org.sonatype.aether.impl.VersionResolver;
 import org.w3c.dom.*;
 
 import javax.inject.Inject;
@@ -67,6 +68,7 @@ public class Bees {
                 @Override
                 protected void configure() {
                     alias("getsource", "app:getsource");
+                    bind(VersionResolver.class).to(VersionResolverImpl.class);
                 }
 
                 private void alias(String from, final String to) {
