@@ -1,11 +1,14 @@
 package com.cloudbees.sdk;
 
+import com.cloudbees.sdk.extensibility.ExtensionPoint;
+
 import java.util.List;
 
 /**
  * @author Kohsuke Kawaguchi
  */
 // TODO: rename it back to Command once we renamed the other Command.
+@ExtensionPoint
 public abstract class ICommand {
     /**
      * Executes this command.
