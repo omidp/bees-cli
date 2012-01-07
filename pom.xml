@@ -20,7 +20,6 @@
     <module>boot</module>
     <module>driver</module>
     <module>api</module>
-    <module>sdk-plugins</module>
     <module>assembly</module>
 
     <module>app-plugin</module>
