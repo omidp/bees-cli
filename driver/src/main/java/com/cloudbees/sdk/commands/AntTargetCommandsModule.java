@@ -1,7 +1,8 @@
 package com.cloudbees.sdk.commands;
 
+import com.cloudbees.sdk.CLICommand;
 import com.cloudbees.sdk.ICommand;
-import com.cloudbees.sdk.annotations.CLICommandImpl;
+import com.cloudbees.sdk.extensibility.AnnotationLiteral;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
 
@@ -19,7 +20,7 @@ public class AntTargetCommandsModule extends AbstractModule {
     }
     
     private void target(final String antTaget) {
-        bind(ICommand.class).annotatedWith(new CLICommandImpl(antTaget))
+        bind(ICommand.class).annotatedWith(AnnotationLiteral.of(CLICommand.class, antTaget))
             .toProvider(new Provider<ICommand>() {
                 public ICommand get() {
                     return new AntTarget(antTaget);

@@ -3,6 +3,7 @@ package com.cloudbees.sdk;
 import com.cloudbees.api.BeesClientException;
 import com.cloudbees.sdk.annotations.CLICommandImpl;
 import com.cloudbees.sdk.commands.AntTargetCommandsModule;
+import com.cloudbees.sdk.extensibility.AnnotationLiteral;
 import com.cloudbees.sdk.utils.Helper;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
@@ -70,7 +71,7 @@ public class Bees {
                 }
 
                 private void alias(String from, final String to) {
-                    bind(ICommand.class).annotatedWith(new CLICommandImpl(from))
+                    bind(ICommand.class).annotatedWith(AnnotationLiteral.of(CLICommand.class,from))
                         .toProvider(new Provider<ICommand>() {
                             public ICommand get() {
                                 return commandService.getCommand(to);

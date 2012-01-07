@@ -1,6 +1,6 @@
 package com.cloudbees.sdk;
 
-import com.cloudbees.sdk.annotations.CLICommandImpl;
+import com.cloudbees.sdk.extensibility.AnnotationLiteral;
 import com.cloudbees.sdk.extensibility.ExtensionFinder;
 import com.google.inject.Binding;
 import com.google.inject.ConfigurationException;
@@ -117,7 +117,7 @@ public class CommandService {
         }
         Provider<ICommand> p;
         try {
-            p = injector.getProvider(Key.get(ICommand.class, new CLICommandImpl(name)));
+            p = injector.getProvider(Key.get(ICommand.class, AnnotationLiteral.of(CLICommand.class, name)));
         } catch (ConfigurationException e) {
             return null; // failed to find the command
         }
