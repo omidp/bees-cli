@@ -12,6 +12,7 @@ import com.staxnet.repository.LocalRepository;
 import hudson.util.VersionNumber;
 import org.apache.commons.cli.UnrecognizedOptionException;
 import org.apache.commons.io.IOUtils;
+import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
@@ -44,11 +45,7 @@ public class Bees {
     private static final long CHECK_INTERVAL = 1000 * 60 * 60 * 12;  // 12 hours
 
     @Inject
-    private CommandService commandService;
-
-    @Inject
-    RepositorySystem rs;
-
+    CommandService commandService;
 
     /**
      * Entry point to all the components.
@@ -69,6 +66,7 @@ public class Bees {
                 protected void configure() {
                     alias("getsource", "app:getsource");
                     bind(VersionResolver.class).to(VersionResolverImpl.class);
+                    bind(MavenRepositorySystemSession.class).toProvider(RepositorySessionProvider.class);
                 }
 
                 private void alias(String from, final String to) {

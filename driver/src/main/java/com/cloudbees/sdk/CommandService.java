@@ -65,6 +65,9 @@ public class CommandService {
     private Verbose verbose;
 
     @Inject
+    Provider<MavenRepositorySystemSession> sessionFactory;
+    
+    @Inject
     public CommandService(DirectoryStructure structure) {
         this.structure = structure;
     }
@@ -150,8 +153,7 @@ public class CommandService {
     }
 
     private DependencyResult resolveDependencies(Artifact a) throws DependencyCollectionException, DependencyResolutionException {
-        MavenRepositorySystemSession session = createSession(rs);
-
+        MavenRepositorySystemSession session = sessionFactory.get();
         Dependency dependency = new Dependency(a, "compile");
 
         CollectRequest collectRequest = new CollectRequest();
@@ -162,13 +164,6 @@ public class CommandService {
         DependencyRequest dependencyRequest = new DependencyRequest(node,new ScopeDependencyFilter("provided"));
 
         return rs.resolveDependencies(session, dependencyRequest);
-    }
-
-    private MavenRepositorySystemSession createSession(RepositorySystem rs) {
-        MavenRepositorySystemSession session = new MavenRepositorySystemSession();
-        LocalRepository localRepo = new LocalRepository( new File(new File(System.getProperty("user.home")),".m2/repository"));
-        session.setLocalRepositoryManager(rs.newLocalRepositoryManager(localRepo));
-        return session;
     }
 
     /**
