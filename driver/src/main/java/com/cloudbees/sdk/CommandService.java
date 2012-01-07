@@ -10,6 +10,7 @@ import com.google.inject.Provider;
 import net.java.sezpoz.Index;
 import net.java.sezpoz.IndexItem;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
+import org.sonatype.aether.RepositoryException;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;
@@ -35,6 +36,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +60,9 @@ public class CommandService {
 
     @Inject
     private InstalledPluginList installedPluginList;
+    
+    @Inject
+    private Verbose verbose;
 
     @Inject
     public CommandService(DirectoryStructure structure) {
@@ -86,9 +92,21 @@ public class CommandService {
             // commands that are not built-in
             GAV gav = installedPluginList.get(tokens[0]);
             if (gav==null) {
-                gav = mapCommandToArtifact(tokens[0]);
-                if (gav!=null)
-                    installedPluginList.add(tokens[0],gav);
+                for (GAV candidate : mapCommandToArtifacts(tokens[0])) {
+                    try {
+                        resolveDependencies(toArtifact(candidate));
+                        gav = candidate;
+                        break;  // found it!
+                    } catch (RepositoryException e) {
+                        if (verbose.isVerbose())
+                            e.printStackTrace();
+                        // keep on trying the next candidate
+                    }
+                }
+                if (gav==null)
+                    return null;    // couldn't find it
+
+                installedPluginList.add(tokens[0],gav);
             }
             DependencyResult r = resolveDependencies(toArtifact(gav));
     
@@ -115,11 +133,16 @@ public class CommandService {
     }
 
     /**
-     * Each sub-command maps to an artifact.
+     * Controls the mapping from the command set prefix to the artifact.
+     *
+     * @return
+     *      Artifacts that we should try to locate, in the order of preference.
      */
-    protected GAV mapCommandToArtifact(String prefix) {
-        // TODO: figure out why 'LATEST' isn't working
-        return new GAV("org.cloudbees.sdk.plugins", prefix + "-plugin", "LATEST");
+    protected Collection<GAV> mapCommandToArtifacts(String prefix) {
+        return Arrays.asList(
+            new GAV("com.cloudbees.sdk.plugins", prefix + "-plugin", "LATEST"),
+            new GAV("org.cloudbees.sdk.plugins", prefix + "-plugin", "LATEST")
+        );
     }
     
     private static Artifact toArtifact(GAV gav) {
