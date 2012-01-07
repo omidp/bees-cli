@@ -1,14 +1,14 @@
 package com.cloudbees.sdk;
 
 import com.cloudbees.sdk.annotations.CLICommandImpl;
+import com.cloudbees.sdk.extensibility.ExtensionFinder;
 import com.google.inject.Binding;
 import com.google.inject.ConfigurationException;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provider;
-import net.java.sezpoz.Index;
-import net.java.sezpoz.IndexItem;
+import com.google.inject.multibindings.Multibinder;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.sonatype.aether.RepositoryException;
 import org.sonatype.aether.RepositorySystem;
@@ -17,7 +17,6 @@ import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.collection.DependencyCollectionException;
 import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.graph.DependencyNode;
-import org.sonatype.aether.repository.LocalRepository;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.DependencyRequest;
 import org.sonatype.aether.resolution.DependencyResolutionException;
@@ -125,12 +124,27 @@ public class CommandService {
         return p.get();
     }
 
-    private Injector createChildModule(Injector parent, final URLClassLoader cl) throws InstantiationException {
+    private Injector createChildModule(Injector parent, final URLClassLoader cl) throws InstantiationException, IOException {
         final List<Module> childModules = new ArrayList<Module>();
-        for (IndexItem<CLIModule,Module> m : Index.load(CLIModule.class, Module.class, cl)) {
-            childModules.add(m.instance());
-        }
-        childModules.add(new CLICommandModule(cl));
+        childModules.add(new ExtensionFinder(cl) {
+            @Override
+            protected <T> void bind(Class<? extends T> impl, Class<T> extensionPoint, Multibinder<T> mbinder) {
+                if (impl.getClassLoader()!=cl)  return; // only add newly discovered stuff
+
+                // install CLIModules
+                if (extensionPoint==CLIModule.class) {
+                    try {
+                        install((Module)impl.newInstance());
+                    } catch (InstantiationException e) {
+                        throw (Error)new InstantiationError().initCause(e);
+                    } catch (IllegalAccessException e) {
+                        throw (Error)new IllegalAccessError().initCause(e);
+                    }
+                    return;
+                }
+                super.bind(impl,extensionPoint,mbinder);
+            }
+        });
 
         return parent.createChildInjector(childModules);
     }

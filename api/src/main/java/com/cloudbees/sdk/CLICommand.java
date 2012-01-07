@@ -1,7 +1,7 @@
 package com.cloudbees.sdk;
 
 import com.google.inject.BindingAnnotation;
-import net.java.sezpoz.Indexable;
+import org.jvnet.hudson.annotation_indexer.Indexed;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -20,7 +20,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  */
 @Retention(RUNTIME)
 @Target(TYPE)
-@Indexable
+@Indexed
 @BindingAnnotation
 public @interface CLICommand {
     /**

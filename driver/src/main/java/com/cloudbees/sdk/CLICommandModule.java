@@ -2,10 +2,9 @@ package com.cloudbees.sdk;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
-import net.java.sezpoz.Index;
-import net.java.sezpoz.IndexItem;
+import org.jvnet.hudson.annotation_indexer.Index;
 
-import java.util.logging.Level;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 /**
@@ -22,14 +21,13 @@ class CLICommandModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        for (IndexItem<CLICommand,ICommand> m : Index.load(CLICommand.class, ICommand.class, cl)) {
-            try {
-                Class e = (Class) m.element();
+        try {
+            for (Class<?> e : Index.list(CLICommand.class, cl, Class.class)) {
                 if (e.getClassLoader()==cl)
-                    bind(ICommand.class).annotatedWith(m.annotation()).to(e);
-            } catch (InstantiationException e) {
-                LOGGER.log(Level.WARNING,"Failed to instantiate "+m.className(),e);
+                    bind(ICommand.class).annotatedWith(e.getAnnotation(CLICommand.class)).to((Class)e);
             }
+        } catch (IOException x) {
+            throw new Error(x);
         }
     }
 
