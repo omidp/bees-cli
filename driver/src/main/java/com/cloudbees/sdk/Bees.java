@@ -3,6 +3,7 @@ package com.cloudbees.sdk;
 import com.cloudbees.api.BeesClientException;
 import com.cloudbees.sdk.commands.AntTargetCommandsModule;
 import com.cloudbees.sdk.extensibility.AnnotationLiteral;
+import com.cloudbees.sdk.extensibility.ExtensionFinder;
 import com.cloudbees.sdk.utils.Helper;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
@@ -55,14 +56,14 @@ public class Bees {
      */
     private final Injector injector;
 
-    public Bees() throws PlexusContainerException, ComponentLookupException {
+    public Bees() throws PlexusContainerException, ComponentLookupException, IOException {
         if (!initialize(false)) {
             throw new RuntimeException("");
         }
         
         DefaultPlexusContainer plexus = new DefaultPlexusContainer(
             new DefaultContainerConfiguration(),
-            new CLICommandModule(getClass().getClassLoader()),
+            new ExtensionFinder(getClass().getClassLoader()),
             new AntTargetCommandsModule(),
             new AbstractModule() {
                 @Override

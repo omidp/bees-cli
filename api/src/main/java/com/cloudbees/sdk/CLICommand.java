@@ -1,5 +1,6 @@
 package com.cloudbees.sdk;
 
+import com.cloudbees.sdk.extensibility.ExtensionImplementation;
 import com.google.inject.BindingAnnotation;
 import org.jvnet.hudson.annotation_indexer.Indexed;
 
@@ -22,6 +23,7 @@ import static java.lang.annotation.RetentionPolicy.*;
 @Target(TYPE)
 @Indexed
 @BindingAnnotation
+@ExtensionImplementation
 public @interface CLICommand {
     /**
      * Name of the command.
