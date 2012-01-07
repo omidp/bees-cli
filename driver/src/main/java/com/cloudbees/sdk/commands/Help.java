@@ -10,7 +10,6 @@ import org.kohsuke.args4j.Option;
 
 import javax.inject.Inject;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Help command.

@@ -1,7 +1,6 @@
 package com.cloudbees.sdk;
 
 import com.cloudbees.api.BeesClientException;
-import com.cloudbees.sdk.annotations.CLICommandImpl;
 import com.cloudbees.sdk.commands.AntTargetCommandsModule;
 import com.cloudbees.sdk.extensibility.AnnotationLiteral;
 import com.cloudbees.sdk.utils.Helper;
@@ -18,9 +17,12 @@ import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.impl.VersionResolver;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.inject.Inject;
 import java.io.File;
