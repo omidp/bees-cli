@@ -3,6 +3,7 @@ package com.cloudbees.sdk;
 import org.kohsuke.args4j.ClassParser;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.ExampleMode;
 
 import javax.inject.Inject;
 import java.lang.reflect.Field;
@@ -29,6 +30,7 @@ public abstract class AbstractCommand extends ICommand {
             return 1;
         } catch (CmdLineException e) {
             System.err.println(e.getMessage());
+            System.err.println("Usage: bees "+args.get(0)+" "+p.printExample(ExampleMode.REQUIRED));
             p.printUsage(System.err);
             return 1;
         }
@@ -56,6 +58,7 @@ public abstract class AbstractCommand extends ICommand {
     @Override
     public void printHelp(List<String> args) {
         CmdLineParser p = createParser();
+        System.err.println("Usage: bees "+args.get(0)+" "+p.printExample(ExampleMode.REQUIRED));
         p.printUsage(System.err);
     }
 }
