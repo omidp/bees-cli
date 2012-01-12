@@ -65,58 +65,55 @@ public class CommandService {
     }
     
 
-    public ICommand getCommand(String name) {
-        try {
-            return performModernLookup(name);
-        } catch (Exception e) {
-            // not sure what the exception handling policy in this CLI. Hiding it under the rug for now
-            throw new RuntimeException(e);
-        }
-    }
-
     /**
      * Look up a command from Guice, if necessary by downloading it.
-     *
-     * TODO: eventually this should be the getCommand() implementation
      */
-    private ICommand performModernLookup(String name) throws Exception {
-        Injector injector = this.injector;
-
-        String[] tokens = name.split(":");
-        if (tokens.length>1) {
-            ArtifactClassLoaderFactory f = artifactClassLoaderFactoryProvider.get();
-            
-            // commands that are not built-in
-            GAV gav = installedPluginList.get(tokens[0]);
-            if (gav != null) {
-                f.add(gav);
-            } else {
-                for (GAV candidate : mapCommandToArtifacts(tokens[0])) {
-                    try {
-                        f.add(candidate);
-                        gav = candidate;
-                        break;  // found it!
-                    } catch (RepositoryException e) {
-                        if (verbose.isVerbose())
-                            e.printStackTrace();
-                        // keep on trying the next candidate
-                    }
-                }
-                if (gav==null)
-                    return null;    // couldn't find it
-
-                installedPluginList.put(tokens[0], gav);
-            }
-            ClassLoader cl = f.createClassLoader(extClassLoader);
-            injector = createChildModule(injector, cl);
-        }
-        Provider<ICommand> p;
+    public ICommand getCommand(String name) throws IOException {
         try {
-            p = injector.getProvider(Key.get(ICommand.class, AnnotationLiteral.of(CLICommand.class, name)));
-        } catch (ConfigurationException e) {
-            return null; // failed to find the command
+            Injector injector = this.injector;
+
+            String[] tokens = name.split(":");
+            if (tokens.length>1) {
+                ArtifactClassLoaderFactory f = artifactClassLoaderFactoryProvider.get();
+
+                // commands that are not built-in
+                GAV gav = installedPluginList.get(tokens[0]);
+                if (gav != null) {
+                    f.add(gav);
+                } else {
+                    for (GAV candidate : mapCommandToArtifacts(tokens[0])) {
+                        try {
+                            f.add(candidate);
+                            gav = candidate;
+                            break;  // found it!
+                        } catch (RepositoryException e) {
+                            if (verbose.isVerbose())
+                                e.printStackTrace();
+                            // keep on trying the next candidate
+                        }
+                    }
+                    if (gav==null)
+                        return null;    // couldn't find it
+
+                    installedPluginList.put(tokens[0], gav);
+                }
+                ClassLoader cl = f.createClassLoader(extClassLoader);
+                injector = createChildModule(injector, cl);
+            }
+            Provider<ICommand> p;
+            try {
+                p = injector.getProvider(Key.get(ICommand.class, AnnotationLiteral.of(CLICommand.class, name)));
+            } catch (ConfigurationException e) {
+                return null; // failed to find the command
+            }
+            return p.get();
+        } catch (RepositoryException e) {
+            throw (IOException)new IOException("Failed to resolve command: "+name).initCause(e);
+        } catch (IOException e) {
+            throw (IOException)new IOException("Failed to resolve command: "+name).initCause(e);
+        } catch (InstantiationException e) {
+            throw (IOException)new IOException("Failed to resolve command: "+name).initCause(e);
         }
-        return p.get();
     }
 
     private Injector createChildModule(Injector parent, final ClassLoader cl) throws InstantiationException, IOException {
