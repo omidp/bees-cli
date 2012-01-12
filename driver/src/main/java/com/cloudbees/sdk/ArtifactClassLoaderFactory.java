@@ -2,15 +2,14 @@ package com.cloudbees.sdk;
 
 import com.google.inject.Provider;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
+import org.sonatype.aether.RepositoryException;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;
-import org.sonatype.aether.collection.DependencyCollectionException;
 import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.graph.DependencyNode;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.DependencyRequest;
-import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.filter.ScopeDependencyFilter;
 import org.sonatype.aether.util.graph.PreorderNodeListGenerator;
@@ -56,14 +55,14 @@ public class ArtifactClassLoaderFactory {
     /**
      * Adds the given artifact and all its transitive dependencies to the classpath.
      */
-    public void add(GAV gav) throws DependencyCollectionException, DependencyResolutionException, IOException {
+    public void add(GAV gav) throws RepositoryException, IOException {
         add(toArtifact(gav));
     }
     
     /**
      * Adds the given artifact and all its transitive dependencies to the classpath.
      */
-    public void add(Artifact a) throws DependencyCollectionException, DependencyResolutionException, IOException {
+    public void add(Artifact a) throws RepositoryException, IOException {
         MavenRepositorySystemSession session = sessionFactory.get();
         Dependency dependency = new Dependency(a, "compile");
 
