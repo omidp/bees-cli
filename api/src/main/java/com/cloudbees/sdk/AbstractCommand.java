@@ -24,6 +24,9 @@ public abstract class AbstractCommand extends ICommand {
         try {
             p.parseArgument(args.subList(1,args.size()));
             return main();
+        } catch (AbortException e) {
+            System.err.println(e.getMessage());
+            return 1;
         } catch (CmdLineException e) {
             System.err.println(e.getMessage());
             p.printUsage(System.err);
