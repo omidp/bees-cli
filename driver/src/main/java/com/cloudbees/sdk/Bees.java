@@ -36,6 +36,8 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
+ * Entry point to the Bees CLI.
+ *
  * @Author: Fabian Donze
  * @author Kohsuke Kawaguchi
  */
@@ -67,9 +69,7 @@ public class Bees {
     private final ClassLoader extLoader;
 
     public Bees() throws PlexusContainerException, ComponentLookupException, IOException {
-        if (!initialize(false)) {
-            throw new RuntimeException("");
-        }
+        initialize(false);
 
         // first, we create a small IoC container for the sole purpose of loading extensions
         DefaultPlexusContainer boot = new DefaultPlexusContainer(
@@ -141,100 +141,100 @@ public class Bees {
         return r;
     }
 
-    private boolean initialize(boolean force) {
-        boolean ok = true;
+    private void initialize(boolean force) throws IOException {
         LocalRepository localRepository = new LocalRepository();
-        try {
-            String beesRepoPath = localRepository.getRepositoryPath();
-            File lastCheckFile = new File(beesRepoPath, "sdk/check.dat");
-            boolean checkVersion = true;
-            Properties p = new Properties();
-            if (!force && Helper.loadProperties(lastCheckFile, p)) {
-                String str = p.getProperty("last");
-                if (str != null) {
-                    long interval = System.currentTimeMillis() - Long.parseLong(str);
-                    if (interval < CHECK_INTERVAL)
-                        checkVersion = false;
-                }
+        
+        String beesRepoPath = localRepository.getRepositoryPath();
+        File lastCheckFile = new File(beesRepoPath, "sdk/check.dat");
+        boolean checkVersion = true;
+        Properties p = new Properties();
+        if (!force && Helper.loadProperties(lastCheckFile, p)) {
+            String str = p.getProperty("last");
+            if (str != null) {
+                long interval = System.currentTimeMillis() - Long.parseLong(str);
+                if (interval < CHECK_INTERVAL)
+                    checkVersion = false;
             }
-
-            if (checkVersion) {
-                // Check SDK version
-                File sdkConfig = localRepository.getURLAsFile(app_template_xml_url + app_template_xml_name,
-                        app_template_xml_name, app_template_xml_desc);
-                Document doc = XmlHelper.readXMLFromFile(sdkConfig.getCanonicalPath());
-                Element e = doc.getDocumentElement();
-                String availVersion = e.getAttribute("version");
-                String minVersion = e.getAttribute("min-version");
-
-                VersionNumber currentVersion = version;
-                VersionNumber availableVersion = new VersionNumber(availVersion);
-                VersionNumber minimunVersion = new VersionNumber(minVersion);
-
-                if (currentVersion.compareTo(availableVersion) < 0) {
-                    System.out.println();
-                    if (currentVersion.compareTo(minimunVersion) < 0) {
-                        System.err.println("Error - This version of the CloudBees SDK is no longer supported," + "" +
-                                " please install the latest version (" + availVersion + ").");
-                        ok = false;
-                    } else if (currentVersion.compareTo(availableVersion) < 0) {
-                        System.out.println("A new version of the CloudBees SDK is available, please install the latest version (" + availVersion + ").");
-                    }
-
-                    String hRef = e.getAttribute("href");
-
-                    String homeRef = "www.cloudbees.com";
-                    NodeList nodeList = e.getElementsByTagName("link");
-                    for (int i = 0; i < nodeList.getLength(); i++) {
-                        Node node = nodeList.item(i);
-                        NamedNodeMap nodeMap = node.getAttributes();
-                        Node rel = nodeMap.getNamedItem("rel");
-                        Node href = nodeMap.getNamedItem("href");
-                        if (rel != null && rel.getTextContent().trim().equalsIgnoreCase("alternate") && href != null) {
-                            homeRef = href.getTextContent();
-                        }
-                    }
-                    System.out.println("  SDK home:     " + homeRef);
-                    System.out.println("  SDK download: " + hRef);
-                    System.out.println();
-                }
-
-                if (ok) {
-                    // Get libraries
-                    NodeList libsNL = e.getElementsByTagName("libraries");
-                    Node libsNode = null;
-                    if (libsNL.getLength() > 0) {
-                        libsNode = libsNL.item(0);
-                    }
-                    if (libsNode != null) {
-                        NodeList libNL = e.getElementsByTagName("library");
-                        for (int i = 0; i < libNL.getLength(); i++) {
-                            Node node = libNL.item(i);
-                            NamedNodeMap nodeMap = node.getAttributes();
-                            Node nameNode = nodeMap.getNamedItem("name");
-                            Node refNode = nodeMap.getNamedItem("href");
-                            if (nameNode != null && refNode != null) {
-                                String libName = nameNode.getTextContent();
-                                String libUrlString = refNode.getTextContent().trim();
-                                int idx = libUrlString.lastIndexOf('/');
-                                String libFileName = libUrlString.substring(idx);
-                                localRepository.getURLAsFile(libUrlString, "lib" + libFileName, libName);
-                            }
-                        }
-                    }
-
-                    // Update last check
-                    p.setProperty("last", ""+System.currentTimeMillis());
-                    lastCheckFile.getParentFile().mkdirs();
-                    FileOutputStream fos = new FileOutputStream(lastCheckFile);
-                    p.store(fos, "CloudBees SDK check");
-                    fos.close();
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("ERROR: Cannot retrieve SDK version info: " + e.getMessage());
         }
-        return ok;
+
+        if (checkVersion) {
+            // Check SDK version
+            File sdkConfig = getURLAsFile(localRepository,app_template_xml_url + app_template_xml_name,
+                    app_template_xml_name, app_template_xml_desc);
+            Document doc = XmlHelper.readXMLFromFile(sdkConfig.getCanonicalPath());
+            Element e = doc.getDocumentElement();
+            String availVersion = e.getAttribute("version");
+            String minVersion = e.getAttribute("min-version");
+
+            VersionNumber currentVersion = version;
+            VersionNumber availableVersion = new VersionNumber(availVersion);
+            VersionNumber minimunVersion = new VersionNumber(minVersion);
+
+            if (currentVersion.compareTo(availableVersion) < 0) {
+                System.out.println();
+                if (currentVersion.compareTo(minimunVersion) < 0) {
+                    throw new AbortException("Error - This version of the CloudBees SDK is no longer supported," + "" +
+                            " please install the latest version (" + availVersion + ").");
+                } else if (currentVersion.compareTo(availableVersion) < 0) {
+                    System.out.println("A new version of the CloudBees SDK is available, please install the latest version (" + availVersion + ").");
+                }
+
+                String hRef = e.getAttribute("href");
+
+                String homeRef = "www.cloudbees.com";
+                NodeList nodeList = e.getElementsByTagName("link");
+                for (int i = 0; i < nodeList.getLength(); i++) {
+                    Node node = nodeList.item(i);
+                    NamedNodeMap nodeMap = node.getAttributes();
+                    Node rel = nodeMap.getNamedItem("rel");
+                    Node href = nodeMap.getNamedItem("href");
+                    if (rel != null && rel.getTextContent().trim().equalsIgnoreCase("alternate") && href != null) {
+                        homeRef = href.getTextContent();
+                    }
+                }
+                System.out.println("  SDK home:     " + homeRef);
+                System.out.println("  SDK download: " + hRef);
+                System.out.println();
+            }
+
+            // Get libraries
+            NodeList libsNL = e.getElementsByTagName("libraries");
+            Node libsNode = null;
+            if (libsNL.getLength() > 0) {
+                libsNode = libsNL.item(0);
+            }
+            if (libsNode != null) {
+                NodeList libNL = e.getElementsByTagName("library");
+                for (int i = 0; i < libNL.getLength(); i++) {
+                    Node node = libNL.item(i);
+                    NamedNodeMap nodeMap = node.getAttributes();
+                    Node nameNode = nodeMap.getNamedItem("name");
+                    Node refNode = nodeMap.getNamedItem("href");
+                    if (nameNode != null && refNode != null) {
+                        String libName = nameNode.getTextContent();
+                        String libUrlString = refNode.getTextContent().trim();
+                        int idx = libUrlString.lastIndexOf('/');
+                        String libFileName = libUrlString.substring(idx);
+                        getURLAsFile(localRepository, libUrlString, "lib" + libFileName, libName);
+                    }
+                }
+            }
+
+            // Update last check
+            p.setProperty("last", ""+System.currentTimeMillis());
+            lastCheckFile.getParentFile().mkdirs();
+            FileOutputStream fos = new FileOutputStream(lastCheckFile);
+            p.store(fos, "CloudBees SDK check");
+            fos.close();
+        }
+    }
+    
+    private File getURLAsFile(LocalRepository localRepository,String urlStr, String localCachePath, String description) throws IOException {
+        try {
+            return localRepository.getURLAsFile(urlStr,localCachePath,description);
+        } catch (Exception e) {
+            throw (IOException)new IOException("Failed to retrieve "+urlStr).initCause(e);
+        }
     }
 
     public static void main(String[] args)  throws Exception {
