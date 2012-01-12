@@ -8,29 +8,13 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provider;
-import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.sonatype.aether.RepositoryException;
-import org.sonatype.aether.RepositorySystem;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.collection.CollectRequest;
-import org.sonatype.aether.collection.DependencyCollectionException;
-import org.sonatype.aether.graph.Dependency;
-import org.sonatype.aether.graph.DependencyNode;
-import org.sonatype.aether.repository.RemoteRepository;
-import org.sonatype.aether.resolution.DependencyRequest;
-import org.sonatype.aether.resolution.DependencyResolutionException;
-import org.sonatype.aether.resolution.DependencyResult;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
-import org.sonatype.aether.util.filter.ScopeDependencyFilter;
-import org.sonatype.aether.util.graph.PreorderNodeListGenerator;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -42,7 +26,10 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- *
+ * Looks up a {@link ICommand} object from the command name.
+ * 
+ * @author Fabiane Donze
+ * @author Kohsuke Kawaguchi
  */
 @Singleton
 public class CommandService {
@@ -54,16 +41,16 @@ public class CommandService {
     private Injector injector;
 
     @Inject
-    private RepositorySystem rs;
-
+    Provider<ArtifactClassLoaderFactory> artifactClassLoaderFactoryProvider;
+    
     @Inject
     private InstalledPluginList installedPluginList;
     
     @Inject
     private Verbose verbose;
 
-    @Inject
-    Provider<MavenRepositorySystemSession> sessionFactory;
+    @Inject @ExtensionClassLoader
+    private ClassLoader extClassLoader;
     
     @Inject
     public CommandService(DirectoryStructure structure) {
@@ -90,13 +77,14 @@ public class CommandService {
 
         String[] tokens = name.split(":");
         if (tokens.length>1) {
+            ArtifactClassLoaderFactory f = artifactClassLoaderFactoryProvider.get();
+            
             // commands that are not built-in
             GAV gav = installedPluginList.get(tokens[0]);
             if (gav==null) {
                 for (GAV candidate : mapCommandToArtifacts(tokens[0])) {
                     try {
-                        resolveDependencies(toArtifact(candidate));
-                        gav = candidate;
+                        f.add(candidate);
                         break;  // found it!
                     } catch (RepositoryException e) {
                         if (verbose.isVerbose())
@@ -107,11 +95,10 @@ public class CommandService {
                 if (gav==null)
                     return null;    // couldn't find it
 
-                installedPluginList.put(tokens[0],gav);
+                installedPluginList.put(tokens[0], gav);
             }
-            DependencyResult r = resolveDependencies(toArtifact(gav));
-    
-            URLClassLoader cl = createClassLoader(r.getRoot());
+            f.add(gav);
+            URLClassLoader cl = f.createClassLoader(extClassLoader);
             injector = createChildModule(injector, cl);
         }
         Provider<ICommand> p;
@@ -161,44 +148,6 @@ public class CommandService {
         );
     }
     
-    private static Artifact toArtifact(GAV gav) {
-        return new DefaultArtifact(gav.groupId,gav.artifactId,"jar",gav.version);
-    }
-
-    private DependencyResult resolveDependencies(Artifact a) throws DependencyCollectionException, DependencyResolutionException {
-        MavenRepositorySystemSession session = sessionFactory.get();
-        Dependency dependency = new Dependency(a, "compile");
-
-        CollectRequest collectRequest = new CollectRequest();
-        collectRequest.setRoot(dependency);
-        configureRepositories(collectRequest);
-        DependencyNode node = rs.collectDependencies(session, collectRequest).getRoot();
-
-        DependencyRequest dependencyRequest = new DependencyRequest(node,new ScopeDependencyFilter("provided"));
-
-        return rs.resolveDependencies(session, dependencyRequest);
-    }
-
-    /**
-     * Creates a {@link ClassLoader} that loads all the resolved artifacts.
-     */
-    private URLClassLoader createClassLoader(DependencyNode root) throws MalformedURLException {
-        PreorderNodeListGenerator nlg = new PreorderNodeListGenerator();
-        root.accept(nlg);
-
-        List<URL> urls = new ArrayList<URL>();
-        for (File jar : nlg.getFiles()) {
-            urls.add(jar.toURI().toURL());
-        }
-        LOGGER.fine("Resolved: "+urls);
-        return new URLClassLoader(urls.toArray(new URL[urls.size()]),getClass().getClassLoader());
-    }
-
-    private void configureRepositories(CollectRequest req) {
-        // TODO: we want to hit our repository, too
-        req.addRepository(new RemoteRepository("central", "default", "http://repo1.maven.org/maven2/"));
-    }
-
     public String getHelp(URL helpTitleFile, String groupHelp, boolean all) {
         StringBuilder sb = new StringBuilder(getHelpTitle(helpTitleFile));
 

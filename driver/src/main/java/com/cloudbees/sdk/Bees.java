@@ -18,6 +18,7 @@ import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.sonatype.aether.RepositoryException;
 import org.sonatype.aether.impl.VersionResolver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -32,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * @Author: Fabian Donze
@@ -57,21 +59,53 @@ public class Bees {
      */
     private final Injector injector;
 
+    /**
+     * {@link ClassLoader} that includes all the bees CLI components + extensions.
+     * 
+     * @see ExtensionClassLoader
+     */
+    private final ClassLoader extLoader;
+
     public Bees() throws PlexusContainerException, ComponentLookupException, IOException {
         if (!initialize(false)) {
             throw new RuntimeException("");
         }
-        
-        DefaultPlexusContainer plexus = new DefaultPlexusContainer(
+
+        // first, we create a small IoC container for the sole purpose of loading extensions
+        DefaultPlexusContainer boot = new DefaultPlexusContainer(
             new DefaultContainerConfiguration(),
-            new ExtensionFinder(getClass().getClassLoader()),
+            new AbstractModule() {
+                @Override
+                protected void configure() {
+                    bind(VersionResolver.class).to(VersionResolverImpl.class);
+                    bind(MavenRepositorySystemSession.class).toProvider(RepositorySessionProvider.class);
+                }
+            }
+        );
+        Injector injector = boot.lookup(Injector.class);
+        ArtifactClassLoaderFactory f = injector.getInstance(ArtifactClassLoaderFactory.class);
+
+        // and we load all the extensions
+        for (GAV gav : injector.getInstance(InstalledExtensionList.class).values()) {
+            try {
+                f.add(gav);
+            } catch (RepositoryException e) {
+                throw (IOException)new IOException("Failed to resolve extension: "+gav).initCause(e);
+            }
+        }
+
+        extLoader = f.createClassLoader(getClass().getClassLoader());
+
+
+        // then we use that to build a bigger container that includes all the things that make a bees CLI.
+        injector = injector.createChildInjector(
+            new ExtensionFinder(extLoader),
             new AntTargetCommandsModule(),
             new AbstractModule() {
                 @Override
                 protected void configure() {
+                    bind(ClassLoader.class).annotatedWith(AnnotationLiteral.of(ExtensionClassLoader.class)).toInstance(extLoader);
                     alias("getsource", "app:getsource");
-                    bind(VersionResolver.class).to(VersionResolverImpl.class);
-                    bind(MavenRepositorySystemSession.class).toProvider(RepositorySessionProvider.class);
                 }
 
                 private void alias(String from, final String to) {
@@ -85,8 +119,8 @@ public class Bees {
             }
         );
 
-        injector = plexus.lookup(Injector.class);
-        injector.injectMembers(this);
+        this.injector = injector;
+        this.injector.injectMembers(this);
     }
 
     public int run(String[] args) throws Exception {
@@ -267,4 +301,6 @@ public class Bees {
 
         return new VersionNumber("0");
     }
+
+    private static final Logger LOGGER = Logger.getLogger(Bees.class.getName());
 }
