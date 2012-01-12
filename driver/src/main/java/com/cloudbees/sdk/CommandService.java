@@ -16,7 +16,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -81,10 +80,13 @@ public class CommandService {
             
             // commands that are not built-in
             GAV gav = installedPluginList.get(tokens[0]);
-            if (gav==null) {
+            if (gav != null) {
+                f.add(gav);
+            } else {
                 for (GAV candidate : mapCommandToArtifacts(tokens[0])) {
                     try {
                         f.add(candidate);
+                        gav = candidate;
                         break;  // found it!
                     } catch (RepositoryException e) {
                         if (verbose.isVerbose())
@@ -97,8 +99,7 @@ public class CommandService {
 
                 installedPluginList.put(tokens[0], gav);
             }
-            f.add(gav);
-            URLClassLoader cl = f.createClassLoader(extClassLoader);
+            ClassLoader cl = f.createClassLoader(extClassLoader);
             injector = createChildModule(injector, cl);
         }
         Provider<ICommand> p;
@@ -110,7 +111,7 @@ public class CommandService {
         return p.get();
     }
 
-    private Injector createChildModule(Injector parent, final URLClassLoader cl) throws InstantiationException, IOException {
+    private Injector createChildModule(Injector parent, final ClassLoader cl) throws InstantiationException, IOException {
         final List<Module> childModules = new ArrayList<Module>();
         childModules.add(new ExtensionFinder(cl) {
             @Override
@@ -155,7 +156,10 @@ public class CommandService {
         
         for (Binding<?> b : injector.getAllBindings().values()) {
             if (ICommand.class==b.getKey().getTypeLiteral().getRawType()) {
-                Class<?> cmd = b.getProvider().get().getClass();
+                Object o = b.getProvider().get();
+                if (o==null)    continue;
+
+                Class<?> cmd = o.getClass();
                 if (!cmd.isAnnotationPresent(CLICommand.class))
                     continue;
                 CommandGroup group = cmd.getAnnotation(CommandGroup.class);
