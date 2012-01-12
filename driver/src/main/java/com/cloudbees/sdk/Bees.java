@@ -132,6 +132,8 @@ public class Bees {
             // no such command. print help
             System.err.println("No such command: "+args[0]);
             command = commandService.getCommand("help");
+            if (command==null)
+                throw new Error("Panic: command "+args[0]+" was not found, and even the help command was not found");
         }
 
         int r = command.run(Arrays.asList(args));
