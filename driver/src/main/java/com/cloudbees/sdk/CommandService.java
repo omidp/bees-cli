@@ -4,12 +4,14 @@ import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CLIModule;
 import com.cloudbees.sdk.cli.CommandDescription;
 import com.cloudbees.sdk.cli.CommandGroup;
+import com.cloudbees.sdk.cli.CommandResolver;
 import com.cloudbees.sdk.cli.DirectoryStructure;
 import com.cloudbees.sdk.cli.Experimental;
 import com.cloudbees.sdk.cli.ICommand;
 import com.cloudbees.sdk.cli.Verbose;
 import com.cloudbees.sdk.extensibility.AnnotationLiteral;
 import com.cloudbees.sdk.extensibility.ExtensionFinder;
+import com.cloudbees.sdk.extensibility.ExtensionPointList;
 import com.google.inject.Binding;
 import com.google.inject.ConfigurationException;
 import com.google.inject.Injector;
@@ -60,6 +62,9 @@ public class CommandService {
     private ClassLoader extClassLoader;
     
     @Inject
+    private ExtensionPointList<CommandResolver> resolvers;
+    
+    @Inject
     public CommandService(DirectoryStructure structure) {
         this.structure = structure;
     }
@@ -72,7 +77,12 @@ public class CommandService {
         try {
             Injector injector = this.injector;
 
-            // CommandResolvers take precedence
+            // CommandResolvers take precedence over our default
+            for (CommandResolver cr : resolvers.list(injector)) {
+                ICommand cmd = cr.resolve(name);
+                if (cmd!=null)
+                    return cmd;
+            }
 
             String[] tokens = name.split(":");
             if (tokens.length>1) {

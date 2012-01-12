@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.ProviderException;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -114,7 +115,11 @@ public class Bees {
                     bind(ICommand.class).annotatedWith(AnnotationLiteral.of(CLICommand.class,from))
                         .toProvider(new Provider<ICommand>() {
                             public ICommand get() {
-                                return commandService.getCommand(to);
+                                try {
+                                    return commandService.getCommand(to);
+                                } catch (IOException e) {
+                                    throw new ProviderException(e);
+                                }
                             }
                         });
                 }
