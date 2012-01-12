@@ -35,6 +35,7 @@ import java.util.Properties;
 
 /**
  * @Author: Fabian Donze
+ * @author Kohsuke Kawaguchi
  */
 public class Bees {
     /**
@@ -200,12 +201,6 @@ public class Bees {
             System.err.println("ERROR: Cannot retrieve SDK version info: " + e.getMessage());
         }
         return ok;
-    }
-
-    private static float getVersion(String version)
-    {
-        String[] numbers = version.split("\\.");
-        return Float.parseFloat(numbers[0]) + Float.parseFloat(numbers[1])/100 + Float.parseFloat(numbers[2])/10000;
     }
 
     public static void main(String[] args)  throws Exception {
