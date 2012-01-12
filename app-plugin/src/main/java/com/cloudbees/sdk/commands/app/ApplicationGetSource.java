@@ -16,7 +16,7 @@ import java.io.FileInputStream;
  * @Author: Fabian Donze
  */
 @CommandGroup("Application")
-@CLICommand("getsource")
+@CLICommand("app:getsource")
 @Experimental
 public class ApplicationGetSource extends ApplicationBase {
     private Boolean force;
