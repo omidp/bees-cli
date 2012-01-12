@@ -1,6 +1,8 @@
 package com.cloudbees.sdk;
 
 import com.cloudbees.api.BeesClientException;
+import com.cloudbees.sdk.cli.CLICommand;
+import com.cloudbees.sdk.cli.ICommand;
 import com.cloudbees.sdk.commands.AntTargetCommandsModule;
 import com.cloudbees.sdk.extensibility.AnnotationLiteral;
 import com.cloudbees.sdk.extensibility.ExtensionFinder;

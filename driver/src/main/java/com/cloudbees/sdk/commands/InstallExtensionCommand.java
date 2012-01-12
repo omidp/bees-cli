@@ -1,10 +1,10 @@
 package com.cloudbees.sdk.commands;
 
-import com.cloudbees.sdk.AbstractCommand;
+import com.cloudbees.sdk.cli.AbstractCommand;
 import com.cloudbees.sdk.ArtifactClassLoaderFactory;
-import com.cloudbees.sdk.CLICommand;
-import com.cloudbees.sdk.CommandDescription;
-import com.cloudbees.sdk.Experimental;
+import com.cloudbees.sdk.cli.CLICommand;
+import com.cloudbees.sdk.cli.CommandDescription;
+import com.cloudbees.sdk.cli.Experimental;
 import com.cloudbees.sdk.GAV;
 import com.cloudbees.sdk.InstalledExtensionList;
 import com.google.inject.Provider;

@@ -1,8 +1,9 @@
-package com.cloudbees.sdk;
+package com.cloudbees.sdk.cli;
 
 import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.BeesClientConfiguration;
 import com.cloudbees.api.StaxClient;
+import com.cloudbees.sdk.UserConfiguration;
 import com.cloudbees.sdk.utils.Helper;
 import com.cloudbees.sdk.utils.PasswordHelper;
 import org.kohsuke.args4j.Option;

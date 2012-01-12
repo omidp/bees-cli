@@ -3,9 +3,9 @@ package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.ApplicationGetSourceUrlResponse;
 import com.cloudbees.api.StaxClient;
-import com.cloudbees.sdk.CLICommand;
-import com.cloudbees.sdk.CommandGroup;
-import com.cloudbees.sdk.Experimental;
+import com.cloudbees.sdk.cli.CLICommand;
+import com.cloudbees.sdk.cli.CommandGroup;
+import com.cloudbees.sdk.cli.Experimental;
 import com.cloudbees.sdk.utils.Helper;
 import com.staxnet.appserver.utils.ZipHelper;
 

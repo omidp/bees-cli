@@ -1,5 +1,6 @@
-package com.cloudbees.sdk;
+package com.cloudbees.sdk.cli;
 
+import com.cloudbees.sdk.AbortException;
 import org.kohsuke.args4j.ClassParser;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;

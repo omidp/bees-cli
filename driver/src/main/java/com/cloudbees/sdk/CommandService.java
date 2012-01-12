@@ -1,5 +1,13 @@
 package com.cloudbees.sdk;
 
+import com.cloudbees.sdk.cli.CLICommand;
+import com.cloudbees.sdk.cli.CLIModule;
+import com.cloudbees.sdk.cli.CommandDescription;
+import com.cloudbees.sdk.cli.CommandGroup;
+import com.cloudbees.sdk.cli.DirectoryStructure;
+import com.cloudbees.sdk.cli.Experimental;
+import com.cloudbees.sdk.cli.ICommand;
+import com.cloudbees.sdk.cli.Verbose;
 import com.cloudbees.sdk.extensibility.AnnotationLiteral;
 import com.cloudbees.sdk.extensibility.ExtensionFinder;
 import com.google.inject.Binding;

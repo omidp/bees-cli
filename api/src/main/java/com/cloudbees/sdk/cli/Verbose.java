@@ -1,4 +1,4 @@
-package com.cloudbees.sdk;
+package com.cloudbees.sdk.cli;
 
 import org.kohsuke.args4j.Option;
 

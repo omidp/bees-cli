@@ -2,9 +2,9 @@ package com.cloudbees.sdk.commands;
 
 
 import com.cloudbees.api.StaxClient;
-import com.cloudbees.sdk.CLICommand;
-import com.cloudbees.sdk.CommandGroup;
-import com.cloudbees.sdk.Experimental;
+import com.cloudbees.sdk.cli.CLICommand;
+import com.cloudbees.sdk.cli.CommandGroup;
+import com.cloudbees.sdk.cli.Experimental;
 
 /**
  * @Author: Fabian Donze

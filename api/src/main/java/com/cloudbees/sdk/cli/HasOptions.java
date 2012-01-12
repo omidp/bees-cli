@@ -1,4 +1,4 @@
-package com.cloudbees.sdk;
+package com.cloudbees.sdk.cli;
 
 /**
  * @author Kohsuke Kawaguchi

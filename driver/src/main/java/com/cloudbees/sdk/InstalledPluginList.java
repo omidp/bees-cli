@@ -1,5 +1,6 @@
 package com.cloudbees.sdk;
 
+import com.cloudbees.sdk.cli.DirectoryStructure;
 import com.cloudbees.sdk.utils.PersistedGAVStore;
 
 import javax.inject.Inject;

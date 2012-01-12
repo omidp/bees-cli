@@ -1,4 +1,4 @@
-package com.cloudbees.sdk;
+package com.cloudbees.sdk.cli;
 
 import com.cloudbees.sdk.extensibility.ExtensionImplementation;
 import com.google.inject.BindingAnnotation;

@@ -1,4 +1,4 @@
-package com.cloudbees.sdk;
+package com.cloudbees.sdk.cli;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

@@ -1,7 +1,7 @@
 package com.cloudbees.sdk.commands;
 
-import com.cloudbees.sdk.CLICommand;
-import com.cloudbees.sdk.ICommand;
+import com.cloudbees.sdk.cli.CLICommand;
+import com.cloudbees.sdk.cli.ICommand;
 import com.cloudbees.sdk.extensibility.AnnotationLiteral;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;

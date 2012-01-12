@@ -1,9 +1,9 @@
 package com.cloudbees.sdk.commands;
 
 import com.cloudbees.api.StaxClient;
-import com.cloudbees.sdk.BeesClientFactory;
-import com.cloudbees.sdk.ICommand;
-import com.cloudbees.sdk.Verbose;
+import com.cloudbees.sdk.cli.BeesClientFactory;
+import com.cloudbees.sdk.cli.ICommand;
+import com.cloudbees.sdk.cli.Verbose;
 import com.staxnet.repository.LocalRepository;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;

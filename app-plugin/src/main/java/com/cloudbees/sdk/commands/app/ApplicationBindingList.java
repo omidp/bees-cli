@@ -3,9 +3,8 @@ package com.cloudbees.sdk.commands.app;
 import com.cloudbees.api.ResourceBindingInfo;
 import com.cloudbees.api.ServiceResourceBindingListResponse;
 import com.cloudbees.api.StaxClient;
-import com.cloudbees.sdk.CLICommand;
-import com.cloudbees.sdk.CommandGroup;
-import com.cloudbees.sdk.commands.app.ApplicationBase;
+import com.cloudbees.sdk.cli.CLICommand;
+import com.cloudbees.sdk.cli.CommandGroup;
 
 import java.util.Map;
 

@@ -6,6 +6,8 @@ import com.cloudbees.api.AccountListResponse;
 import com.cloudbees.api.BeesClientConfiguration;
 import com.cloudbees.api.BeesClientException;
 import com.cloudbees.api.StaxClient;
+import com.cloudbees.sdk.cli.DirectoryStructure;
+import com.cloudbees.sdk.cli.Verbose;
 import com.cloudbees.sdk.utils.Helper;
 import com.cloudbees.sdk.utils.PasswordHelper;
 
