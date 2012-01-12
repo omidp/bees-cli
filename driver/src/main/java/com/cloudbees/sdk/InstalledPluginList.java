@@ -7,11 +7,10 @@ import javax.inject.Singleton;
 import java.io.File;
 
 /**
- * Encapsulates access to the persisted installed plugins list (~/.bees/plugins-list/)
+ * Encapsulates access to the persisted installed plugins list (~/.bees/plugins/)
  *
  * This table is a look up table from command prefix (such as 'app' or 'db') to its implementation.
- * 
- * 
+ *
  * @author Kohsuke Kawaguchi
  */
 @Singleton
@@ -21,6 +20,6 @@ public class InstalledPluginList extends PersistedGAVStore {
 
     @Override
     protected File getStorageDirectory() {
-        return new File(structure.localRepository, "plugins-list");
+        return new File(structure.localRepository, "plugins");
     }
 }
