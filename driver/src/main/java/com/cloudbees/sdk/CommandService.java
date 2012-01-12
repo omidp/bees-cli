@@ -72,6 +72,8 @@ public class CommandService {
         try {
             Injector injector = this.injector;
 
+            // CommandResolvers take precedence
+
             String[] tokens = name.split(":");
             if (tokens.length>1) {
                 ArtifactClassLoaderFactory f = artifactClassLoaderFactoryProvider.get();
