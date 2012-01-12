@@ -93,7 +93,7 @@ public class ArtifactClassLoaderFactory {
      * Creates a classloader from all the artifacts resolved thus far.
      */
     public ClassLoader createClassLoader(ClassLoader parent) {
-        if (urls.isEmpty()) return parent;  // nothing to load
+        // if (urls.isEmpty()) return parent;  // nothing to load // this makes it hard to differentiate newly loaded stuff from what's already visible
         return new URLClassLoader(urls.toArray(new URL[urls.size()]),getClass().getClassLoader());
     }
 
