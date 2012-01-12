@@ -94,7 +94,7 @@ public class ArtifactClassLoaderFactory {
      */
     public ClassLoader createClassLoader(ClassLoader parent) {
         // if (urls.isEmpty()) return parent;  // nothing to load // this makes it hard to differentiate newly loaded stuff from what's already visible
-        return new URLClassLoader(urls.toArray(new URL[urls.size()]),getClass().getClassLoader());
+        return new URLClassLoader(urls.toArray(new URL[urls.size()]),parent);
     }
 
     private Artifact toArtifact(GAV gav) {
