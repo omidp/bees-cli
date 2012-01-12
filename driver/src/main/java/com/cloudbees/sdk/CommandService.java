@@ -107,7 +107,7 @@ public class CommandService {
                 if (gav==null)
                     return null;    // couldn't find it
 
-                installedPluginList.add(tokens[0],gav);
+                installedPluginList.put(tokens[0],gav);
             }
             DependencyResult r = resolveDependencies(toArtifact(gav));
     

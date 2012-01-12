@@ -13,6 +13,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+    <dependency>
       <groupId>net.stax</groupId>
       <artifactId>stax-api-client</artifactId>
       <version>1.0.20110919-SNAPSHOT</version>
