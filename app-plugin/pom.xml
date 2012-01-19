@@ -21,6 +21,11 @@
       <artifactId>stax-appserver</artifactId>
       <version>1.0.20110919-SNAPSHOT</version>
     </dependency>
+    <dependency><!-- used by create command -->
+      <groupId>net.stax</groupId>
+      <artifactId>stax-appgen</artifactId>
+      <version>1.0.20110131-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>com.cloudbees.sdk</groupId>
       <artifactId>bees-driver</artifactId>

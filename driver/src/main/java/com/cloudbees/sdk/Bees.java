@@ -109,6 +109,7 @@ public class Bees {
                 protected void configure() {
                     bind(ClassLoader.class).annotatedWith(AnnotationLiteral.of(ExtensionClassLoader.class)).toInstance(extLoader);
                     alias("getsource", "app:getsource");
+                    alias("create", "app:create");
                 }
 
                 private void alias(String from, final String to) {

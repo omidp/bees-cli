@@ -14,7 +14,7 @@ import java.util.Properties;
  * @Author: Fabian Donze
  */
 @CommandGroup("Project")
-@CLICommand("create")
+@CLICommand("app:create")
 public class ProjectCreate extends Command {
     /**
      * The id of the stax application.
