@@ -1,6 +1,7 @@
 package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.ApplicationDeleteResponse;
+import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
@@ -42,7 +43,7 @@ public class ApplicationDelete extends ApplicationBase {
             }
         }
 
-        StaxClient client = getStaxClient();
+        BeesClient client = getStaxClient();
         ApplicationDeleteResponse res = client.applicationDelete(appid);
 
         if (isTextOutput()) {

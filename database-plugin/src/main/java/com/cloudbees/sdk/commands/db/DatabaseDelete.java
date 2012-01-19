@@ -1,7 +1,7 @@
 package com.cloudbees.sdk.commands.db;
 
+import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.DatabaseDeleteResponse;
-import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.commands.Command;
@@ -63,7 +63,7 @@ public class DatabaseDelete extends Command {
             }
         }
 
-        StaxClient client = getStaxClient();
+        BeesClient client = getStaxClient();
         DatabaseDeleteResponse res = client.databaseDelete(databaseName);
 
         if (isTextOutput()) {

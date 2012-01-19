@@ -59,7 +59,7 @@ public class ApplicationConfigUpdate extends ApplicationBase {
     @Override
     protected boolean execute() throws Exception {
         String appId = getAppId();
-        StaxClient client = getStaxClient();
+        StaxClient client = getStaxClient(StaxClient.class);
         ApplicationConfigUpdateResponse res = client.applicationConfigUpdate(appId, getSettings());
         if (isTextOutput()) {
             System.out.println("application - " + appId + " updated: " + res.getStatus());

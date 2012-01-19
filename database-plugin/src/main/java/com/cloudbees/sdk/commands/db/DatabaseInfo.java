@@ -1,6 +1,6 @@
 package com.cloudbees.sdk.commands.db;
 
-import com.cloudbees.api.StaxClient;
+import com.cloudbees.api.BeesClient;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.commands.Command;
@@ -63,7 +63,7 @@ public class DatabaseInfo extends Command {
     protected boolean execute() throws Exception {
         initDataBaseName();
 
-        StaxClient client = getStaxClient();
+        BeesClient client = getStaxClient();
         boolean fetchPassword = password == null ? false : true;
         com.cloudbees.api.DatabaseInfo res = client.databaseInfo(databaseName, fetchPassword);
 

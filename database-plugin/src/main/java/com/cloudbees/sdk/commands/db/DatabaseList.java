@@ -1,8 +1,8 @@
 package com.cloudbees.sdk.commands.db;
 
 
+import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.DatabaseListResponse;
-import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.commands.Command;
@@ -39,8 +39,8 @@ public class DatabaseList extends Command {
 
     @Override
     protected boolean execute() throws Exception {
-        StaxClient client = getStaxClient();
-        DatabaseListResponse res = client.databaseList(getAccount());
+        BeesClient client = getStaxClient();
+        DatabaseListResponse res = client.databaseList(); // TODO: ability to pass in account is missing from BeesClient getAccount());
 
         if (isTextOutput()) {
             System.out.println("Databases:");

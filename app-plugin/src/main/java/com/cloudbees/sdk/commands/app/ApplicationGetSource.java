@@ -2,6 +2,7 @@ package com.cloudbees.sdk.commands.app;
 
 
 import com.cloudbees.api.ApplicationGetSourceUrlResponse;
+import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
@@ -49,7 +50,7 @@ public class ApplicationGetSource extends ApplicationBase {
 
     @Override
     protected boolean execute() throws Exception {
-        StaxClient client = getStaxClient();
+        BeesClient client = getStaxClient();
         ApplicationGetSourceUrlResponse res = client.applicationGetSourceUrl(getAppId());
 
         if (res.getUrl() != null) {

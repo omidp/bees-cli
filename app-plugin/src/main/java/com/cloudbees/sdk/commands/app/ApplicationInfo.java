@@ -1,6 +1,7 @@
 package com.cloudbees.sdk.commands.app;
 
 
+import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
@@ -20,7 +21,7 @@ public class ApplicationInfo extends ApplicationBase {
 
     @Override
     protected boolean execute() throws Exception {
-        StaxClient client = getStaxClient();
+        BeesClient client = getStaxClient();
         com.cloudbees.api.ApplicationInfo res = client.applicationInfo(getAppId());
         if (isTextOutput()) {
             System.out.println( "Application     : " + res.getId());

@@ -40,7 +40,7 @@ public class ApplicationResourceList extends ApplicationResourceBase {
 
     @Override
     protected boolean execute() throws Exception {
-        StaxClient client = getStaxClient();
+        StaxClient client = getStaxClient(StaxClient.class);
         ServiceResourceListResponse res = client.serviceResourceList(getServiceName(), getAccount(), getType());
         List<ServiceResourceInfo> resources = new ArrayList<ServiceResourceInfo>();
         for (ServiceResourceInfo resource: res.getResources()) {

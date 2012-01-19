@@ -1,6 +1,7 @@
 package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.ApplicationDeployArchiveResponse;
+import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.HashWriteProgress;
 import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.cli.CLICommand;
@@ -238,7 +239,7 @@ public class ApplicationDeploy extends Command {
         environment = StringHelper.join(appConfig.getAppliedEnvironments().toArray(new String[0]), ",");
 
         System.out.println(String.format("Deploying application %s (environment: %s): %s", appid, environment, deployFile));
-        StaxClient client = getStaxClient();
+        BeesClient client = getStaxClient();
 
         boolean deployDelta = (delta == null || delta.equalsIgnoreCase("true")) ? true : false;
 

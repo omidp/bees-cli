@@ -1,7 +1,7 @@
 package com.cloudbees.sdk.commands.db;
 
+import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.DatabaseSetPasswordResponse;
-import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.commands.Command;
@@ -65,7 +65,7 @@ public class DatabaseSet extends Command {
 
     @Override
     protected boolean execute() throws Exception {
-        StaxClient client = getStaxClient();
+        BeesClient client = getStaxClient();
         DatabaseSetPasswordResponse res = client.databaseSetPassword(getDatabaseName(), getPassword());
 
         if (isTextOutput()) {

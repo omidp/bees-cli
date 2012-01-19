@@ -1,6 +1,7 @@
 package com.cloudbees.sdk.commands.app;
 
 
+import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
@@ -37,7 +38,7 @@ public class ApplicationTail extends ApplicationBase {
     protected boolean execute() throws Exception {
         if (logname == null) logname = "server";
 
-        StaxClient client = getStaxClient();
+        BeesClient client = getStaxClient();
         client.tailLog(getAppId(), logname, System.out);
 
         return true;

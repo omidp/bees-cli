@@ -21,7 +21,7 @@ public class ApplicationBindingList extends ApplicationBase {
 
     @Override
     protected boolean execute() throws Exception {
-        StaxClient client = getStaxClient();
+        StaxClient client = getStaxClient(StaxClient.class);
         ServiceResourceBindingListResponse res = client.resourceBindingList("cb-app", getAppId());
         if (isTextOutput()) {
             System.out.println("Applications bindings:");

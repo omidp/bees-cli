@@ -44,7 +44,7 @@ public class ApplicationList extends Command {
 
     @Override
     protected boolean execute() throws Exception {
-        StaxClient client = getStaxClient();
+        StaxClient client = getStaxClient(StaxClient.class);
         ApplicationListResponse res = client.applicationList(getAccount());
 
         if (isTextOutput()) {

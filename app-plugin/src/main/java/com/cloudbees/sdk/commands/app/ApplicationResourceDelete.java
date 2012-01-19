@@ -51,7 +51,7 @@ public class ApplicationResourceDelete extends ApplicationResourceBase {
             }
         }
 
-        StaxClient client = getStaxClient();
+        StaxClient client = getStaxClient(StaxClient.class);
         ServiceResourceDeleteResponse res = client.serviceResourceDelete(getServiceName(), resource);
         if (isTextOutput()) {
             if(res.isDeleted()) {

@@ -50,7 +50,7 @@ public class ApplicationResourceCreate extends ApplicationResourceBase {
     protected boolean execute() throws Exception {
         String appid = getAppId();
 
-        StaxClient client = getStaxClient();
+        StaxClient client = getStaxClient(StaxClient.class);
         ServiceResourceInfo resource = client.serviceResourceCreate(getServiceName(), getAccount(), getResourceType(), getParameterName(), getSettings());
         if (bind()) {
             ServiceResourceBindResponse res2 = client.resourceBind(getServiceName(), appid, resource.getService(), resource.getId(), resource.getId(), new HashMap<String, String>());

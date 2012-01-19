@@ -65,7 +65,7 @@ public class ApplicationScale extends ApplicationBase {
         else
             quantity = -Integer.parseInt(getDown());
 
-        StaxClient client = getStaxClient();
+        StaxClient client = getStaxClient(StaxClient.class);
         ApplicationScaleResponse res = client.applicationScale(appid, quantity);
         if (isTextOutput()) {
             System.out.println("application - " + appid + ": " + res.getStatus());
