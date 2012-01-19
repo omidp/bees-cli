@@ -8,7 +8,7 @@ import com.cloudbees.sdk.cli.CommandGroup;
  * @Author: Fabian Donze
  */
 @CommandGroup("Project")
-@CLICommand("deploy")
+@CLICommand("ant:deploy")
 public class ProjectDeploy extends AntTarget {
     private String message;
     private String environment;

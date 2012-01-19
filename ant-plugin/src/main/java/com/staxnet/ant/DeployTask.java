@@ -14,6 +14,7 @@ import com.cloudbees.api.ApplicationDeployArchiveResponse;
 import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.BeesClientConfiguration;
 import com.cloudbees.api.HashWriteProgress;
+import com.cloudbees.sdk.utils.Helper;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
@@ -139,7 +140,7 @@ public class DeployTask extends Task {
             BeesClient client = new BeesClient(beesClientConfiguration);
             client.setVerbose(verbose);
 
-            AppConfig appConfig = getAppConfig(deployFile, ApplicationHelper
+            AppConfig appConfig = getAppConfig(deployFile, Helper
                     .getEnvironmentList(environment), new String[] { "deploy" });
             if (appId == null || appId.equals("")) {
                 appId = appConfig.getApplicationId();

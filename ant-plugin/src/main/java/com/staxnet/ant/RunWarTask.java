@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 
+import com.cloudbees.sdk.utils.Helper;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
@@ -112,7 +113,7 @@ public class RunWarTask extends Task {
     
     private String[] getEnvironments()
     {
-        String[] environment = ApplicationHelper.getEnvironmentList(this.environment, "run");
+        String[] environment = Helper.getEnvironmentList(this.environment, "run");
         return environment;
     }
 }

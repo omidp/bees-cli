@@ -23,7 +23,7 @@ public class AntTargetCommandsModule extends AbstractModule implements CLIModule
     }
     
     private void target(final String antTaget) {
-        bind(ICommand.class).annotatedWith(AnnotationLiteral.of(CLICommand.class, antTaget))
+        bind(ICommand.class).annotatedWith(AnnotationLiteral.of(CLICommand.class, "ant:"+antTaget))
             .toProvider(new Provider<ICommand>() {
                 public ICommand get() {
                     return new AntTarget(antTaget);

@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.servlet.ServletException;
 
+import com.cloudbees.sdk.utils.Helper;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
@@ -119,7 +120,7 @@ public class RunTask extends Task {
             envString = appConfig.getDefaultEnvironment();
         }
         
-        String[] environment = ApplicationHelper.getEnvironmentList(envString, "run");
+        String[] environment = Helper.getEnvironmentList(envString, "run");
         return environment;
     }
 }

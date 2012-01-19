@@ -5,7 +5,7 @@ import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.commands.Command;
 import com.cloudbees.sdk.utils.Helper;
-import com.staxnet.ant.StringHelper;
+import com.staxnet.appserver.utils.StringHelper;
 
 import java.io.IOException;
 

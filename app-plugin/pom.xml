@@ -18,6 +18,11 @@
     </dependency>
     <dependency>
       <groupId>net.stax</groupId>
+      <artifactId>stax-appserver-core</artifactId>
+      <version>1.0.20110919-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>net.stax</groupId>
       <artifactId>stax-appserver</artifactId>
       <version>1.0.20110919-SNAPSHOT</version>
     </dependency>

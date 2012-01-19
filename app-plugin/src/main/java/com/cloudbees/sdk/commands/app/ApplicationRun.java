@@ -5,7 +5,6 @@ import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.commands.Command;
 import com.cloudbees.sdk.utils.Helper;
 import com.cloudbees.utils.ZipHelper;
-import com.staxnet.ant.ApplicationHelper;
 import com.staxnet.appserver.IAppServerConfiguration;
 import com.staxnet.appserver.StaxSdkAppServer;
 import com.staxnet.appserver.WarBasedServerConfiguration;
@@ -189,7 +188,7 @@ public class ApplicationRun extends Command {
             envString = appConfig.getDefaultEnvironment();
         }
 
-        String[] environment = ApplicationHelper.getEnvironmentList(envString, "run");
+        String[] environment = Helper.getEnvironmentList(envString, "run");
         return environment;
     }
 

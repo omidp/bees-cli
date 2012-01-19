@@ -9,7 +9,10 @@
 
   <groupId>org.cloudbees.sdk.plugins</groupId>
   <artifactId>ant-plugin</artifactId>
-  <name>Commands that deal with local build.xml</name>
+  <name>Bees CLI Ant plugin</name>
+  <description>
+    This plugin adds ant:* command that helps projects built by Ant.
+  </description>
 
   <dependencies>
     <dependency>
@@ -18,7 +21,16 @@
       <version>${parent.version}</version>
       <scope>provided</scope>
     </dependency>
-
+    <dependency>
+      <groupId>net.stax</groupId>
+      <artifactId>stax-appserver-core</artifactId>
+      <version>1.0.20110919-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>net.stax</groupId>
+      <artifactId>stax-appserver</artifactId>
+      <version>1.0.20110919-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.ant</groupId>
       <artifactId>ant</artifactId>

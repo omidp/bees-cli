@@ -8,7 +8,7 @@ import com.cloudbees.sdk.cli.CommandGroup;
  * @Author: Fabian Donze
  */
 @CommandGroup("Project")
-@CLICommand("run")
+@CLICommand("ant:run")
 public class ProjectRun extends AntTarget {
     private String port;
     private String environment;

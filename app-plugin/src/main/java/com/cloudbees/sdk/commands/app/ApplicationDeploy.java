@@ -3,12 +3,10 @@ package com.cloudbees.sdk.commands.app;
 import com.cloudbees.api.ApplicationDeployArchiveResponse;
 import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.HashWriteProgress;
-import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.commands.Command;
 import com.cloudbees.sdk.utils.Helper;
-import com.staxnet.ant.ApplicationHelper;
 import com.staxnet.appserver.config.AppConfig;
 import com.staxnet.appserver.config.AppConfigHelper;
 import com.staxnet.appserver.utils.StringHelper;
@@ -222,7 +220,7 @@ public class ApplicationDeploy extends Command {
 
         // deploy the application to the server
         AppConfig appConfig = getAppConfig(  deployFile,
-                                                    ApplicationHelper.getEnvironmentList(environment),
+                                                    Helper.getEnvironmentList(environment),
                                                     new String[]{"deploy"});
         initAppId(appConfig);
 
