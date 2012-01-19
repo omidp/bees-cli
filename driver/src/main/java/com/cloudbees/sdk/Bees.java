@@ -209,29 +209,6 @@ public class Bees {
                 System.out.println();
             }
 
-            // Get libraries
-            NodeList libsNL = e.getElementsByTagName("libraries");
-            Node libsNode = null;
-            if (libsNL.getLength() > 0) {
-                libsNode = libsNL.item(0);
-            }
-            if (libsNode != null) {
-                NodeList libNL = e.getElementsByTagName("library");
-                for (int i = 0; i < libNL.getLength(); i++) {
-                    Node node = libNL.item(i);
-                    NamedNodeMap nodeMap = node.getAttributes();
-                    Node nameNode = nodeMap.getNamedItem("name");
-                    Node refNode = nodeMap.getNamedItem("href");
-                    if (nameNode != null && refNode != null) {
-                        String libName = nameNode.getTextContent();
-                        String libUrlString = refNode.getTextContent().trim();
-                        int idx = libUrlString.lastIndexOf('/');
-                        String libFileName = libUrlString.substring(idx);
-                        getURLAsFile(localRepository, libUrlString, "lib" + libFileName, libName);
-                    }
-                }
-            }
-
             // Update last check
             p.setProperty("last", ""+System.currentTimeMillis());
             lastCheckFile.getParentFile().mkdirs();
@@ -275,14 +252,6 @@ public class Bees {
             System.err.println("ERROR: " + e.getMessage());
             System.exit(2);
         }
-    }
-
-    private static boolean isVerbose(String[] args) {
-        for (String arg: args) {
-            if (arg.equalsIgnoreCase("-v") || arg.equalsIgnoreCase("--verbose"))
-                return true;
-        }
-        return false;
     }
 
     /**
