@@ -3,9 +3,9 @@ package com.cloudbees.sdk;
 import com.cloudbees.api.AccountInfo;
 import com.cloudbees.api.AccountKeysResponse;
 import com.cloudbees.api.AccountListResponse;
+import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.BeesClientConfiguration;
 import com.cloudbees.api.BeesClientException;
-import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.cli.DirectoryStructure;
 import com.cloudbees.sdk.cli.Verbose;
 import com.cloudbees.sdk.utils.Helper;
@@ -110,7 +110,7 @@ public class UserConfiguration {
                     beesClientConfiguration.setProxyUser(paramaters.get("proxy.user"));
                     beesClientConfiguration.setProxyPassword(paramaters.get("proxy.password"));
 
-                    StaxClient staxClient = new StaxClient(beesClientConfiguration);
+                    BeesClient staxClient = new BeesClient(beesClientConfiguration);
                     staxClient.setVerbose(verbose.isVerbose());
                     AccountKeysResponse response = staxClient.accountKeys(domain, email, password);
                     key = response.getKey();
@@ -119,7 +119,7 @@ public class UserConfiguration {
                     // Get the default account name
                     beesClientConfiguration.setApiKey(key);
                     beesClientConfiguration.setSecret(secret);
-                    staxClient = new StaxClient(beesClientConfiguration);
+                    staxClient = new BeesClient(beesClientConfiguration);
                     staxClient.setVerbose(verbose.isVerbose());
                     AccountListResponse listResponse = staxClient.accountList();
                     List<AccountInfo> accounts = listResponse.getAccounts();
