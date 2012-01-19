@@ -12,6 +12,16 @@
 
   <dependencies>
     <dependency>
+      <groupId>net.stax</groupId>
+      <artifactId>stax-api-client</artifactId>
+      <version>1.0.20110919-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>net.stax</groupId>
+      <artifactId>stax-appserver</artifactId>
+      <version>1.0.20110919-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>com.cloudbees.sdk</groupId>
       <artifactId>bees-driver</artifactId>
       <version>${parent.version}</version>

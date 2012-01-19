@@ -1,6 +1,6 @@
 package com.cloudbees.sdk.commands.app;
 
-import com.cloudbees.sdk.services.ServiceBase;
+import com.cloudbees.sdk.commands.services.ServiceBase;
 import com.cloudbees.sdk.utils.Helper;
 
 import java.io.IOException;
@@ -52,7 +52,7 @@ public abstract class ApplicationResourceBase extends ServiceBase {
     protected String getAppId() throws IOException
     {
         if (appid == null || appid.equals("")) {
-            appid = Helper.getArchiveApplicationId();
+            appid = AppHelper.getArchiveApplicationId();
         }
 
         if (appid == null || appid.equals(""))

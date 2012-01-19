@@ -1,6 +1,6 @@
 package com.cloudbees.sdk.commands;
 
-import com.cloudbees.api.StaxClient;
+import com.cloudbees.api.BeesClient;
 import com.cloudbees.sdk.cli.BeesClientFactory;
 import com.cloudbees.sdk.cli.ICommand;
 import com.cloudbees.sdk.cli.Verbose;
@@ -510,10 +510,14 @@ public abstract class Command extends ICommand {
     }
 
 
-    protected StaxClient getStaxClient() throws IOException {
+    protected BeesClient getStaxClient() throws IOException {
         return beesClientFactory.get();
     }
 
+    protected <T extends BeesClient> T getStaxClient(Class<T> type) throws IOException {
+        return beesClientFactory.get(type);
+    }
+    
     private boolean isHelp(String[] args) {
          return (args != null && args.length > 0 && args[0].equalsIgnoreCase("help"));
      }

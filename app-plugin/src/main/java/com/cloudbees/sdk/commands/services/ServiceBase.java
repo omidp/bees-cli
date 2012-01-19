@@ -1,4 +1,4 @@
-package com.cloudbees.sdk.services;
+package com.cloudbees.sdk.commands.services;
 
 import com.cloudbees.api.ServiceSubscriptionInfo;
 import com.cloudbees.sdk.commands.Command;

@@ -55,7 +55,7 @@ public abstract class  ApplicationBase extends Command {
     protected String getAppId() throws IOException
     {
         if (appid == null || appid.equals("")) {
-            appid = Helper.getArchiveApplicationId();
+            appid = AppHelper.getArchiveApplicationId();
         }
 
         if (appid == null || appid.equals(""))

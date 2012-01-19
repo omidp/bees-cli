@@ -2,7 +2,6 @@ package com.cloudbees.sdk.cli;
 
 import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.BeesClientConfiguration;
-import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.UserConfiguration;
 import com.cloudbees.sdk.utils.Helper;
 import com.cloudbees.sdk.utils.PasswordHelper;
@@ -10,6 +9,7 @@ import org.kohsuke.args4j.Option;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -55,7 +55,11 @@ public class BeesClientFactory implements HasOptions {
     @Inject
     Verbose verbose;
 
-    public StaxClient get() throws IOException {
+    public BeesClient get() throws IOException {
+        return get(BeesClient.class);
+    }
+    
+    public <T extends BeesClient> T get(Class<T> clientType) throws IOException {
         Properties properties = getConfigProperties();
 
         if (key==null)      key = properties.getProperty("bees.api.key");
@@ -77,9 +81,19 @@ public class BeesClientFactory implements HasOptions {
         beesClientConfiguration.setProxyUser(properties.getProperty("bees.api.proxy.user", proxyUser));
         beesClientConfiguration.setProxyPassword(properties.getProperty("bees.api.proxy.password", proxyPassword));
 
-        StaxClient staxClient = new StaxClient(beesClientConfiguration);
-        staxClient.setVerbose(verbose.isVerbose());
-        return  staxClient;
+        try {
+            T client = clientType.getConstructor(BeesClientConfiguration.class).newInstance(beesClientConfiguration);
+            client.setVerbose(verbose.isVerbose());
+            return  client;
+        } catch (InstantiationException e) {
+            throw (Error)new InstantiationError().initCause(e);
+        } catch (IllegalAccessException e) {
+            throw (Error)new IllegalAccessError().initCause(e);
+        } catch (InvocationTargetException e) {
+            throw (Error)new InstantiationError().initCause(e);
+        } catch (NoSuchMethodException e) {
+            throw (Error)new InstantiationError().initCause(e);
+        }
     }
 
     private void initCredentials() throws IOException

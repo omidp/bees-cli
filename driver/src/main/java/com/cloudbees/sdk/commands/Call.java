@@ -1,7 +1,7 @@
 package com.cloudbees.sdk.commands;
 
 
-import com.cloudbees.api.StaxClient;
+import com.cloudbees.api.BeesClient;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.cli.Experimental;
@@ -37,7 +37,7 @@ public class Call extends Command {
     @Override
     protected boolean execute() throws Exception {
         // call the application to the server
-        StaxClient client = getStaxClient();
+        BeesClient client = getStaxClient();
 
         client.mainCall(otherArgs);
 

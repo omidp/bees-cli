@@ -11,9 +11,9 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 
 import com.cloudbees.api.ApplicationDeployArchiveResponse;
+import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.BeesClientConfiguration;
 import com.cloudbees.api.HashWriteProgress;
-import com.cloudbees.api.StaxClient;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
@@ -136,7 +136,7 @@ public class DeployTask extends Task {
             beesClientConfiguration.setProxyUser(getAttributeValue("api.proxy.user", getProject().getProperty("beesConfig.bees.api.proxy.user"), false));
             beesClientConfiguration.setProxyPassword(getAttributeValue("api.proxy.password", getProject().getProperty("beesConfig.bees.api.proxy.password"), false));
 
-            StaxClient client = new StaxClient(beesClientConfiguration);
+            BeesClient client = new BeesClient(beesClientConfiguration);
             client.setVerbose(verbose);
 
             AppConfig appConfig = getAppConfig(deployFile, ApplicationHelper

@@ -4,7 +4,7 @@ import com.cloudbees.api.ServiceResourceBindResponse;
 import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
-import com.cloudbees.sdk.services.ServiceBase;
+import com.cloudbees.sdk.commands.services.ServiceBase;
 import com.cloudbees.sdk.utils.Helper;
 
 import java.io.IOException;
@@ -118,7 +118,7 @@ public class ApplicationBind extends ServiceBase {
         // force resourceId input if not specified
         getResourceId();
 
-        StaxClient client = getStaxClient();
+        StaxClient client = getStaxClient(StaxClient.class);
         ServiceResourceBindResponse res = client.resourceBind("cb-app", getAppid(), getServiceName(), getResourceId(), getAlias(), getSettings());
         if (isTextOutput()) {
 //            System.out.println("Message: " + res.getMessage());
@@ -131,7 +131,7 @@ public class ApplicationBind extends ServiceBase {
     private void initAppId() throws IOException
     {
         if (appid == null || appid.equals("")) {
-            appid = Helper.getArchiveApplicationId();
+            appid = AppHelper.getArchiveApplicationId();
         }
 
         if (appid == null || appid.equals(""))
