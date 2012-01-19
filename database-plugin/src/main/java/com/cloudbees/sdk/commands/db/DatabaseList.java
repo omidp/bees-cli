@@ -40,7 +40,7 @@ public class DatabaseList extends Command {
     @Override
     protected boolean execute() throws Exception {
         BeesClient client = getStaxClient();
-        DatabaseListResponse res = client.databaseList(); // TODO: ability to pass in account is missing from BeesClient getAccount());
+        DatabaseListResponse res = client.databaseList(getAccount());
 
         if (isTextOutput()) {
             System.out.println("Databases:");
