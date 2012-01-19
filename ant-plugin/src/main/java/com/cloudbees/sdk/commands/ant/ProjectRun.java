@@ -1,4 +1,4 @@
-package com.cloudbees.sdk.commands;
+package com.cloudbees.sdk.commands.ant;
 
 
 import com.cloudbees.sdk.cli.CLICommand;

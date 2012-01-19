@@ -2,6 +2,7 @@ package com.cloudbees.sdk.commands;
 
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
+import com.cloudbees.sdk.commands.Command;
 import com.cloudbees.sdk.utils.Helper;
 import com.staxnet.repository.LocalRepository;
 import net.stax.appgen.AppGenerator;
@@ -14,7 +15,7 @@ import java.util.Properties;
  * @Author: Fabian Donze
  */
 @CommandGroup("Project")
-@CLICommand("app:create")
+@CLICommand("create")
 public class ProjectCreate extends Command {
     /**
      * The id of the stax application.

@@ -1,5 +1,6 @@
-package com.cloudbees.sdk.commands;
+package com.cloudbees.sdk.commands.ant;
 
+import com.cloudbees.sdk.commands.Command;
 import org.apache.tools.ant.DefaultLogger;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;

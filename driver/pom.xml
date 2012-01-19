@@ -28,10 +28,10 @@
       </exclusions>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.ant</groupId>
-      <artifactId>ant</artifactId>
-      <version>1.8.2</version>
+    <dependency><!-- used by create command -->
+      <groupId>net.stax</groupId>
+      <artifactId>stax-appgen</artifactId>
+      <version>1.0.20110131-SNAPSHOT</version>
     </dependency>
 
     <dependency>

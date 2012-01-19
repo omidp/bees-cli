@@ -3,7 +3,6 @@ package com.cloudbees.sdk;
 import com.cloudbees.api.BeesClientException;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.ICommand;
-import com.cloudbees.sdk.commands.AntTargetCommandsModule;
 import com.cloudbees.sdk.extensibility.AnnotationLiteral;
 import com.cloudbees.sdk.extensibility.ExtensionFinder;
 import com.cloudbees.sdk.utils.Helper;
@@ -103,13 +102,16 @@ public class Bees {
         // then we use that to build a bigger container that includes all the things that make a bees CLI.
         injector = injector.createChildInjector(
             new ExtensionFinder(extLoader),
-            new AntTargetCommandsModule(),
             new AbstractModule() {
                 @Override
                 protected void configure() {
                     bind(ClassLoader.class).annotatedWith(AnnotationLiteral.of(ExtensionClassLoader.class)).toInstance(extLoader);
                     alias("getsource", "app:getsource");
-                    alias("create", "app:create");
+
+                    // if we start supporting project sniffing, these commands should be defined somewhere and then delegate to ant:*, maven:*, gradle:*, ...
+                    alias("ant", "ant:ant");
+                    alias("deploy", "ant:deploy");
+                    alias("run", "ant:run");
                 }
 
                 private void alias(String from, final String to) {

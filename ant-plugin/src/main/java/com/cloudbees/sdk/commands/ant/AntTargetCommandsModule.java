@@ -1,8 +1,10 @@
-package com.cloudbees.sdk.commands;
+package com.cloudbees.sdk.commands.ant;
 
 import com.cloudbees.sdk.cli.CLICommand;
+import com.cloudbees.sdk.cli.CLIModule;
 import com.cloudbees.sdk.cli.ICommand;
 import com.cloudbees.sdk.extensibility.AnnotationLiteral;
+import com.cloudbees.sdk.extensibility.Extension;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
 
@@ -11,7 +13,8 @@ import com.google.inject.Provider;
  * 
  * @author Kohsuke Kawaguchi
  */
-public class AntTargetCommandsModule extends AbstractModule {
+@Extension
+public class AntTargetCommandsModule extends AbstractModule implements CLIModule {
     @Override
     protected void configure() {
         target("clean");

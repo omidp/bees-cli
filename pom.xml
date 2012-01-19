@@ -27,6 +27,7 @@
     <module>admin-plugin</module>
     <module>static-plugin</module>
     <module>database-plugin</module>
+    <module>ant-plugin</module>
     <module>xwiki-plugin</module>
   </modules>
 
