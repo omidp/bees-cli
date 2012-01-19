@@ -170,7 +170,40 @@ public class CommandService {
         StringBuilder sb = new StringBuilder(getHelpTitle(helpTitleFile));
 
         Map<String,List<Binding<?>>> map = new HashMap<String, List<Binding<?>>>();
-        
+
+        findCommands(all, map, injector);
+
+        for (GAV p : installedPluginList.values()) {
+            try {
+                ArtifactClassLoaderFactory f = artifactClassLoaderFactoryProvider.get();
+                f.add(p);
+                ClassLoader cl = f.createClassLoader(extClassLoader);
+                findCommands(all, map, createChildModule(injector, cl));
+            } catch (Throwable e) {
+                LOGGER.warning("Failed to load "+p);
+            }
+            // if we fail to resolve artifacts for a plugin, move on and try to show help for other plugins
+        }
+
+        for (String group: map.keySet()) {
+            sb.append(NL).append(group).append(" ").append(groupHelp).append(NL);
+            for (Binding<?> b : map.get(group)) {
+                Class<?> cmd = b.getProvider().get().getClass();
+                sb.append("    ").append(cmd.getAnnotation(CLICommand.class).value());
+                CommandDescription description = cmd.getAnnotation(CommandDescription.class);
+                if (description != null)
+                    sb.append("      ").append(description.value()).append(NL);
+                else
+                    sb.append(NL);
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Finds all the commands in the given injector.
+     */
+    private void findCommands(boolean all, Map<String, List<Binding<?>>> map, Injector injector) {
         for (Binding<?> b : injector.getAllBindings().values()) {
             if (ICommand.class==b.getKey().getTypeLiteral().getRawType()) {
                 Object o = b.getProvider().get();
@@ -193,20 +226,6 @@ public class CommandService {
                 list.add(b);
             }
         }
-        
-        for (String group: map.keySet()) {
-            sb.append(NL).append(group).append(" ").append(groupHelp).append(NL);
-            for (Binding<?> b : map.get(group)) {
-                Class<?> cmd = b.getProvider().get().getClass();
-                sb.append("    ").append(cmd.getAnnotation(CLICommand.class).value());
-                CommandDescription description = cmd.getAnnotation(CommandDescription.class);
-                if (description != null)
-                    sb.append("      ").append(description.value()).append(NL);
-                else
-                    sb.append(NL);
-            }
-        }
-        return sb.toString();
     }
 
     private StringBuffer getHelpTitle(URL helpTitleFile) {
