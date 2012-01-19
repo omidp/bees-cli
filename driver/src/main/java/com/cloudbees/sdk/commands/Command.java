@@ -83,6 +83,16 @@ public abstract class Command extends ICommand {
 
     @Override
     public void printHelp(List<String> args) {
+        try {
+            init("bees"/*TODO:get rid of this*/, args.get(0), args.toArray(new String[args.size()]));
+        } catch (Exception e) {
+            // the use of the exception in the init method doesn't differentiate anticipated problems
+            // (such as user error on parameter values) from unanticipated bugs in code. The former
+            // should be handled without stack trace, later should result in a stack trace.
+            // since we can' differentiate them here, I'm err-ing on the ease of diagnostics and
+            // reporting it as unanticipated bug in code
+            throw new Error(e);
+        }
         printHelp();
     }
 
