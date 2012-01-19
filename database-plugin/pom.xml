@@ -8,7 +8,7 @@
   </parent>
 
   <groupId>org.cloudbees.sdk.plugins</groupId>
-  <artifactId>database-plugin</artifactId>
+  <artifactId>db-plugin</artifactId>
   <name>Commands to deal with database services</name>
 
   <dependencies>
