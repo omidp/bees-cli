@@ -1,13 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>com.cloudbees</groupId>
-    <artifactId>cloudbees-internal-parent</artifactId>
-    <version>2</version>
-    <relativePath />
-  </parent>
-
   <groupId>com.cloudbees.sdk</groupId>
   <artifactId>bees-sdk-parent</artifactId>
   <version>1.0-beta-1-SNAPSHOT</version>
@@ -42,6 +35,17 @@
         <filtering>true</filtering>
       </resource>
     </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.2.2</version>
+        <configuration>
+          <mavenExecutorId>forked-path</mavenExecutorId>
+          <useReleaseProfile>false</useReleaseProfile>
+          <arguments>-Pcloudbees-internal-release</arguments>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencyManagement>
@@ -78,16 +82,39 @@
       <id>cloudbees-internal</id>
       <url>https://repo-internal.cloudbees.com</url>
     </repository>
-    <repository><!-- only needed because of draconian checksum policy -->
-      <id>repository-cloudbees.forge.cloudbees.com</id>
-      <url>https://repository-cloudbees.forge.cloudbees.com/snapshot/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
   </repositories>
+
+  <scm>
+    <developerConnection>scm:git:ssh://git@git.cloudbees.com/cloudbees/stax-sdk.git</developerConnection>
+    <connection>scm:git:ssh://git@git.cloudbees.com/cloudbees/stax-sdk.git</connection>
+  </scm>
+
+  <distributionManagement>
+    <repository>
+      <id>cloudbees-private-release</id>
+      <url>dav:https://repository-cloudbees.forge.cloudbees.com/private-release</url>
+    </repository>
+    <snapshotRepository>
+      <id>cloudbees-private-snapshot</id>
+      <url>dav:https://repository-cloudbees.forge.cloudbees.com/private-snapshot</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <profiles>
+    <profile>
+      <id>cloudbees-internal-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-source-plugin</artifactId>
+            <configuration>
+              <!-- do not release source jars -->
+              <attach>false</attach>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
