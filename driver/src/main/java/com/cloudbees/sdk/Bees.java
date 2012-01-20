@@ -36,6 +36,7 @@ import java.io.InputStream;
 import java.security.ProviderException;
 import java.util.Arrays;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -229,6 +230,9 @@ public class Bees {
     }
 
     public static void main(String[] args)  throws Exception {
+        // NettyAsyncHttpProvider prints some INFO-level messages. suppress them
+        Logger.getLogger("com.ning.http.client.providers.netty").setLevel(Level.WARNING);
+
         System.out.println("# CloudBees SDK version: " + version);
         try {
             System.exit(new Bees().run(args));
