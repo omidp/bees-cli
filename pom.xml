@@ -44,6 +44,35 @@
     </resources>
   </build>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>net.stax</groupId>
+        <artifactId>stax-appserver</artifactId>
+        <version>${run-appserver.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.stax</groupId>
+        <artifactId>stax-appserver-core</artifactId>
+        <version>${run-appserver.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.stax</groupId>
+        <artifactId>stax-api-client</artifactId>
+        <version>${run-appserver.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.stax</groupId>
+        <artifactId>stax-appgen</artifactId>
+        <version>${run-appserver.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <properties>
+    <run-appserver.version>1.0-beta-1</run-appserver.version>
+  </properties>
+
   <repositories>
     <repository>
       <id>cloudbees-internal</id>
