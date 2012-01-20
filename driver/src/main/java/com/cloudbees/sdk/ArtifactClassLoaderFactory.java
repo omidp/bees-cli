@@ -48,8 +48,8 @@ public class ArtifactClassLoaderFactory {
      * Sets up repositories we use to resolve artifacts.
      */
     private void configureRepositories(CollectRequest req) {
-        // TODO: we want to hit our repository, too
         req.addRepository(new RemoteRepository("central", "default", "http://repo1.maven.org/maven2/"));
+        req.addRepository(new RemoteRepository("cloudbees-public-release", "default", "https://repository-cloudbees.forge.cloudbees.com/public-release/"));
     }
 
     /**
