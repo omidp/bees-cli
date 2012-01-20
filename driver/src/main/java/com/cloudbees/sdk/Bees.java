@@ -3,6 +3,7 @@ package com.cloudbees.sdk;
 import com.cloudbees.api.BeesClientException;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.ICommand;
+import com.cloudbees.sdk.cli.CommandService;
 import com.cloudbees.sdk.extensibility.AnnotationLiteral;
 import com.cloudbees.sdk.extensibility.ExtensionFinder;
 import com.cloudbees.sdk.utils.Helper;
@@ -80,6 +81,7 @@ public class Bees {
                 @Override
                 protected void configure() {
                     bind(VersionResolver.class).to(VersionResolverImpl.class);
+                    bind(CommandService.class).to(CommandServiceImpl.class);
                     bind(MavenRepositorySystemSession.class).toProvider(RepositorySessionProvider.class);
                 }
             }

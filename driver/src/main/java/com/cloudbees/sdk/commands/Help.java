@@ -3,7 +3,7 @@ package com.cloudbees.sdk.commands;
 import com.cloudbees.sdk.cli.AbstractCommand;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
-import com.cloudbees.sdk.CommandService;
+import com.cloudbees.sdk.CommandServiceImpl;
 import com.cloudbees.sdk.cli.ICommand;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
@@ -20,7 +20,7 @@ import java.util.Collections;
 @CLICommand("help")
 public class Help extends AbstractCommand {
     @Inject
-    CommandService commandService;
+    CommandServiceImpl commandService;
 
     /**
      * Sub-command to retrieve the help

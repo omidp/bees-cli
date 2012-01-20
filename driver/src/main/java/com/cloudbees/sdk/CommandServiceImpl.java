@@ -8,6 +8,7 @@ import com.cloudbees.sdk.cli.CommandResolver;
 import com.cloudbees.sdk.cli.DirectoryStructure;
 import com.cloudbees.sdk.cli.Experimental;
 import com.cloudbees.sdk.cli.ICommand;
+import com.cloudbees.sdk.cli.CommandService;
 import com.cloudbees.sdk.cli.Verbose;
 import com.cloudbees.sdk.extensibility.AnnotationLiteral;
 import com.cloudbees.sdk.extensibility.ExtensionFinder;
@@ -41,7 +42,7 @@ import java.util.logging.Logger;
  * @author Kohsuke Kawaguchi
  */
 @Singleton
-public class CommandService {
+public class CommandServiceImpl implements CommandService {
     static final String NL = System.getProperty("line.separator");
 
     DirectoryStructure structure;
@@ -65,7 +66,7 @@ public class CommandService {
     private ExtensionPointList<CommandResolver> resolvers;
     
     @Inject
-    public CommandService(DirectoryStructure structure) {
+    public CommandServiceImpl(DirectoryStructure structure) {
         this.structure = structure;
     }
     
@@ -128,7 +129,7 @@ public class CommandService {
         }
     }
 
-    private Injector createChildModule(Injector parent, final ClassLoader cl) throws InstantiationException, IOException {
+    protected Injector createChildModule(Injector parent, final ClassLoader cl) throws InstantiationException, IOException {
         final List<Module> childModules = new ArrayList<Module>();
         childModules.add(new ExtensionFinder(cl) {
             @Override
@@ -249,5 +250,5 @@ public class CommandService {
         return sb;
     }
 
-    private static final Logger LOGGER = Logger.getLogger(CommandService.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CommandServiceImpl.class.getName());
 }
