@@ -81,7 +81,6 @@ public class Bees {
                 @Override
                 protected void configure() {
                     bind(VersionResolver.class).to(VersionResolverImpl.class);
-                    bind(CommandService.class).to(CommandServiceImpl.class);
                     bind(MavenRepositorySystemSession.class).toProvider(RepositorySessionProvider.class);
                 }
             }
@@ -107,6 +106,7 @@ public class Bees {
             new AbstractModule() {
                 @Override
                 protected void configure() {
+                    bind(CommandService.class).to(CommandServiceImpl.class);
                     bind(ClassLoader.class).annotatedWith(AnnotationLiteral.of(ExtensionClassLoader.class)).toInstance(extLoader);
                     alias("getsource", "app:getsource");
 
