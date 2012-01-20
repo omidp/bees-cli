@@ -13,15 +13,10 @@
     <module>boot</module>
     <module>driver</module>
     <module>api</module>
-    <module>assembly</module>
 
     <module>app-plugin</module>
-    <module>service-plugin</module>
-    <module>admin-plugin</module>
-    <module>static-plugin</module>
     <module>database-plugin</module>
     <module>ant-plugin</module>
-    <module>xwiki-plugin</module>
   </modules>
 
   <build>
