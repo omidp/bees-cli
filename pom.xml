@@ -88,8 +88,8 @@
   </repositories>
 
   <scm>
-    <developerConnection>scm:git:ssh://git@git.cloudbees.com/cloudbees/stax-sdk.git</developerConnection>
-    <connection>scm:git:ssh://git@git.cloudbees.com/cloudbees/stax-sdk.git</connection>
+    <developerConnection>scm:git:ssh://git@git.cloudbees.com/cloudbees/bees-cli.git</developerConnection>
+    <connection>scm:git:ssh://git@git.cloudbees.com/cloudbees/bees-cli.git</connection>
   </scm>
 
   <distributionManagement>
