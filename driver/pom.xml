@@ -48,28 +48,7 @@
       <version>1.4</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.sonatype.aether</groupId>
-      <artifactId>aether-util</artifactId>
-      <version>${aether.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sonatype.aether</groupId>
-      <artifactId>aether-impl</artifactId>
-      <version>${aether.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sonatype.aether</groupId>
-      <artifactId>aether-connector-file</artifactId>
-      <version>${aether.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sonatype.aether</groupId>
-      <artifactId>aether-connector-asynchttpclient</artifactId>
-      <version>${aether.version}</version>
-    </dependency>
-
-    <dependency>
+   <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-aether-provider</artifactId>
       <version>3.0.3</version>
@@ -95,8 +74,4 @@
       <version>2.0.1</version>
     </dependency>
   </dependencies>
-
-  <properties>
-    <aether.version>1.13</aether.version>
-  </properties>
 </project>
