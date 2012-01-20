@@ -84,13 +84,13 @@
   </dependencyManagement>
 
   <properties>
-    <run-appserver.version>1.0-beta-1</run-appserver.version>
+    <run-appserver.version>1.0-beta-2</run-appserver.version>
   </properties>
 
   <repositories>
     <repository>
-      <id>cloudbees-internal</id>
-      <url>https://repo-internal.cloudbees.com</url>
+      <id>cloudbees-public-release</id>
+      <url>https://repository-cloudbees.forge.cloudbees.com/public-release/</url>
     </repository>
   </repositories>
 
