@@ -101,12 +101,12 @@
 
   <distributionManagement>
     <repository>
-      <id>cloudbees-private-release</id>
-      <url>dav:https://repository-cloudbees.forge.cloudbees.com/private-release</url>
+      <id>cloudbees-public-release</id>
+      <url>dav:https://repository-cloudbees.forge.cloudbees.com/public-release</url>
     </repository>
     <snapshotRepository>
-      <id>cloudbees-private-snapshot</id>
-      <url>dav:https://repository-cloudbees.forge.cloudbees.com/private-snapshot</url>
+      <id>cloudbees-public-snapshot</id>
+      <url>dav:https://repository-cloudbees.forge.cloudbees.com/public-snapshot</url>
     </snapshotRepository>
   </distributionManagement>
 
