@@ -3,7 +3,7 @@
 
   <parent>
     <groupId>com.cloudbees.sdk</groupId>
-    <artifactId>bees-sdk-parent</artifactId>
+    <artifactId>bees-cli-parent</artifactId>
     <version>1.0-beta-1-SNAPSHOT</version>
   </parent>
 
