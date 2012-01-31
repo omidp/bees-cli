@@ -9,7 +9,9 @@ import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Help command.
@@ -37,9 +39,13 @@ public class Help extends AbstractCommand {
 
         if (subCommand!=null)
             cmd = commandService.getCommand(subCommand);
-        if (cmd!=null)
-            cmd.printHelp(Collections.singletonList(subCommand));
-        else
+        if (cmd!=null) {
+            List<String> args = new ArrayList<String>();
+            args.add(subCommand);
+            if (all)
+                args.add("-all");
+            cmd.printHelp(args);
+        } else
             printHelp(all);
 
         return 1;
