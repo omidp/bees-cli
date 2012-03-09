@@ -224,9 +224,17 @@ public class CommandServiceImpl implements CommandService {
                     list = new ArrayList<Binding<?>>();
                     map.put(key, list);
                 }
-                list.add(b);
+                if (!hasBinding(list, b)) list.add(b);
             }
         }
+    }
+
+    private boolean hasBinding(List<Binding<?>> list, Binding binding) {
+        for (Binding b: list) {
+            if (b.getKey().getAnnotation().equals(binding.getKey().getAnnotation()))
+                return true;
+        }
+        return false;
     }
 
     private StringBuffer getHelpTitle(URL helpTitleFile) {

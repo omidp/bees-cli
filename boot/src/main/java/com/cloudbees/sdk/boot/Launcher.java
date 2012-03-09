@@ -75,8 +75,8 @@ public class Launcher {
 
         ArrayList<URL> list = new ArrayList<URL>();
 
-        // Add jars from $BEES.REPO/lib default: [${user.home}/.bees/lib]
-        addJars(new File(getLocalRepository(), "lib"), list);
+        // Add jars from $BEES.REPO/lib1 default: [${user.home}/.bees/lib1]
+        addJars(new File(getLocalRepository(), "lib1"), list);
 
         // Add jars from where the Launcher jar came from
         if (parentFile.isDirectory()) {
