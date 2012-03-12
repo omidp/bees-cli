@@ -1,27 +1,21 @@
 package com.staxnet.ant;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.zip.ZipEntry;
-
 import com.cloudbees.api.ApplicationDeployArchiveResponse;
 import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.BeesClientConfiguration;
 import com.cloudbees.api.HashWriteProgress;
 import com.cloudbees.sdk.utils.Helper;
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
-
 import com.staxnet.appserver.config.AppConfig;
 import com.staxnet.appserver.config.AppConfigHelper;
 import com.staxnet.appserver.utils.ZipHelper;
 import com.staxnet.appserver.utils.ZipHelper.ZipEntryHandler;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
+
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.zip.ZipEntry;
 
 public class DeployTask extends Task {
     private File deployFile;
@@ -113,10 +107,6 @@ public class DeployTask extends Task {
             System.out.println(String.format("application package size: %dMB", mbFileSize));
 
         try {
-            String deployFilePath = deployFile.getAbsolutePath();
-            String srcFilePath = srcFile != null ? srcFile.getAbsolutePath()
-                    : null;
-
             String apiUrl = getAttributeValue("server", null, false);
             if (apiUrl == null) {
                 apiUrl = getProject().getProperty("beesConfig.bees.api.url");
@@ -140,8 +130,7 @@ public class DeployTask extends Task {
             BeesClient client = new BeesClient(beesClientConfiguration);
             client.setVerbose(verbose);
 
-            AppConfig appConfig = getAppConfig(deployFile, Helper
-                    .getEnvironmentList(environment), new String[] { "deploy" });
+            AppConfig appConfig = getAppConfig(deployFile, Helper.getEnvironmentList(environment), new String[] { "deploy" });
             if (appId == null || appId.equals("")) {
                 appId = appConfig.getApplicationId();
 
@@ -167,7 +156,7 @@ public class DeployTask extends Task {
 
             System.out.println(String.format("Deploying application: %s (environment: %s)", appId, environment));
 
-            String archiveType = deployFilePath.endsWith(".war") ? "war" : "ear";
+            String archiveType = deployFile.getName().endsWith(".war") ? "war" : "ear";
 
             delta = getAttributeValue("delta", emptyValueToNull(delta), false);
             boolean deployDelta = (this.delta == null || this.delta.equalsIgnoreCase("true")) && archiveType.equals("war");
@@ -179,12 +168,12 @@ public class DeployTask extends Task {
             System.out.print("Uploading application ");
             if (deployDelta)
                 System.out.print("deltas ");
-            if (srcFilePath != null)
+            if (srcFile != null)
                 System.out.print("+ source ");
             System.out.println("...");
 
             ApplicationDeployArchiveResponse res = client.applicationDeployArchive(appId, environment, message,
-                    deployFilePath, srcFilePath, archiveType, deployDelta, parameters,
+                    deployFile, srcFile, archiveType, deployDelta, parameters,
                     new HashWriteProgress());
             System.out.println("Application " + res.getId() + " deployed: " + res.getUrl());
         } catch (Exception e) {

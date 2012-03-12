@@ -14,13 +14,10 @@ import java.io.IOException;
  */
 @CommandGroup("Database")
 @CLICommand("db:set")
-public class DatabaseSet extends Command {
+public class DatabaseSet extends DatabaseBase {
     private String password;
 
-    private String databaseName;
-
     public DatabaseSet() {
-        setArgumentExpected(1);
     }
 
     protected String getPassword() throws IOException {
@@ -30,20 +27,6 @@ public class DatabaseSet extends Command {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public void setDatabaseName(String databaseName) {
-        this.databaseName = databaseName;
-    }
-
-    protected String getDatabaseName() throws IOException {
-        if (databaseName == null) databaseName = Helper.promptFor("Database name: ", true);
-        return databaseName;
-    }
-
-    @Override
-    protected String getUsageMessage() {
-        return "DATABASE_NAME";
     }
 
     @Override

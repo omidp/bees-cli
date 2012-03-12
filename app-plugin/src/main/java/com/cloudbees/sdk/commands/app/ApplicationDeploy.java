@@ -1,6 +1,7 @@
 package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.ApplicationDeployArchiveResponse;
+import com.cloudbees.api.ApplicationDeployArgs;
 import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.HashWriteProgress;
 import com.cloudbees.sdk.cli.CLICommand;
@@ -83,6 +84,8 @@ public class ApplicationDeploy extends Command {
 
     private String type;
 
+    private Map<String, String> vars = new HashMap<String, String>();
+
     public ApplicationDeploy() {
     }
 
@@ -101,6 +104,7 @@ public class ApplicationDeploy extends Command {
         addOption( "b", "baseDir", true, "Base directory (default: '.')");
         addOption("xd", "descriptorDir", true, "Directory containing application descriptors (default: 'src/main/conf/')");
         addOption("t", "type", true, "deployment container type");
+        addOption( "P", null, true, "Config parameter name=value" );
 
         return true;
     }
@@ -176,6 +180,18 @@ public class ApplicationDeploy extends Command {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Map<String, String> getConfigVariables() {
+        return vars;
+    }
+
+    public void setP(String var) {
+        var = var.trim();
+        int idx = isParameter(var);
+        if (idx > -1) {
+            vars.put(var.substring(0, idx), var.substring(idx+1));
+        }
     }
 
     @Override
@@ -255,19 +271,34 @@ public class ApplicationDeploy extends Command {
         if (parameters.size() > 0)
             System.out.println("Deploy parameters: " + parameters);
 
-        ApplicationDeployArchiveResponse res;
+        Map<String, String> variables = getConfigVariables();
+        if (variables.size() > 0)
+            System.out.println("Deploy variables: " + variables);
+
+        String deployType;
         if(deployFile.getName().endsWith(".war"))
         {
-            res = client.applicationDeployArchive(appid, environment, message,
-                    deployFile.getAbsolutePath(), null, "war", deployDelta, parameters,
-                    new HashWriteProgress());
+            deployType = "war";
         }
         else
         {
-            res = client.applicationDeployArchive(appid, environment, message,
-                    deployFile.getAbsolutePath(), null, "ear", false, parameters,
-                    new HashWriteProgress());
+            deployType = "ear";
+            deployDelta = false;
         }
+
+        ApplicationDeployArgs.Builder argBuilder = new ApplicationDeployArgs
+                .Builder(appid)
+                .environment(environment)
+                .description(message).deployPackage(deployFile, deployType)
+                .withParams(parameters)
+                .withVars(getConfigVariables())
+                .withProgressFeedback(new HashWriteProgress());
+
+        if (deployDelta)
+            argBuilder = argBuilder.withIncrementalDeployment();
+
+        ApplicationDeployArchiveResponse res = client.applicationDeployArchive(argBuilder.build());
+
         if (isTextOutput())
             System.out.println("Application " + res.getId() + " deployed: " + res.getUrl());
         else

@@ -1,5 +1,9 @@
 package com.cloudbees.sdk.commands.app;
 
+import com.cloudbees.api.ApplicationResourceListResponse;
+import com.cloudbees.api.ParameterSettingsInfo;
+import com.cloudbees.api.ResourceSettingsInfo;
+import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.commands.Command;
@@ -10,15 +14,19 @@ import com.staxnet.appserver.StaxSdkAppServer;
 import com.staxnet.appserver.WarBasedServerConfiguration;
 import com.staxnet.appserver.config.AppConfig;
 import com.staxnet.appserver.config.AppConfigHelper;
+import com.staxnet.appserver.config.ResourceConfig;
+import com.thoughtworks.xstream.XStream;
 
-import java.io.File;
+import java.io.*;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 /**
- * @Author: Fabian Donze
+ * @author: Fabian Donze
  */
 @CommandGroup("Application")
 @CLICommand("app:run")
@@ -49,9 +57,38 @@ public class ApplicationRun extends Command {
      */
     private File warFile;
 
+    private Boolean noResourceFetch;
+    private String appid;
+    private String account;
 
     public ApplicationRun() {
         setArgumentExpected(1);
+    }
+
+    protected boolean fetchResources() {
+        return noResourceFetch == null || !noResourceFetch;
+    }
+
+    public void setNoResourceFetch(Boolean noResourceFetch) {
+        this.noResourceFetch = noResourceFetch;
+    }
+
+    public void setAppid(String appid) {
+        this.appid = appid;
+    }
+
+    public String getAppid() {
+        return appid;
+    }
+
+    private String getDefaultDomain() {
+        return getConfigProperties().getProperty("bees.project.app.domain");
+    }
+
+    public String getAccount() throws IOException {
+        if (account == null) account = getDefaultDomain();
+        if (account == null) account = Helper.promptFor("Account name: ", true);
+        return account;
     }
 
     @Override
@@ -62,10 +99,12 @@ public class ApplicationRun extends Command {
     @Override
     protected boolean preParseCommandLine() {
         // add the Options
-        addOption("p", "port", true, "server listen port (default: 8080)");
+        addOption("a", "appid", true, "Resources application ID");
+        addOption(null, "port", true, "server listen port (default: 8080)");
         addOption("e", "environment", true, "Environment configurations to run");
         addOption("t", "tmpDir", true, "Local working directory where temp files can be created (default: 'temp')");
         addOption("xd", "descriptorDir", true, "Directory containing application descriptors (default: 'conf')", true);
+        addOption(null, "noResourceFetch", false, "do not fetch application resources");
 
         return true;
     }
@@ -133,6 +172,7 @@ public class ApplicationRun extends Command {
     boolean cleanWebRoot = false;
     File webRoot = null;
     StaxSdkAppServer server;
+    File appserverXML;
 
     @Override
     protected boolean execute() throws Exception {
@@ -154,6 +194,7 @@ public class ApplicationRun extends Command {
             }
             zipFile.close();
 
+            // Delete on exit
             Helper.deleteDirectoryOnExit(webRoot);
         } else {
             webRoot = warFile;
@@ -163,7 +204,64 @@ public class ApplicationRun extends Command {
         if (!staxWebXml.exists())
             staxWebXml = new File(webRoot, "WEB-INF/stax-web.xml");
 
-        IAppServerConfiguration config = WarBasedServerConfiguration.load(null, webRoot, staxWebXml, getEnvironments(appConfig));
+        StaxClient client = getStaxClient(StaxClient.class);
+
+        String[] environments = getEnvironments(appConfig, environment);
+
+        appserverXML = new File("appserver.xml");
+        if (!appserverXML.exists()) {
+            appserverXML = new File(webRoot, "WEB-INF/cloudbees-appserver.xml");
+            if (appserverXML.exists()) appserverXML.delete();
+        }
+
+        // Create the appserver.xml
+        if (fetchResources() && appid != null) {
+            System.out.println("Get application resources...");
+            ApplicationResourceListResponse res = null;
+            try {
+                res = client.applicationResourceList(getAppId(null, null), null, null, environment);
+
+                if (res.getResources() != null && res.getResources().size() > 0) {
+                    // Generate appserver.xml file
+                    FileOutputStream fos = null;
+                    try {
+                        fos = new FileOutputStream(appserverXML);
+                        XStream xstream = new XStream();
+                        xstream.processAnnotations(ResourceSettingsInfo.class);
+                        xstream.processAnnotations(ParameterSettingsInfo.class);
+                        xstream.alias("appserver", ApplicationResourceListResponse.class);
+                        xstream.addImplicitCollection(ApplicationResourceListResponse.class, "resources");
+                        xstream.toXML(res, fos);
+                    } finally {
+                        if (fos != null)
+                            fos.close();
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("WARNING: Cannot retrieving application resources: " + e.getMessage());
+            }
+        }
+
+        IAppServerConfiguration config = WarBasedServerConfiguration.load(appserverXML, webRoot, staxWebXml, environments);
+
+        if (staxWebXml.exists()) {
+            // Resolve variables
+            String appxml = readFile(staxWebXml);
+            for (Map.Entry<String, String> entry: getSystemProperties(config).entrySet()) {
+                appxml = appxml.replaceAll("\\$\\{" + entry.getKey() + "\\}", entry.getValue());
+            }
+            saveFile(staxWebXml, appxml);
+
+            if (appserverXML.exists()) {
+                appxml = readFile(appserverXML);
+                for (Map.Entry<String, String> entry: getSystemProperties(config).entrySet()) {
+                    appxml = appxml.replaceAll("\\$\\{" + entry.getKey() + "\\}", entry.getValue());
+                }
+                saveFile(appserverXML, appxml);
+            }
+
+            config = WarBasedServerConfiguration.load(appserverXML, webRoot, staxWebXml, environments);
+        }
 
         getWorkDir().mkdirs();
         server = new StaxSdkAppServer(new File(getTmpDir()).getAbsolutePath(),
@@ -176,9 +274,8 @@ public class ApplicationRun extends Command {
         return true;
     }
 
-    private String[] getEnvironments(File staxappxmlFile)
+    private String[] getEnvironments(File staxappxmlFile, String envString)
     {
-        String envString = environment;
         if(envString == null || envString.equals("") && staxappxmlFile != null && staxappxmlFile.exists())
         {
             //load the default environment, and append the run environment
@@ -192,9 +289,80 @@ public class ApplicationRun extends Command {
         return environment;
     }
 
+    protected String getAppId(File configFile, String[] environments) throws IOException
+    {
+        if ((appid == null || appid.equals("")) && configFile != null && configFile.exists()) {
+            FileInputStream fis = new FileInputStream(configFile);
+            AppConfig appConfig = new AppConfig();
+            AppConfigHelper.load(appConfig, fis, null, environments, new String[] { "deploy" });
+            appid = appConfig.getApplicationId();
+            fis.close();
+        }
+
+        if (appid == null || appid.equals(""))
+            appid = Helper.promptForAppId();
+
+        if (appid == null || appid.equals(""))
+            throw new IllegalArgumentException("No application id specified");
+
+        String[] parts = appid.split("/");
+        if (parts.length < 2)
+            appid = getAccount() + "/" + appid;
+
+        return appid;
+    }
+
     @Override
     public void stop() {
         if (server != null) server.stop();
         if (cleanWebRoot) Helper.deleteDirectory(webRoot);
+        if (appserverXML.exists())
+            appserverXML.delete();
+    }
+
+    private String readFile(File file) throws IOException {
+        FileReader fr = null;
+        try {
+            fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            String line;
+            StringBuffer result = new StringBuffer();
+            while ((line = br.readLine()) != null) {
+                result.append(line);
+            }
+
+            return result.toString();
+        } finally {
+            if (fr != null) fr.close();
+        }
+    }
+
+    private void saveFile(File staxWebXml, String appxml) throws IOException {
+        FileWriter fos = null;
+        try {
+            fos = new FileWriter(staxWebXml);
+            fos.write(appxml);
+        } finally {
+            if (fos != null)
+                fos.close();
+        }
+    }
+
+    private Map<String, String> getSystemProperties(IAppServerConfiguration config) {
+        Map<String, String> systemProperties = new HashMap<String, String>();
+
+        for (ResourceConfig rs : config.getServerResources()) {
+            String type = rs.getType();
+            if (type == null || type.equalsIgnoreCase("system-property")) {
+                systemProperties.put(rs.getName(), rs.getValue());
+            }
+        }
+        for (ResourceConfig rs : config.getAppConfiguration().getResources()) {
+            String type = rs.getType();
+            if (type == null || type.equalsIgnoreCase("system-property")) {
+                systemProperties.put(rs.getName(), rs.getValue());
+            }
+        }
+        return systemProperties;
     }
 }

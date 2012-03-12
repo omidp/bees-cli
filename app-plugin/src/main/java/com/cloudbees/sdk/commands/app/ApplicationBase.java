@@ -20,6 +20,10 @@ public abstract class  ApplicationBase extends Command {
         this.appid = appid;
     }
 
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
     @Override
     protected String getUsageMessage() {
         return "APPLICATION_ID";

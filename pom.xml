@@ -25,6 +25,7 @@
     <module>app-plugin</module>
     <module>database-plugin</module>
     <module>ant-plugin</module>
+    <module>config-plugin</module>
   </modules>
 
   <build>
@@ -84,7 +85,7 @@
   </dependencyManagement>
 
   <properties>
-    <run-appserver.version>1.0-beta-2</run-appserver.version>
+    <run-appserver.version>1.0-beta-3-SNAPSHOT</run-appserver.version>
   </properties>
 
   <repositories>

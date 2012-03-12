@@ -4,7 +4,6 @@ import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.DatabaseCreateResponse;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
-import com.cloudbees.sdk.commands.Command;
 import com.cloudbees.sdk.utils.Helper;
 
 /**
@@ -12,18 +11,12 @@ import com.cloudbees.sdk.utils.Helper;
  */
 @CommandGroup("Database")
 @CLICommand("db:create")
-public class DatabaseCreate extends Command {
-    private String databaseName;
+public class DatabaseCreate extends DatabaseBase {
     private String username;
     private String password;
     private String account;
 
     public DatabaseCreate() {
-        setArgumentExpected(1);
-    }
-
-    public void setDatabaseName(String databaseName) {
-        this.databaseName = databaseName;
     }
 
     public void setUsername(String username) {
@@ -39,11 +32,6 @@ public class DatabaseCreate extends Command {
     }
 
     @Override
-    protected String getUsageMessage() {
-        return "DATABASE_NAME";
-    }
-
-    @Override
     protected boolean preParseCommandLine() {
         // add the Options
         addOption( "u", "username", true, "Database username (must be unique)" );
@@ -53,24 +41,9 @@ public class DatabaseCreate extends Command {
         return true;
     }
 
-    /**
-     * This method is call after postParseCommandLine.
-     * This is the place to validate all inputs
-     *
-     * @return true if successful, false otherwise
-     */
-    @Override
-    protected boolean postParseCheck() {
-        if (super.postParseCheck()) {
-            setDatabaseName(getParameters().get(0));
-            return true;
-        }
-        return false;
-    }
-
     @Override
     protected boolean execute() throws Exception {
-        if (databaseName == null) databaseName = Helper.promptFor("Database name: ", true);
+        getDatabaseName();
         if (username == null) username = Helper.promptFor("Database Username (must be unique): ", true);
         if (password == null) password = Helper.promptFor("Database Password: ", true);
 
@@ -79,7 +52,7 @@ public class DatabaseCreate extends Command {
         if (account == null) account = Helper.promptFor("Account name: ", true);
 
         BeesClient client = getStaxClient();
-        DatabaseCreateResponse res = client.databaseCreate(account, databaseName, username, password);
+        DatabaseCreateResponse res = client.databaseCreate(account, getDatabaseName(), username, password);
 
         if (isTextOutput()) {
             System.out.println("database created: " + res.getDatabaseId());

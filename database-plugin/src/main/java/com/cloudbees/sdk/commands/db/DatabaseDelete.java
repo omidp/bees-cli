@@ -4,36 +4,21 @@ import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.DatabaseDeleteResponse;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
-import com.cloudbees.sdk.commands.Command;
 import com.cloudbees.sdk.utils.Helper;
-
-import java.io.IOException;
 
 /**
  * @Author: Fabian Donze
  */
 @CommandGroup("Database")
 @CLICommand("db:delete")
-public class DatabaseDelete extends Command {
+public class DatabaseDelete extends DatabaseBase {
     private Boolean force;
 
-    private String databaseName;
-
     public DatabaseDelete() {
-        setArgumentExpected(1);
     }
 
     public void setForce(Boolean force) {
         this.force = force;
-    }
-
-    public void setDatabaseName(String databaseName) {
-        this.databaseName = databaseName;
-    }
-
-    @Override
-    protected String getUsageMessage() {
-        return "DATABASE_NAME";
     }
 
     @Override
@@ -45,30 +30,19 @@ public class DatabaseDelete extends Command {
     }
 
     @Override
-    protected boolean postParseCheck() {
-        if (super.postParseCheck()) {
-            setDatabaseName(getParameters().get(0));
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     protected boolean execute() throws Exception {
-        initDataBaseName();
-
         if (force == null || !force.booleanValue()) {
-            if (!Helper.promptMatches("Are you sure you want to delete this database [" + databaseName + "]: (y/n) ", "[yY].*")) {
+            if (!Helper.promptMatches("Are you sure you want to delete this database [" + getDatabaseName() + "]: (y/n) ", "[yY].*")) {
                 return true;
             }
         }
 
         BeesClient client = getStaxClient();
-        DatabaseDeleteResponse res = client.databaseDelete(databaseName);
+        DatabaseDeleteResponse res = client.databaseDelete(getDatabaseName());
 
         if (isTextOutput()) {
             if(res.isDeleted())
-                System.out.println("database deleted - " + databaseName);
+                System.out.println("database deleted - " + getDatabaseName());
             else
                 System.out.println("database could not be deleted");
         } else
@@ -76,15 +50,5 @@ public class DatabaseDelete extends Command {
 
         return true;
     }
-
-    private void initDataBaseName() throws IOException
-    {
-        if (databaseName == null || databaseName.equals(""))
-            databaseName = Helper.promptFor("Database name: ");
-
-        if (databaseName == null || databaseName.equals(""))
-            throw new IllegalArgumentException("No database name specified");
-    }
-
 
 }
