@@ -7,7 +7,7 @@ import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.utils.Helper;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 @CommandGroup("Database")
 @CLICommand("db:delete")
@@ -37,7 +37,7 @@ public class DatabaseDelete extends DatabaseBase {
             }
         }
 
-        BeesClient client = getStaxClient();
+        BeesClient client = getBeesClient();
         DatabaseDeleteResponse res = client.databaseDelete(getDatabaseName());
 
         if (isTextOutput()) {

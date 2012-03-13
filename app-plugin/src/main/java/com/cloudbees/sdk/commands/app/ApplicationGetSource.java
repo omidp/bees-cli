@@ -3,7 +3,6 @@ package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.ApplicationGetSourceUrlResponse;
 import com.cloudbees.api.BeesClient;
-import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.cli.Experimental;
@@ -14,7 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 @CommandGroup("Application")
 @CLICommand("app:getsource")
@@ -50,7 +49,7 @@ public class ApplicationGetSource extends ApplicationBase {
 
     @Override
     protected boolean execute() throws Exception {
-        BeesClient client = getStaxClient();
+        BeesClient client = getBeesClient();
         ApplicationGetSourceUrlResponse res = client.applicationGetSourceUrl(getAppId());
 
         if (res.getUrl() != null) {

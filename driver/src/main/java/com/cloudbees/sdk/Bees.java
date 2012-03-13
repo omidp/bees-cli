@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 /**
  * Entry point to the Bees CLI.
  *
- * @Author: Fabian Donze
+ * @author Fabian Donze
  * @author Kohsuke Kawaguchi
  */
 public class Bees {

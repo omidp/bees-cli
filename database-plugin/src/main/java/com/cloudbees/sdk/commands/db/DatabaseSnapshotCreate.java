@@ -6,7 +6,7 @@ import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 @CommandGroup("Database")
 @CLICommand("db:snapshot:create")
@@ -30,7 +30,7 @@ public class DatabaseSnapshotCreate extends DatabaseBase {
 
     @Override
     protected boolean execute() throws Exception {
-        BeesClient client = getStaxClient();
+        BeesClient client = getBeesClient();
         DatabaseSnapshotInfo res = client.databaseSnapshotCreate(getDatabaseName(), title);
 
         if (isTextOutput()) {

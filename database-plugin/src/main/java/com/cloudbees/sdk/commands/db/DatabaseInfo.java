@@ -3,14 +3,10 @@ package com.cloudbees.sdk.commands.db;
 import com.cloudbees.api.BeesClient;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
-import com.cloudbees.sdk.commands.Command;
-import com.cloudbees.sdk.utils.Helper;
 import com.staxnet.appserver.utils.StringHelper;
 
-import java.io.IOException;
-
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 @CommandGroup("Database")
 @CLICommand("db:info")
@@ -34,7 +30,7 @@ public class DatabaseInfo extends DatabaseBase {
 
     @Override
     protected boolean execute() throws Exception {
-        BeesClient client = getStaxClient();
+        BeesClient client = getBeesClient();
         boolean fetchPassword = password == null ? false : true;
         com.cloudbees.api.DatabaseInfo res = client.databaseInfo(getDatabaseName(), fetchPassword);
 

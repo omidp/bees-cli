@@ -6,7 +6,7 @@ import com.cloudbees.sdk.utils.Helper;
 import java.io.IOException;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 public abstract class DatabaseBase extends Command {
     private String databaseName;

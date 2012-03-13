@@ -10,7 +10,7 @@ import com.cloudbees.sdk.utils.Helper;
 import java.io.IOException;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 @CommandGroup("Application")
 @CLICommand("app:unbind")

@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 public abstract class Command extends ICommand {
     private String commandName;
@@ -510,7 +510,7 @@ public abstract class Command extends ICommand {
     }
 
 
-    protected BeesClient getStaxClient() throws IOException {
+    protected BeesClient getBeesClient() throws IOException {
         return beesClientFactory.get();
     }
 

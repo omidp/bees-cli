@@ -7,7 +7,7 @@ import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.utils.Helper;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 @CommandGroup("Database")
 @CLICommand("db:create")
@@ -51,7 +51,7 @@ public class DatabaseCreate extends DatabaseBase {
             account = getConfigProperties().getProperty("bees.project.app.domain");
         if (account == null) account = Helper.promptFor("Account name: ", true);
 
-        BeesClient client = getStaxClient();
+        BeesClient client = getBeesClient();
         DatabaseCreateResponse res = client.databaseCreate(account, getDatabaseName(), username, password);
 
         if (isTextOutput()) {

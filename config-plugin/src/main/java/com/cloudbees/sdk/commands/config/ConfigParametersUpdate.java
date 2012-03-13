@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 @CommandGroup("Configuration")
 @CLICommand("config:update")
@@ -73,7 +73,7 @@ public class ConfigParametersUpdate extends ApplicationBase {
             resourceType = "application";
         }
 
-        BeesClient client = getStaxClient();
+        BeesClient client = getBeesClient();
         ConfigurationParametersUpdateResponse res = client.configurationParametersUpdate(resourceId, resourceType, resourceFile);
         if (isTextOutput()) {
             System.out.println(resourceType + " config parameters for " + resourceId + ": " + res.getStatus());

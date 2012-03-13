@@ -3,7 +3,7 @@ package com.cloudbees.sdk.commands.config.model;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 public class ParameterSettings {
     @XStreamAsAttribute

@@ -26,7 +26,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 /**
- * @author: Fabian Donze
+ * @author Fabian Donze
  */
 @CommandGroup("Application")
 @CLICommand("app:run")

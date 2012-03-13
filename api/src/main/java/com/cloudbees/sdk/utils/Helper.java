@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.Properties;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 public class Helper {
     public static String promptForAppId() throws IOException {

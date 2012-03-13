@@ -9,7 +9,7 @@ import com.cloudbees.sdk.cli.CommandGroup;
 import java.util.Map;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 @CommandGroup("Application")
 @CLICommand("app:bindings")

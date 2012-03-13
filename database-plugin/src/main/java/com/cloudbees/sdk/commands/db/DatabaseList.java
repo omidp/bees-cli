@@ -8,7 +8,7 @@ import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.commands.Command;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 @CommandGroup("Database")
 @CLICommand("db:list")
@@ -39,7 +39,7 @@ public class DatabaseList extends Command {
 
     @Override
     protected boolean execute() throws Exception {
-        BeesClient client = getStaxClient();
+        BeesClient client = getBeesClient();
         DatabaseListResponse res = client.databaseList(getAccount());
 
         if (isTextOutput()) {

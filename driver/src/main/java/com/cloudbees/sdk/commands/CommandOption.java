@@ -3,7 +3,7 @@ package com.cloudbees.sdk.commands;
 import org.apache.commons.cli.Option;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 public class CommandOption {
     private Option option;

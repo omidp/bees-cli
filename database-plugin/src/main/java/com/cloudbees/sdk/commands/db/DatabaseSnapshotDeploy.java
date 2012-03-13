@@ -7,7 +7,7 @@ import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.utils.Helper;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 @CommandGroup("Database")
 @CLICommand("db:snapshot:deploy")
@@ -61,7 +61,7 @@ public class DatabaseSnapshotDeploy extends DatabaseBase {
             }
         }
 
-        BeesClient client = getStaxClient();
+        BeesClient client = getBeesClient();
         DatabaseSnapshotDeployResponse res = client.databaseSnapshotDeploy(getDatabaseName(), getSnapshot());
 
         if (isTextOutput()) {

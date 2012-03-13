@@ -9,7 +9,7 @@ import com.cloudbees.sdk.commands.app.ApplicationBase;
 import com.cloudbees.sdk.utils.Helper;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 @CommandGroup("Configuration")
 @CLICommand("config:delete")
@@ -61,7 +61,7 @@ public class ConfigParametersDelete extends ApplicationBase {
             }
         }
 
-        BeesClient client = getStaxClient();
+        BeesClient client = getBeesClient();
         ConfigurationParametersDeleteResponse res = client.configurationParametersDelete(resourceId, resourceType);
         if (isTextOutput()) {
             System.out.println(resourceType + " config parameters for " + resourceId + ": " + res.getStatus());

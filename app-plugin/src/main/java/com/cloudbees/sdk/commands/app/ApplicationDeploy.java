@@ -22,7 +22,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 @CommandGroup("Application")
 @CLICommand("app:deploy")
@@ -253,7 +253,7 @@ public class ApplicationDeploy extends Command {
         environment = StringHelper.join(appConfig.getAppliedEnvironments().toArray(new String[0]), ",");
 
         System.out.println(String.format("Deploying application %s (environment: %s): %s", appid, environment, deployFile));
-        BeesClient client = getStaxClient();
+        BeesClient client = getBeesClient();
 
         boolean deployDelta = (delta == null || delta.equalsIgnoreCase("true")) ? true : false;
 

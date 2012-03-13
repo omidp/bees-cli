@@ -7,7 +7,7 @@ import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.cli.Experimental;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 @CommandGroup("SDK")
 @CLICommand("call")
@@ -37,7 +37,7 @@ public class Call extends Command {
     @Override
     protected boolean execute() throws Exception {
         // call the application to the server
-        BeesClient client = getStaxClient();
+        BeesClient client = getBeesClient();
 
         client.mainCall(otherArgs);
 

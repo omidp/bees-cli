@@ -2,13 +2,12 @@ package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.ApplicationStatusResponse;
 import com.cloudbees.api.BeesClient;
-import com.cloudbees.api.StaxClient;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.utils.Helper;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 @CommandGroup("Application")
 @CLICommand("app:stop")
@@ -51,7 +50,7 @@ public class ApplicationStop extends ApplicationBase {
             }
         }
 
-        BeesClient client = getStaxClient();
+        BeesClient client = getBeesClient();
         ApplicationStatusResponse res = client.applicationStop(appid);
 
         if (isTextOutput()) {

@@ -17,7 +17,7 @@ import java.io.FileWriter;
 import java.util.List;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 @CommandGroup("Configuration")
 @CLICommand("config:set")
@@ -78,7 +78,7 @@ public class ConfigParametersSet extends ApplicationBase {
 
     @Override
     protected boolean execute() throws Exception {
-        BeesClient client = getStaxClient();
+        BeesClient client = getBeesClient();
 
         String resourceId;
         String resourceType;

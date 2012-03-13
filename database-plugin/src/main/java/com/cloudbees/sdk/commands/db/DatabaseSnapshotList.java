@@ -8,7 +8,7 @@ import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.utils.Helper;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 @CommandGroup("Database")
 @CLICommand("db:snapshot:list")
@@ -19,7 +19,7 @@ public class DatabaseSnapshotList extends DatabaseBase {
 
     @Override
     protected boolean execute() throws Exception {
-        BeesClient client = getStaxClient();
+        BeesClient client = getBeesClient();
         DatabaseSnapshotListResponse res = client.databaseSnapshotList(getDatabaseName());
 
         if (isTextOutput()) {

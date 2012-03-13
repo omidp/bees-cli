@@ -10,7 +10,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 public class Launcher {
     public final static String BEES_CLASS = "com.cloudbees.sdk.Bees";

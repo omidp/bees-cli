@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 public class ResourceSettings {
 	@XStreamAsAttribute

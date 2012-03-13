@@ -10,7 +10,7 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 public class AntTarget extends Command {
     private String target;

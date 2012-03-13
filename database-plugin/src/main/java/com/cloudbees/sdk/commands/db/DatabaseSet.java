@@ -4,13 +4,12 @@ import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.DatabaseSetPasswordResponse;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.CommandGroup;
-import com.cloudbees.sdk.commands.Command;
 import com.cloudbees.sdk.utils.Helper;
 
 import java.io.IOException;
 
 /**
- * @Author: Fabian Donze
+ * @author Fabian Donze
  */
 @CommandGroup("Database")
 @CLICommand("db:set")
@@ -48,7 +47,7 @@ public class DatabaseSet extends DatabaseBase {
 
     @Override
     protected boolean execute() throws Exception {
-        BeesClient client = getStaxClient();
+        BeesClient client = getBeesClient();
         DatabaseSetPasswordResponse res = client.databaseSetPassword(getDatabaseName(), getPassword());
 
         if (isTextOutput()) {
