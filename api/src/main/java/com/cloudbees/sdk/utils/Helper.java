@@ -141,7 +141,9 @@ public class Helper {
 
 
     public static String getPaddedString(String str, int length) {
-        StringBuffer sb = new StringBuffer(str);
+        StringBuffer sb;
+        if (str != null) sb = new StringBuffer(str);
+        else sb = new StringBuffer();
         int size = sb.length();
         if (size < length) {
             for (int i=0; i<length-size; i++)
