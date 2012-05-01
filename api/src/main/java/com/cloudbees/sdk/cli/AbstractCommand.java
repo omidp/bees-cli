@@ -43,7 +43,7 @@ public abstract class AbstractCommand extends ICommand {
         // if any injected component define options, include them
         for (Class c = getClass(); c!=null; c=c.getSuperclass()) {
             for (Field f : c.getDeclaredFields()) {
-                if (f.isAnnotationPresent(Inject.class)) {
+                if (f.isAnnotationPresent(Inject.class) && HasOptions.class.isAssignableFrom(f.getType())) {
                     try {
                         f.setAccessible(true);
                         new ClassParser().parse(f.get(this), p);
