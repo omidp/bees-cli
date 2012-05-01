@@ -20,6 +20,7 @@ import java.util.Properties;
  * 
  * @author Kohsuke Kawaguchi
  */
+@CommandScope
 public class BeesClientFactory implements HasOptions {
     @Option(name="--server")
     public String server;

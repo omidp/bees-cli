@@ -2,6 +2,7 @@ package com.cloudbees.sdk.commonds.debugger;
 
 import com.cloudbees.api.BeesClientConfiguration;
 import com.cloudbees.sdk.cli.BeesClientFactory;
+import com.cloudbees.sdk.cli.CommandScope;
 import com.cloudbees.sdk.cli.HasOptions;
 import com.trilead.ssh2.Connection;
 import com.trilead.ssh2.HTTPProxyData;
@@ -15,6 +16,7 @@ import java.io.IOException;
  *
  * @author Kohsuke Kawaguchi
  */
+@CommandScope
 public class SshConnectionFactory implements HasOptions {
     // this is where we get proxy configuration from
     @Inject

@@ -2,6 +2,7 @@ package com.cloudbees.sdk;
 
 import com.cloudbees.api.BeesClientException;
 import com.cloudbees.sdk.cli.CLICommand;
+import com.cloudbees.sdk.cli.CommandScope;
 import com.cloudbees.sdk.cli.ICommand;
 import com.cloudbees.sdk.cli.CommandService;
 import com.cloudbees.sdk.extensibility.AnnotationLiteral;
@@ -115,6 +116,8 @@ public class Bees {
                     alias("ant", "ant:ant");
                     alias("deploy", "ant:deploy");
                     alias("run", "ant:run");
+
+                    bindScope(CommandScope.class,new CommandScopeImpl());
                 }
 
                 private void alias(String from, final String to) {
@@ -139,21 +142,26 @@ public class Bees {
     public int run(String[] args) throws Exception {
         // if no sub-command is given, assume help
         if (args.length==0) args = new String[]{"help"};
-        
-        ICommand command = commandService.getCommand(args[0]);
-        if (command==null) {
-            // no such command. print help
-            System.err.println("No such command: "+args[0]);
-            command = commandService.getCommand("help");
-            if (command==null)
-                throw new Error("Panic: command "+args[0]+" was not found, and even the help command was not found");
-        }
 
-        int r = command.run(Arrays.asList(args));
-        if (r == 99) {
-            initialize(true);
+        Object context = CommandScopeImpl.begin();
+        try {
+            ICommand command = commandService.getCommand(args[0]);
+            if (command==null) {
+                // no such command. print help
+                System.err.println("No such command: "+args[0]);
+                command = commandService.getCommand("help");
+                if (command==null)
+                    throw new Error("Panic: command "+args[0]+" was not found, and even the help command was not found");
+            }
+
+            int r = command.run(Arrays.asList(args));
+            if (r == 99) {
+                initialize(true);
+            }
+            return r;
+        } finally {
+            CommandScopeImpl.end(context);
         }
-        return r;
     }
 
     private void initialize(boolean force) throws IOException {
