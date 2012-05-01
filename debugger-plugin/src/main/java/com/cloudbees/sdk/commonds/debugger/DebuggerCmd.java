@@ -10,6 +10,7 @@ import hudson.remoting.SocketOutputStream;
 import org.apache.commons.io.output.CloseShieldOutputStream;
 import org.kohsuke.args4j.Argument;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -30,23 +31,15 @@ public class DebuggerCmd extends AbstractCommand {
     @Argument(metaVar="PORT",index=1,required=false,usage="TCP/IP port to listen to")
     int port = 5005;
 
+    @Inject
+    SshConnectionFactory sshConnectionFactory;
+
     @Override
     public int main() throws Exception {
         System.out.println("Connecting to the CloudBees debugger switchboard");
-        // the trick is to run the server on port 443 so that we can tunnel
-        // this over HTTP proxy by pretending to be HTTPS
-        //        Connection connection = new Connection("debugger.cloudbees.com", 443);
-        Connection connection = new Connection("localhost", 2222);
+        Connection connection = sshConnectionFactory.connect("localhost",2222);
 
         try {
-            connection.connect(); // TODO: verify the host key
-
-            // TODO: figure out the user name
-            if (!connection.authenticateWithPublicKey("kohsuke", new File("/home/kohsuke/.ssh/id_rsa"), null)) {
-                System.err.println("Public key authentication with the server failed");
-                return 1;
-            }
-
             System.out.println("Listening on port "+port+" for incoming debugger connections");
             ServerSocket ss = new ServerSocket(port,10,InetAddress.getLocalHost());
             while (true) {
