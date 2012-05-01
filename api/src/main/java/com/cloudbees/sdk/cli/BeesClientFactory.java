@@ -37,13 +37,13 @@ public class BeesClientFactory implements HasOptions {
     @Option(name="-s",aliases="--secret",usage="CloudBees API secret")
     public String secret;
 
-    @Option(name="--proxyHost")
+    @Option(name="--proxyHost",usage="HTTP proxy host to route traffic through")
     public String proxyHost;
-    @Option(name="--proxyPort")
+    @Option(name="--proxyPort",usage="HTTP proxy port. Must be specified if --proxyHost is used")
     public String proxyPort;
-    @Option(name="--proxyUser")
+    @Option(name="--proxyUser",usage="User name for HTTP proxy if it  requires authentication")
     public String proxyUser;
-    @Option(name="--proxyPassword")
+    @Option(name="--proxyPassword",usage="Password for HTTP proxy. Must be specified if --proxyUser is used")
     public String proxyPassword;
 
     public String apiServer = "api.cloudbees.com";
