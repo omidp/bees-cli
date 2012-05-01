@@ -20,6 +20,7 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provider;
 import org.sonatype.aether.RepositoryException;
+import org.sonatype.aether.resolution.ArtifactDescriptorException;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -100,8 +101,22 @@ public class CommandServiceImpl implements CommandService {
                             gav = candidate;
                             break;  // found it!
                         } catch (RepositoryException e) {
-                            if (verbose.isVerbose())
+                            if (verbose.isVerbose()) {
                                 e.printStackTrace();
+                            } else {
+                                if (e.getCause() instanceof ArtifactDescriptorException) {
+                                    if (e.getCause().getMessage().contains(String.format("%s:%s:jar",candidate.groupId,candidate.artifactId))) {
+                                        // it looks like we've failed to find the artifact of the GAV=candidate.
+                                        // that most likely means the artifact doesn't exist, so move on
+                                    } else {
+                                        // we must have failed to find some of its dependencies.
+                                        // this means the candidate does exist but not its dependency.
+                                        e.printStackTrace();
+
+                                        // TODO: there's got to be a better way to do this without relying on the structure of exceptions!
+                                    }
+                                }
+                            }
                             // keep on trying the next candidate
                         }
                     }
