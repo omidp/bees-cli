@@ -2,6 +2,8 @@ package com.cloudbees.sdk.cli;
 
 import org.kohsuke.args4j.Option;
 
+import javax.inject.Singleton;
+
 /**
  * Injectable component that captures the verboseness flag.
  * 
@@ -10,7 +12,7 @@ import org.kohsuke.args4j.Option;
  * 
  * @author Kohsuke Kawaguchi
  */
-@CommandScope
+@Singleton
 public class Verbose implements HasOptions {
     @Option(name="-v",aliases="--verbose",usage="Make the command output more verbose")
     private boolean verbose;
