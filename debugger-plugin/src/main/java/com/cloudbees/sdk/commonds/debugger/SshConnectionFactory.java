@@ -6,10 +6,13 @@ import com.cloudbees.sdk.cli.CommandScope;
 import com.cloudbees.sdk.cli.HasOptions;
 import com.trilead.ssh2.Connection;
 import com.trilead.ssh2.HTTPProxyData;
+import org.kohsuke.args4j.Option;
 
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Injectable component that connects to SSH server.
@@ -21,6 +24,9 @@ public class SshConnectionFactory implements HasOptions {
     // this is where we get proxy configuration from
     @Inject
     BeesClientFactory bees;
+
+    @Option(name="--privateKey",usage="SSH private key(s) for authentication with the backend")
+    List<File> privateKeys = new ArrayList<File>();
 
     /**
      * Connects and authenticates to the server, returning the resulting connection.
@@ -39,11 +45,30 @@ public class SshConnectionFactory implements HasOptions {
 
         connection.connect(); // TODO: verify the host key
 
-        // TODO: figure out the user name
-        if (!connection.authenticateWithPublicKey("kohsuke", new File("/home/kohsuke/.ssh/id_rsa"), null)) {
-            throw new IOException("Public key authentication with the server failed");
+        if (privateKeys.isEmpty())
+            inferDefaultPrivateKeys();
+
+        // TODO: figure out the user name, not that it really matters
+        for (File privateKey : privateKeys) {
+            if (connection.authenticateWithPublicKey("kohsuke", privateKey, null)) {
+                break;
+            }
         }
 
+        if (!connection.isAuthenticationComplete())
+            throw new IOException("Public key authentication with the server failed");
+
         return connection;
+    }
+
+    /**
+     * Picks up the default SSH private keys.
+     */
+    private void inferDefaultPrivateKeys() {
+        File home = new File(System.getProperty("user.home"));
+        for (String name : new String[]{".ssh/id_rsa", ".ssh/id_dsa"}) {
+            File key = new File(home, name);
+            if (key.exists()) privateKeys.add(key);
+        }
     }
 }
