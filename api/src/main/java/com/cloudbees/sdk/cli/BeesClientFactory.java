@@ -60,6 +60,27 @@ public class BeesClientFactory implements HasOptions {
     }
     
     public <T extends BeesClient> T get(Class<T> clientType) throws IOException {
+        BeesClientConfiguration beesClientConfiguration = createConfigurations();
+
+        try {
+            T client = clientType.getConstructor(BeesClientConfiguration.class).newInstance(beesClientConfiguration);
+            client.setVerbose(verbose.isVerbose());
+            return  client;
+        } catch (InstantiationException e) {
+            throw (Error)new InstantiationError().initCause(e);
+        } catch (IllegalAccessException e) {
+            throw (Error)new IllegalAccessError().initCause(e);
+        } catch (InvocationTargetException e) {
+            throw (Error)new InstantiationError().initCause(e);
+        } catch (NoSuchMethodException e) {
+            throw (Error)new InstantiationError().initCause(e);
+        }
+    }
+
+    /**
+     * Creates a fully populated {@link BeesClientConfiguration} based on the current setting.
+     */
+    public BeesClientConfiguration createConfigurations() throws IOException {
         Properties properties = getConfigProperties();
 
         if (key==null)      key = properties.getProperty("bees.api.key");
@@ -80,20 +101,7 @@ public class BeesClientFactory implements HasOptions {
             beesClientConfiguration.setProxyPort(Integer.parseInt(properties.getProperty("bees.api.proxy.port", proxyPort)));
         beesClientConfiguration.setProxyUser(properties.getProperty("bees.api.proxy.user", proxyUser));
         beesClientConfiguration.setProxyPassword(properties.getProperty("bees.api.proxy.password", proxyPassword));
-
-        try {
-            T client = clientType.getConstructor(BeesClientConfiguration.class).newInstance(beesClientConfiguration);
-            client.setVerbose(verbose.isVerbose());
-            return  client;
-        } catch (InstantiationException e) {
-            throw (Error)new InstantiationError().initCause(e);
-        } catch (IllegalAccessException e) {
-            throw (Error)new IllegalAccessError().initCause(e);
-        } catch (InvocationTargetException e) {
-            throw (Error)new InstantiationError().initCause(e);
-        } catch (NoSuchMethodException e) {
-            throw (Error)new InstantiationError().initCause(e);
-        }
+        return beesClientConfiguration;
     }
 
     private void initCredentials() throws IOException
