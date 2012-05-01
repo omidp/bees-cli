@@ -32,8 +32,7 @@ public class DebuggerCmd extends AbstractCommand {
 
     @Override
     public int main() throws Exception {
-        ServerSocket ss = new ServerSocket(port,10,InetAddress.getLocalHost());
-
+        System.out.println("Connecting to the CloudBees debugger switchboard");
         // the trick is to run the server on port 443 so that we can tunnel
         // this over HTTP proxy by pretending to be HTTPS
         //        Connection connection = new Connection("debugger.cloudbees.com", 443);
@@ -48,8 +47,11 @@ public class DebuggerCmd extends AbstractCommand {
                 return 1;
             }
 
+            System.out.println("Listening on port "+port+" for incoming debugger connections");
+            ServerSocket ss = new ServerSocket(port,10,InetAddress.getLocalHost());
             while (true) {
                 Socket clientSocket = ss.accept();
+                System.out.println("Debugger connected");
                 clientSocket.setTcpNoDelay(true);
                 try {
                     tunnel(clientSocket,connection.openSession());

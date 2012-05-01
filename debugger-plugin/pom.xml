@@ -29,4 +29,12 @@
       <version>2.13</version>
     </dependency>
   </dependencies>
+
+
+  <repositories>
+    <repository>
+      <id>repo.jenkins-ci.org</id>
+      <url>http://repo.jenkins-ci.org/public/</url>
+    </repository>
+  </repositories>
 </project>
