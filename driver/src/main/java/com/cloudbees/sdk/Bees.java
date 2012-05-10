@@ -1,6 +1,7 @@
 package com.cloudbees.sdk;
 
 import com.cloudbees.api.BeesClientException;
+import com.cloudbees.sdk.cli.CommandScope;
 import com.cloudbees.sdk.cli.CommandService;
 import com.cloudbees.sdk.cli.ICommand;
 import com.cloudbees.sdk.extensibility.AnnotationLiteral;
@@ -72,6 +73,7 @@ public class Bees {
                     protected void configure() {
                         bind(CommandService.class).to(CommandServiceImpl.class);
                         bind(ClassLoader.class).annotatedWith(AnnotationLiteral.of(ExtensionClassLoader.class)).toInstance(extLoader);
+                        bindScope(CommandScope.class,new CommandScopeImpl());
                     }
                 }
         );
