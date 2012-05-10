@@ -113,6 +113,10 @@ public class CommandServiceImpl implements CommandService {
             // Try to find the plugin via bindings
             for (Plugin plugin : plugins) {
                 command = getInjectorCommand(name, plugin.getJars());
+                if (command != null) {
+                    pluginCommand = new PluginCommand(plugin, null);
+                    break;
+                }
             }
         }
 //            command.setCommandProperties(commandProp);
