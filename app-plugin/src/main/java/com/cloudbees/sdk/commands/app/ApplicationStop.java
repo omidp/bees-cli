@@ -2,14 +2,14 @@ package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.ApplicationStatusResponse;
 import com.cloudbees.api.BeesClient;
+import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.utils.Helper;
 
 /**
  * @author Fabian Donze
  */
-@CommandGroup("Application")
+@BeesCommand(group="Application")
 @CLICommand("app:stop")
 public class ApplicationStop extends ApplicationBase {
     private Boolean force;

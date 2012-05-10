@@ -2,13 +2,13 @@ package com.cloudbees.sdk.commands.db;
 
 import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.DatabaseSnapshotInfo;
+import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
 
 /**
  * @author Fabian Donze
  */
-@CommandGroup("Database")
+@BeesCommand(group="Database")
 @CLICommand("db:snapshot:create")
 public class DatabaseSnapshotCreate extends DatabaseBase {
     private String title;

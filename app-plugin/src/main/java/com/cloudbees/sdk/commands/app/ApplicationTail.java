@@ -2,13 +2,13 @@ package com.cloudbees.sdk.commands.app;
 
 
 import com.cloudbees.api.BeesClient;
+import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
 
 /**
  * @author Fabian Donze
  */
-@CommandGroup("Application")
+@BeesCommand(group="Application")
 @CLICommand("app:tail")
 public class ApplicationTail extends ApplicationBase {
 

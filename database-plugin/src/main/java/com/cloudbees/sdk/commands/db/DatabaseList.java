@@ -3,14 +3,14 @@ package com.cloudbees.sdk.commands.db;
 
 import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.DatabaseListResponse;
+import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.commands.Command;
 
 /**
  * @author Fabian Donze
  */
-@CommandGroup("Database")
+@BeesCommand(group="Database")
 @CLICommand("db:list")
 public class DatabaseList extends Command {
     private String account;

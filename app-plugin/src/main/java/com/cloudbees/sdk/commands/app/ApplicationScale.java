@@ -2,13 +2,13 @@ package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.ApplicationScaleResponse;
 import com.cloudbees.api.StaxClient;
+import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
 
 /**
  * @author Fabian Donze
  */
-@CommandGroup("Application")
+@BeesCommand(group="Application")
 @CLICommand("app:scale")
 public class ApplicationScale extends ApplicationBase {
     private String up;

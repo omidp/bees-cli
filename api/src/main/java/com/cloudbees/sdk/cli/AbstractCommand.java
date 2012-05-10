@@ -8,6 +8,7 @@ import org.kohsuke.args4j.ExampleMode;
 
 import javax.inject.Inject;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -17,8 +18,14 @@ import java.util.List;
 public abstract class AbstractCommand extends ICommand {
     @Inject
     Verbose verbose;
-    
+
+    List<String> jars;
+
     public abstract int main() throws Exception;
+
+    public void setJars(List<String> jars) {
+        this.jars = jars;
+    }
 
     @Override
     public int run(List<String> args) throws Exception {

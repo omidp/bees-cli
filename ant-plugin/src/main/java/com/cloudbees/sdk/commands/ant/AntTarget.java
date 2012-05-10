@@ -40,7 +40,7 @@ public class AntTarget extends Command {
 
     @Override
     protected boolean preParseCommandLine() {
-        addOption( "b", "baseDir", true, "Base directory (default: '.')");
+        addOption("b", "baseDir", true, "Base directory (default: '.')");
         return true;
     }
 
@@ -80,6 +80,7 @@ public class AntTarget extends Command {
         ProjectHelper helper = ProjectHelper.getProjectHelper();
         p.addReference("ant.projectHelper", helper);
         helper.parse(p, buildFile);
+        p.setCoreLoader(this.getClass().getClassLoader());
         p.executeTarget(target);
 
         return true;

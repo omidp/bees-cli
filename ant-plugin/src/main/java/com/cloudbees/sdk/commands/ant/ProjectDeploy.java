@@ -1,14 +1,14 @@
 package com.cloudbees.sdk.commands.ant;
 
 
+import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
 
 /**
  * @author Fabian Donze
  */
-@CommandGroup("Project")
-@CLICommand("ant:deploy")
+@BeesCommand(group="Project")
+@CLICommand("deploy")
 public class ProjectDeploy extends AntTarget {
     private String message;
     private String environment;

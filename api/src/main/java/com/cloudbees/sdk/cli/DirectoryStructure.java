@@ -10,6 +10,7 @@ import java.io.File;
 public class DirectoryStructure {
     public final File sdkRepository;
     public final File localRepository;
+    public final String pluginExtension = ".bees";
 
     public DirectoryStructure(File sdkRepository, File localRepository) {
         this.sdkRepository = sdkRepository;
@@ -25,7 +26,11 @@ public class DirectoryStructure {
      * This directory contains additional jar files to be made available to the bees SDK's main classloader.
      */
     public File getLibDir() {
-        return new File(localRepository,"lib");
+        return new File(localRepository,"lib1");
+    }
+
+    public File getPluginDir() {
+        return new File(localRepository,"plugins");
     }
 
     private File getLocalRepository() {

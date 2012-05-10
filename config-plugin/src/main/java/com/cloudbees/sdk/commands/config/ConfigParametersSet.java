@@ -4,8 +4,8 @@ package com.cloudbees.sdk.commands.config;
 import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.ConfigurationParametersResponse;
 import com.cloudbees.api.ConfigurationParametersUpdateResponse;
+import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.commands.app.ApplicationBase;
 import com.cloudbees.sdk.commands.config.model.ConfigParameters;
 import com.cloudbees.sdk.commands.config.model.Environment;
@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author Fabian Donze
  */
-@CommandGroup("Configuration")
+@BeesCommand(group="Configuration")
 @CLICommand("config:set")
 public class ConfigParametersSet extends ApplicationBase {
     private boolean accountOnly;

@@ -2,16 +2,14 @@ package com.cloudbees.sdk.commands;
 
 
 import com.cloudbees.api.BeesClient;
+import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
-import com.cloudbees.sdk.cli.Experimental;
 
 /**
  * @author Fabian Donze
  */
-@CommandGroup("SDK")
+@BeesCommand(group="SDK", experimental = true)
 @CLICommand("call")
-@Experimental
 public class Call extends Command {
     String[] otherArgs;
 

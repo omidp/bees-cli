@@ -1,16 +1,15 @@
 package com.cloudbees.sdk.commands;
 
-import com.cloudbees.sdk.cli.AbstractCommand;
-import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.CommandServiceImpl;
+import com.cloudbees.sdk.cli.AbstractCommand;
+import com.cloudbees.sdk.cli.BeesCommand;
+import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.ICommand;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,7 +17,7 @@ import java.util.List;
  * 
  * @author Kohsuke Kawaguchi
  */
-@CommandGroup("SDK")
+@BeesCommand(group="SDK")
 @CLICommand("help")
 public class Help extends AbstractCommand {
     @Inject

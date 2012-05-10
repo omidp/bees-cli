@@ -19,8 +19,8 @@
 
   <modules>
     <module>boot</module>
-    <module>driver</module>
     <module>api</module>
+    <module>driver</module>
 
     <module>app-plugin</module>
     <module>database-plugin</module>

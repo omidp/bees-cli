@@ -3,8 +3,8 @@ package com.cloudbees.sdk.commands.config;
 
 import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.ConfigurationParametersResponse;
+import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.commands.app.ApplicationBase;
 
 import java.io.File;
@@ -13,7 +13,7 @@ import java.io.FileWriter;
 /**
  * @author Fabian Donze
  */
-@CommandGroup("Configuration")
+@BeesCommand(group="Configuration")
 @CLICommand("config:list")
 public class ConfigParametersList extends ApplicationBase {
     private String file;

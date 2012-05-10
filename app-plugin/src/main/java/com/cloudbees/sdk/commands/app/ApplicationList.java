@@ -2,8 +2,8 @@ package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.ApplicationListResponse;
 import com.cloudbees.api.StaxClient;
+import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.commands.Command;
 import com.cloudbees.sdk.utils.Helper;
 
@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * @author Fabian Donze
  */
-@CommandGroup("Application")
+@BeesCommand(group="Application", pattern = "app:li.*", description = "List applications")
 @CLICommand("app:list")
 public class ApplicationList extends Command {
     private String account;

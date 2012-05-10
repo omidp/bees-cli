@@ -31,4 +31,9 @@ public interface CommandService {
      *      handle this exception without reporting a stack trace.
      */
     ICommand getCommand(String name) throws IOException, AbortException;
+
+    void loadCommandProperties();
+
+    int getCount();
+
 }

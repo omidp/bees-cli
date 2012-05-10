@@ -4,8 +4,8 @@ import com.cloudbees.api.ApplicationResourceListResponse;
 import com.cloudbees.api.ParameterSettingsInfo;
 import com.cloudbees.api.ResourceSettingsInfo;
 import com.cloudbees.api.StaxClient;
+import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.commands.Command;
 import com.cloudbees.sdk.utils.Helper;
 import com.cloudbees.utils.ZipHelper;
@@ -28,7 +28,7 @@ import java.util.zip.ZipFile;
 /**
  * @author Fabian Donze
  */
-@CommandGroup("Application")
+@BeesCommand(group="Application")
 @CLICommand("app:run")
 public class ApplicationRun extends Command {
 

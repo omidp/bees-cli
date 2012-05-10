@@ -2,8 +2,8 @@ package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.ServiceResourceUnBindResponse;
 import com.cloudbees.api.StaxClient;
+import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.commands.services.ServiceBase;
 import com.cloudbees.sdk.utils.Helper;
 
@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * @author Fabian Donze
  */
-@CommandGroup("Application")
+@BeesCommand(group="Application")
 @CLICommand("app:unbind")
 public class ApplicationUnBind extends ServiceBase {
     /**

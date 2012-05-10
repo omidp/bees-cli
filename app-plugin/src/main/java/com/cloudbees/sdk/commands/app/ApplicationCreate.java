@@ -1,8 +1,11 @@
 package com.cloudbees.sdk.commands.app;
 
-import com.cloudbees.api.*;
+import com.cloudbees.api.ApplicationCreateResponse;
+import com.cloudbees.api.CIInfo;
+import com.cloudbees.api.RepositoryInfo;
+import com.cloudbees.api.StaxClient;
+import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +13,7 @@ import java.util.Map;
 /**
  * @author Fabian Donze
  */
-@CommandGroup("Application")
+@BeesCommand(group="Application")
 @CLICommand("app:create")
 public class ApplicationCreate extends ApplicationBase {
     private Boolean withCD;

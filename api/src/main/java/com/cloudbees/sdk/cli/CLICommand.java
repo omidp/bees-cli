@@ -15,7 +15,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  *
  * <p>
  * This is a binding annotation, so additional characteristics about a command needs to be defined
- * as separate annotations instead of additional elements, such as {@link Experimental}.
+ * as separate annotations instead of additional elements, such as {@link BeesCommand}.
  *
  * @author Kohsuke Kawaguchi
  */

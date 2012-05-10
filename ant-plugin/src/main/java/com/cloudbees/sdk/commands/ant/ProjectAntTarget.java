@@ -1,14 +1,14 @@
 package com.cloudbees.sdk.commands.ant;
 
 
+import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
 
 /**
  * @author Fabian Donze
  */
-@CommandGroup("Project")
-@CLICommand("ant:ant")
+@CLICommand("ant")
+@BeesCommand(group="Project")
 public class ProjectAntTarget extends AntTarget {
     public ProjectAntTarget() {
         super(null);

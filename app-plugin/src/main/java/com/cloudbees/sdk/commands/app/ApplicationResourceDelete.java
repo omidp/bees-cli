@@ -1,14 +1,15 @@
 package com.cloudbees.sdk.commands.app;
 
-import com.cloudbees.api.*;
+import com.cloudbees.api.ServiceResourceDeleteResponse;
+import com.cloudbees.api.StaxClient;
+import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.utils.Helper;
 
 /**
  * @author Fabian Donze
  */
-@CommandGroup("Application")
+@BeesCommand(group="Application")
 @CLICommand("app:resource:delete")
 public class ApplicationResourceDelete extends ApplicationResourceBase {
     private Boolean force;

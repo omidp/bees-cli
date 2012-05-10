@@ -3,9 +3,8 @@ package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.ApplicationGetSourceUrlResponse;
 import com.cloudbees.api.BeesClient;
+import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
-import com.cloudbees.sdk.cli.Experimental;
 import com.cloudbees.sdk.utils.Helper;
 import com.staxnet.appserver.utils.ZipHelper;
 
@@ -15,9 +14,8 @@ import java.io.FileInputStream;
 /**
  * @author Fabian Donze
  */
-@CommandGroup("Application")
+@BeesCommand(group="Application", experimental = true)
 @CLICommand("app:getsource")
-@Experimental
 public class ApplicationGetSource extends ApplicationBase {
     private Boolean force;
     private String dir;

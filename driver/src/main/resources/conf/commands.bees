@@ -1,0 +1,12 @@
+<!--# SDK commands list-->
+<plugin>
+    <!--# SDK command-->
+    <command group="SDK" name="init" description="Re-initialize the SDK config file" className="com.cloudbees.sdk.commands.Init"/>
+    <command group="SDK" name="help" className="com.cloudbees.sdk.commands.Help"/>
+    <command group="SDK" name="plugin:install" description="Install SDK plugin" className="com.cloudbees.sdk.commands.InstallPluginCommand"/>
+
+    <!--# Internal command-->
+    <command group="SDK" name="call" className="com.cloudbees.sdk.commands.Call" experimental="true" />
+</plugin>
+
+

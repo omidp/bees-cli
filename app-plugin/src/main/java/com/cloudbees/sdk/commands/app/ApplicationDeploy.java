@@ -4,8 +4,8 @@ import com.cloudbees.api.ApplicationDeployArchiveResponse;
 import com.cloudbees.api.ApplicationDeployArgs;
 import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.HashWriteProgress;
+import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.commands.Command;
 import com.cloudbees.sdk.utils.Helper;
 import com.staxnet.appserver.config.AppConfig;
@@ -24,7 +24,7 @@ import java.util.zip.ZipOutputStream;
 /**
  * @author Fabian Donze
  */
-@CommandGroup("Application")
+@BeesCommand(group="Application")
 @CLICommand("app:deploy")
 public class ApplicationDeploy extends Command {
     /**

@@ -1,8 +1,8 @@
 package com.cloudbees.sdk.commands;
 
-import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.UserConfiguration;
+import com.cloudbees.sdk.cli.BeesCommand;
+import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.utils.Helper;
 
 import javax.inject.Inject;
@@ -13,7 +13,7 @@ import java.util.Properties;
 /**
  * @author Fabian Donze
  */
-@CommandGroup("SDK")
+@BeesCommand(group="SDK")
 @CLICommand("init")
 public class Init extends Command {
     private String email;

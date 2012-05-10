@@ -1,14 +1,14 @@
 package com.cloudbees.sdk.commands.ant;
 
 
+import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
 
 /**
  * @author Fabian Donze
  */
-@CommandGroup("Project")
-@CLICommand("ant:run")
+@BeesCommand(group="Project")
+@CLICommand("run")
 public class ProjectRun extends AntTarget {
     private String port;
     private String environment;

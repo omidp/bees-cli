@@ -2,8 +2,8 @@ package com.cloudbees.sdk.commands.db;
 
 import com.cloudbees.api.BeesClient;
 import com.cloudbees.api.DatabaseSetPasswordResponse;
+import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandGroup;
 import com.cloudbees.sdk.utils.Helper;
 
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * @author Fabian Donze
  */
-@CommandGroup("Database")
+@BeesCommand(group="Database")
 @CLICommand("db:set")
 public class DatabaseSet extends DatabaseBase {
     private String password;
