@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.cloudbees.sdk</groupId>
+    <artifactId>bees-cli-parent</artifactId>
+    <version>1.0-beta-4-SNAPSHOT</version>
+  </parent>
+
+  <groupId>org.cloudbees.sdk.plugins</groupId>
+  <artifactId>debugger-plugin</artifactId>
+  <name>Commands that adds debugger support</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.cloudbees.sdk</groupId>
+      <artifactId>bees-driver</artifactId>
+      <version>${parent.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jvnet.hudson</groupId>
+      <artifactId>trilead-ssh2</artifactId>
+      <version>build212-hudson-6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jenkins-ci.main</groupId>
+      <artifactId>remoting</artifactId>
+      <version>2.13</version>
+    </dependency>
+  </dependencies>
+
+
+  <repositories>
+    <repository>
+      <id>repo.jenkins-ci.org</id>
+      <url>http://repo.jenkins-ci.org/public/</url>
+    </repository>
+  </repositories>
+</project>

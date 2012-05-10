@@ -20,6 +20,7 @@ import java.util.Properties;
  * 
  * @author Kohsuke Kawaguchi
  */
+@CommandScope
 public class BeesClientFactory implements HasOptions {
     @Option(name="--server")
     public String server;
@@ -36,13 +37,13 @@ public class BeesClientFactory implements HasOptions {
     @Option(name="-s",aliases="--secret",usage="CloudBees API secret")
     public String secret;
 
-    @Option(name="--proxyHost")
+    @Option(name="--proxyHost",usage="HTTP proxy host to route traffic through")
     public String proxyHost;
-    @Option(name="--proxyPort")
+    @Option(name="--proxyPort",usage="HTTP proxy port. Must be specified if --proxyHost is used")
     public String proxyPort;
-    @Option(name="--proxyUser")
+    @Option(name="--proxyUser",usage="User name for HTTP proxy if it  requires authentication")
     public String proxyUser;
-    @Option(name="--proxyPassword")
+    @Option(name="--proxyPassword",usage="Password for HTTP proxy. Must be specified if --proxyUser is used")
     public String proxyPassword;
 
     public String apiServer = "api.cloudbees.com";
@@ -60,6 +61,27 @@ public class BeesClientFactory implements HasOptions {
     }
     
     public <T extends BeesClient> T get(Class<T> clientType) throws IOException {
+        BeesClientConfiguration beesClientConfiguration = createConfigurations();
+
+        try {
+            T client = clientType.getConstructor(BeesClientConfiguration.class).newInstance(beesClientConfiguration);
+            client.setVerbose(verbose.isVerbose());
+            return  client;
+        } catch (InstantiationException e) {
+            throw (Error)new InstantiationError().initCause(e);
+        } catch (IllegalAccessException e) {
+            throw (Error)new IllegalAccessError().initCause(e);
+        } catch (InvocationTargetException e) {
+            throw (Error)new InstantiationError().initCause(e);
+        } catch (NoSuchMethodException e) {
+            throw (Error)new InstantiationError().initCause(e);
+        }
+    }
+
+    /**
+     * Creates a fully populated {@link BeesClientConfiguration} based on the current setting.
+     */
+    public BeesClientConfiguration createConfigurations() throws IOException {
         Properties properties = getConfigProperties();
 
         if (key==null)      key = properties.getProperty("bees.api.key");
@@ -80,20 +102,7 @@ public class BeesClientFactory implements HasOptions {
             beesClientConfiguration.setProxyPort(Integer.parseInt(properties.getProperty("bees.api.proxy.port", proxyPort)));
         beesClientConfiguration.setProxyUser(properties.getProperty("bees.api.proxy.user", proxyUser));
         beesClientConfiguration.setProxyPassword(properties.getProperty("bees.api.proxy.password", proxyPassword));
-
-        try {
-            T client = clientType.getConstructor(BeesClientConfiguration.class).newInstance(beesClientConfiguration);
-            client.setVerbose(verbose.isVerbose());
-            return  client;
-        } catch (InstantiationException e) {
-            throw (Error)new InstantiationError().initCause(e);
-        } catch (IllegalAccessException e) {
-            throw (Error)new IllegalAccessError().initCause(e);
-        } catch (InvocationTargetException e) {
-            throw (Error)new InstantiationError().initCause(e);
-        } catch (NoSuchMethodException e) {
-            throw (Error)new InstantiationError().initCause(e);
-        }
+        return beesClientConfiguration;
     }
 
     private void initCredentials() throws IOException

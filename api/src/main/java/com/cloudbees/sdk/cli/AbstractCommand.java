@@ -8,8 +8,9 @@ import org.kohsuke.args4j.ExampleMode;
 
 import javax.inject.Inject;
 import java.lang.reflect.Field;
-import java.net.URL;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Partial implementation of {@link ICommand} that uses args4j.
@@ -47,20 +48,34 @@ public abstract class AbstractCommand extends ICommand {
     protected CmdLineParser createParser() {
         CmdLineParser p = new CmdLineParser(this);
 
+        Set<Object> collected = new HashSet<Object>();
+        collected.add(this);
         // if any injected component define options, include them
-        for (Class c = getClass(); c!=null; c=c.getSuperclass()) {
+        collectComponentsWithOptions(p, this, collected);
+        return p;
+    }
+
+    /**
+     * Recursively visits object graph, finds all {@link HasOptions} components,
+     * and adds them all to the parser.
+     */
+    private void collectComponentsWithOptions(CmdLineParser p, Object o, Set<Object> collected) {
+        for (Class c = o.getClass(); c!=null; c=c.getSuperclass()) {
             for (Field f : c.getDeclaredFields()) {
-                if (f.isAnnotationPresent(Inject.class)) {
+                if (f.isAnnotationPresent(Inject.class) && HasOptions.class.isAssignableFrom(f.getType())) {
                     try {
                         f.setAccessible(true);
-                        new ClassParser().parse(f.get(this), p);
+                        Object child = f.get(o);
+                        if (child!=null && collected.add(child)) {
+                            new ClassParser().parse(child,p);
+                            collectComponentsWithOptions(p,child,collected);
+                        }
                     } catch (IllegalAccessException e) {
                         throw new Error(e);
                     }
                 }
             }
         }
-        return p;
     }
 
     @Override

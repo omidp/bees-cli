@@ -93,22 +93,28 @@ public class Bees {
         start = time("R2", start);
 
         if (args.length==0) args = new String[]{"help"};
-        ICommand command = commandService.getCommand(args[0]);
-        if (command==null) {
-            // no such command. print help
-            System.err.println("No such command: "+args[0]);
-            command = commandService.getCommand("help");
-            if (command==null)
-                throw new Error("Panic: command "+args[0]+" was not found, and even the help command was not found");
-        }
-        start = time("R3", start);
 
-        int r = command.run(Arrays.asList(args));
-        if (r == 99) {
-            initialize(true);
+        Object context = CommandScopeImpl.begin();
+        try {
+            ICommand command = commandService.getCommand(args[0]);
+            if (command==null) {
+                // no such command. print help
+                System.err.println("No such command: "+args[0]);
+                command = commandService.getCommand("help");
+                if (command==null)
+                    throw new Error("Panic: command "+args[0]+" was not found, and even the help command was not found");
+            }
+            start = time("R3", start);
+
+            int r = command.run(Arrays.asList(args));
+            if (r == 99) {
+                initialize(true);
+            }
+            start = time("R4", start);
+            return r;
+        } finally {
+            CommandScopeImpl.end(context);
         }
-        start = time("R4", start);
-        return r;
     }
 
     private String getHome() {
