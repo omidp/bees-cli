@@ -21,6 +21,7 @@
     <module>boot</module>
     <module>api</module>
     <module>driver</module>
+    <module>assembly</module>
 
     <module>app-plugin</module>
     <module>database-plugin</module>
