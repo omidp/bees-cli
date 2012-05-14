@@ -59,18 +59,12 @@ public abstract class Command extends ICommand {
     @Inject
     private Verbose verbose;
 
-    private List<String> jars;
-
     public Command() {
         addDefaultOptions = true;
         LocalRepository lr = new LocalRepository();
         localRepository = new File(lr.getRepositoryPath());
         parameters = new ArrayList<String>();
         argumentExpected = 0;
-    }
-
-    public void setJars(List<String> jars) {
-        this.jars = jars;
     }
 
     @Override

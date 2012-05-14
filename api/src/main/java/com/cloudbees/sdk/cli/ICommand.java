@@ -7,10 +7,8 @@ import java.util.List;
 /**
  * @author Kohsuke Kawaguchi
  */
-// TODO: rename it back to Command once we renamed the other Command.
 @ExtensionPoint
 public abstract class ICommand {
-    public abstract void setJars(List<String> jars);
 
     /**
      * Executes this command.

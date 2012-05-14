@@ -20,13 +20,7 @@ public abstract class AbstractCommand extends ICommand {
     @Inject
     Verbose verbose;
 
-    List<String> jars;
-
     public abstract int main() throws Exception;
-
-    public void setJars(List<String> jars) {
-        this.jars = jars;
-    }
 
     @Override
     public int run(List<String> args) throws Exception {

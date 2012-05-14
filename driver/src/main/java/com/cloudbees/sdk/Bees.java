@@ -67,7 +67,7 @@ public class Bees {
         start = time("S2", start);
         //  container that includes all the things that make a bees CLI.
         Injector injector = Guice.createInjector(
-                new ExtensionFinder(extLoader),
+//                new ExtensionFinder(extLoader),
                 new AbstractModule() {
                     @Override
                     protected void configure() {

@@ -48,7 +48,8 @@ public class AntTarget extends Command {
     protected boolean execute() {
         // call the application to the server
         File buildFile = new File(baseDir, "build.xml");
-        Project p = new Project();
+        Project p = new ProjectInCurrentClassloader();
+
         p.setUserProperty("ant.file", buildFile.getAbsolutePath());
 
         DefaultLogger consoleLogger = new DefaultLogger();
@@ -80,9 +81,11 @@ public class AntTarget extends Command {
         ProjectHelper helper = ProjectHelper.getProjectHelper();
         p.addReference("ant.projectHelper", helper);
         helper.parse(p, buildFile);
-        p.setCoreLoader(this.getClass().getClassLoader());
         p.executeTarget(target);
 
         return true;
     }
+
+    // Project class to force loading of ant task in the current class loader
+    class ProjectInCurrentClassloader extends Project {}
 }

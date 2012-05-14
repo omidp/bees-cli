@@ -121,8 +121,10 @@ public class CommandServiceImpl implements CommandService {
         }
 //            command.setCommandProperties(commandProp);
 
+/*
         if (command != null)
             command.setJars(pluginCommand.plugin.getJars());
+*/
 
         return command;
     }
