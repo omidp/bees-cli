@@ -6,10 +6,17 @@ import com.cloudbees.sdk.extensibility.ExtensionFinder;
 import com.cloudbees.sdk.extensibility.ExtensionPointList;
 import com.cloudbees.sdk.utils.Helper;
 import com.google.inject.*;
-import com.thoughtworks.xstream.XStream;
+import com.staxnet.appserver.utils.XmlHelper;
+import org.apache.commons.io.IOUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.xml.xpath.XPathExpressionException;
 import java.io.*;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -47,7 +54,7 @@ public class CommandServiceImpl implements CommandService {
     List<Plugin> plugins;
     boolean localRepoLoaded;
 
-    static XStream xstream;
+//    static XStream xstream;
 
     @Inject
     public CommandServiceImpl(DirectoryStructure structure) {
@@ -75,6 +82,7 @@ public class CommandServiceImpl implements CommandService {
     private ArrayList<Plugin> loadPlugins(File commandFile) {
         ArrayList<Plugin> plugins = new ArrayList<Plugin>();
 
+/*
         FileReader reader = null;
         try {
             reader = new FileReader(commandFile);
@@ -88,8 +96,69 @@ public class CommandServiceImpl implements CommandService {
             } catch (IOException ignored) {
             }
         }
+*/
 
+        try {
+            Plugin plugin = parsePluginFile(commandFile);
+            plugins.add(plugin);
+        } catch (Exception e) {
+            System.err.println("ERROR: Cannot parse file: " + commandFile);
+        }
         return plugins;
+    }
+
+    private Plugin parsePluginFile(File file) throws FileNotFoundException, XPathExpressionException {
+        InputStream inputStream = new FileInputStream(file);
+        try {
+            InputSource input = new InputSource(inputStream);
+            Document doc = XmlHelper.readXML(input);
+            Plugin plugin = new Plugin();
+            Element e = doc.getDocumentElement();
+            if (e.getTagName().equalsIgnoreCase("plugin")) {
+                if (e.hasAttribute("artifact"))
+                    plugin.setArtifact(e.getAttribute("artifact"));
+
+                NodeList nodes = e.getChildNodes();
+                List<String> jars = new ArrayList<String>();
+                plugin.setJars(jars);
+                List<CommandProperties> commands = new ArrayList<CommandProperties>();
+                plugin.setProperties(commands);
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    Node node = nodes.item(i);
+                    if (node.getNodeName().equals("jar"))
+                        jars.add(node.getTextContent().trim());
+                    else if (node.getNodeName().equals("command")) {
+                        CommandProperties commandProperties = new CommandProperties();
+                        commandProperties.setGroup(getAttribute(node, "group"));
+                        commandProperties.setName(getAttribute(node, "name"));
+                        commandProperties.setPattern(getAttribute(node, "pattern"));
+                        commandProperties.setDescription(getAttribute(node, "description"));
+                        commandProperties.setClassName(getAttribute(node, "className"));
+                        String str = getAttribute(node, "experimental");
+                        if (str != null)
+                            commandProperties.setExperimental(Boolean.parseBoolean(str));
+                        str = getAttribute(node, "priority");
+                        if (str != null)
+                            commandProperties.setPriority(Integer.parseInt(str));
+                        commands.add(commandProperties);
+                    }
+                }
+            }
+            return plugin;
+        } finally {
+            IOUtils.closeQuietly(inputStream);
+        }
+    }
+
+    private String getAttribute(Node node, String attr) {
+        return getAttribute(node, attr, null);
+    }
+    private String getAttribute(Node node, String attr, String defaultValue) {
+        Node attrNode = node.getAttributes().getNamedItem(attr);
+        if (attrNode == null)
+            return defaultValue;
+        else
+            return attrNode.getNodeValue();
     }
 
     public ICommand getCommand(String name) throws IOException {
@@ -273,21 +342,26 @@ public class CommandServiceImpl implements CommandService {
         return command;
     }
 
+/*
     private static XStream getXStream() {
         if (xstream == null) {
 //            long start = System.currentTimeMillis();
             xstream = new XStream();
+            xstream.setMode(XStream.NO_REFERENCES);
+*/
 /*
             xstream.alias("plugin", Plugin.class);
             xstream.addImplicitCollection(Plugin.class, "properties");
             xstream.alias("command", CommandProperties.class);
-*/
+*//*
+
             xstream.processAnnotations(Plugin.class);
             xstream.processAnnotations(CommandProperties.class);
 //            System.out.println("XStream: " + (System.currentTimeMillis()-start) + " ms");
         }
         return xstream;
     }
+*/
 
     protected Injector createChildModule(Injector parent, final ClassLoader cl) throws InstantiationException, IOException {
         final List<Module> childModules = new ArrayList<Module>();
