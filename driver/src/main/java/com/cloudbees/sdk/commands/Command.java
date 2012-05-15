@@ -182,7 +182,9 @@ public abstract class Command extends ICommand {
      * This is the place to add command line options
      * @return true if successful, false otherwise
      */
-    protected abstract boolean preParseCommandLine();
+    protected boolean preParseCommandLine() {
+        return true;
+    }
 
     /**
      * This method is the main command execution method.

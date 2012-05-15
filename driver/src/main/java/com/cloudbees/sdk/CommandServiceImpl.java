@@ -231,6 +231,30 @@ public class CommandServiceImpl implements CommandService {
         return sb.toString();
     }
 
+    public List<GAV> getPlugins() {
+        List<GAV> gavs = new ArrayList<GAV>();
+        if (!localRepoLoaded) plugins.addAll(loadCommandFiles(structure.getPluginDir(), structure.pluginExtension));
+        for (Plugin plugin : plugins) {
+            if (plugin.getArtifact() != null)
+                gavs.add(new GAV(plugin.getArtifact()));
+        }
+        return gavs;
+    }
+
+    public GAV deletePlugin(String name) {
+        if (!localRepoLoaded) plugins.addAll(loadCommandFiles(structure.getPluginDir(), structure.pluginExtension));
+        for (Plugin plugin : plugins) {
+            if (plugin.getArtifact() != null) {
+                GAV gav = new GAV(plugin.getArtifact());
+                if (gav.artifactId.equalsIgnoreCase(name)) {
+                    File file = new File(structure.getPluginDir(), gav.artifactId + structure.pluginExtension);
+                    if (file.delete()) return gav;
+                }
+            }
+        }
+        return null;
+    }
+
     private StringBuffer getHelpTitle(URL helpTitleFile) {
         StringBuffer sb = new StringBuffer();
         BufferedReader reader = null;

@@ -106,14 +106,14 @@ public class ArtifactInstallFactory {
         localRepository = new LocalRepository(repository);
     }
 
-    public void install(GAV gav) throws Exception {
-        install(toArtifact(gav));
+    public GAV install(GAV gav) throws Exception {
+        return install(toArtifact(gav));
     }
 
     /**
      * Installs the given artifact and all its transitive dependencies
      */
-    public void install(GAV gav, File jar, File pom) throws Exception {
+    public GAV install(GAV gav, File jar, File pom) throws Exception {
         Artifact jarArtifact = toArtifact(gav);
         jarArtifact = jarArtifact.setFile(jar);
 
@@ -128,17 +128,17 @@ public class ArtifactInstallFactory {
             session.setLocalRepositoryManager(getRs().newLocalRepositoryManager(localRepository));
         getRs().install(session, installRequest);
 
-        install(gav);
+        return install(gav);
     }
 
     /**
      * Installs the given artifact and all its transitive dependencies
      */
-    private void install(Artifact a) throws Exception {
+    private GAV install(Artifact a) throws Exception {
         MavenRepositorySystemSession session = getSessionFactory();
         if (localRepository != null)
             session.setLocalRepositoryManager(getRs().newLocalRepositoryManager(localRepository));
-        System.out.println("Local repo: " + session.getLocalRepositoryManager().getRepository().getBasedir());
+//        System.out.println("Local repo: " + session.getLocalRepositoryManager().getRepository().getBasedir());
 
         DependencyFilter classpathFlter = DependencyFilterUtils.classpathFilter(JavaScopes.COMPILE);
 
@@ -165,7 +165,7 @@ public class ArtifactInstallFactory {
         for (ArtifactResult artifactResult : artifactResults) {
             if (toString(artifactResult.getArtifact()).equals(toString(a))) {
                 plugin.setArtifact(artifactResult.getArtifact().toString());
-                System.out.println("Analysing... " + plugin.getArtifact());
+ //               System.out.println("Analysing... " + plugin.getArtifact());
 
                 JarFile jarFile = new JarFile(artifactResult.getArtifact().getFile());
                 Enumeration<JarEntry> e = jarFile.entries();
@@ -184,7 +184,7 @@ public class ArtifactInstallFactory {
         XStream xStream = new XStream();
         xStream.processAnnotations(Plugin.class);
         xStream.processAnnotations(CommandProperties.class);
-        System.out.println(xStream.toXML(plugin));
+//        System.out.println(xStream.toXML(plugin));
 
         File xmlFile = new File(directoryStructure.getPluginDir(), a.getArtifactId() + ".bees");
         FileWriter fos = null;
@@ -194,6 +194,8 @@ public class ArtifactInstallFactory {
         } finally {
             IOUtils.closeQuietly(fos);
         }
+
+        return new GAV(plugin.getArtifact());
     }
 
     private Artifact toArtifact(GAV gav) {

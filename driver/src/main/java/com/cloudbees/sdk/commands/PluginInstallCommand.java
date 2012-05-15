@@ -14,9 +14,9 @@ import java.io.IOException;
 /**
  * @author Fabian Donze
  */
-@CLICommand("install-plugin")
+@CLICommand("sdk:plugin:install")
 @BeesCommand(group="SDK", description = "Installs a CLI plugin")
-public class InstallPluginCommand extends Command {
+public class PluginInstallCommand extends Command {
 
     String artifact;
     String localrepo;
@@ -26,7 +26,7 @@ public class InstallPluginCommand extends Command {
     @Inject
     Provider<ArtifactInstallFactory> artifactInstallFactoryProvider;
 
-    public InstallPluginCommand() {
+    public PluginInstallCommand() {
     }
 
     public void setArtifact(String artifact) {
@@ -91,9 +91,10 @@ public class InstallPluginCommand extends Command {
                 installFactory.setLocalRepository(localrepo);
             GAV gav = parseGav(artifact);
             if (pom != null && jar != null) {
-                installFactory.install(gav, jar, pom);
+                gav = installFactory.install(gav, jar, pom);
             } else
-                installFactory.install(gav);
+                gav = installFactory.install(gav);
+            System.out.println("Plugin installed: " + gav);
         } catch (Exception e) {
             throw (IOException) new IOException("Failed to install " + getArtifact()).initCause(e);
         }
