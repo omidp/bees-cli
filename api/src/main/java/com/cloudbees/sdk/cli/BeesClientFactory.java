@@ -45,8 +45,8 @@ public class BeesClientFactory implements HasOptions {
     public String proxyUser;
     @Option(name="--proxyPassword",usage="Password for HTTP proxy. Must be specified if --proxyUser is used")
     public String proxyPassword;
-
-    public String apiServer = "api.cloudbees.com";
+    @Option(name="-ep",aliases="--endPoint", usage="CloudBes API end point [us | eu]")
+    public String endPoint;
 
     private Properties properties;
 
@@ -88,11 +88,7 @@ public class BeesClientFactory implements HasOptions {
         if (secret==null)   secret = properties.getProperty("bees.api.secret");
         initCredentials();
 
-        String apiUrl;
-        if (server != null)
-            apiUrl = server;
-        else
-            apiUrl = properties.getProperty("bees.api.url", String.format("https://%s/api",apiServer));
+        String apiUrl = getApiUrl();
 
         BeesClientConfiguration beesClientConfiguration = new BeesClientConfiguration(apiUrl, key, secret, "xml", "1.0");
 
@@ -103,6 +99,19 @@ public class BeesClientFactory implements HasOptions {
         beesClientConfiguration.setProxyUser(properties.getProperty("bees.api.proxy.user", proxyUser));
         beesClientConfiguration.setProxyPassword(properties.getProperty("bees.api.proxy.password", proxyPassword));
         return beesClientConfiguration;
+    }
+
+    public String getApiUrl() {
+        String apiUrl;
+        if (server != null)
+            apiUrl = server;
+        else {
+            if (endPoint != null)
+                apiUrl = properties.getProperty("bees.api.url." + endPoint);
+            else
+                apiUrl = properties.getProperty("bees.api.url");
+        }
+        return apiUrl;
     }
 
     private void initCredentials() throws IOException
@@ -136,6 +145,7 @@ public class BeesClientFactory implements HasOptions {
         add(params, "proxy.port", proxyPort);
         add(params, "proxy.user", proxyUser);
         add(params, "proxy.password", proxyPassword);
+        add(params, "endPoint", endPoint);
         return params;
     }
 

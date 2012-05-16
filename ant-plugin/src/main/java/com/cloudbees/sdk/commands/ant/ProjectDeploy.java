@@ -96,6 +96,7 @@ public class ProjectDeploy extends AntTarget {
         addAntProperty("bees.delta", getDelta());
         addAntProperty("bees.verbose", ""+isVerbose());
         addAntProperty("bees.deploySource", ""+deploySource());
+        addAntProperty("bees.api.url", getApiUrl());
         if (getServer() != null)
             addAntProperty("bees.server", getServer());
         if (getType() != null)

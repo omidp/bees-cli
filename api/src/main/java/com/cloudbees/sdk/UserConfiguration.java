@@ -61,6 +61,9 @@ public class UserConfiguration {
         File userConfigFile = getConfigFile();
         
         Properties properties = new Properties();
+        properties.setProperty("bees.api.url.us", "https://api.cloudbees.com/api");
+        properties.setProperty("bees.api.url.eu", "https://api-eu.cloudbees.com/api");
+
         if (!Helper.loadProperties(userConfigFile, properties)) {
             properties = create(credentialType, parameters);
         }
@@ -81,9 +84,17 @@ public class UserConfiguration {
         System.out.println("You have not created a CloudBees configuration profile, let's create one now...");
 
         try {
+            String endPoint = paramaters.get("endPoint");
+/*
+                while (endPoint == null || endPoint.equalsIgnoreCase("us") || endPoint.equalsIgnoreCase("eu")) {
+                    endPoint = Helper.promptFor("Enter your default CloudBees API end point [us | eu]: ", true);
+                }
+*/
+            if (endPoint == null) endPoint = "us";
+
             String server = paramaters.get("server");
-            if (server == null)
-                server = "https://api.cloudbees.com/api";
+            if (server == null) server = properties.getProperty("bees.api.url." + endPoint);
+
             properties.setProperty("bees.api.url", server);
             String key = paramaters.get("key");
             String secret = paramaters.get("secret");

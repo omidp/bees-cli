@@ -118,6 +118,7 @@ public abstract class Command extends ICommand {
             addOption(null, "proxyPassword", true, "API server proxy password", true);
             addOption("v", "verbose", false, "verbose output");
             addOption("o", "output", true, "output format [txt | json | xml]  (Default: 'txt')");
+            addOption("ep", "endPoint", true, "CloudBes API end point [us | eu]", true);
         }
 
         boolean success;
@@ -452,8 +453,16 @@ public abstract class Command extends ICommand {
         return beesClientFactory.proxyPassword;
     }
 
-    protected String getApiserver() {
-        return beesClientFactory.apiServer;
+    protected String getEndPoint() {
+        return beesClientFactory.endPoint;
+    }
+
+    public void setEndPoint(String endPoint) {
+        beesClientFactory.endPoint = endPoint;
+    }
+
+    protected String getApiUrl() {
+        return beesClientFactory.getApiUrl();
     }
 
     public boolean isVerbose() {
@@ -489,13 +498,8 @@ public abstract class Command extends ICommand {
         return getOutput().equals("txt");
     }
 
-    // TODO: remove this after revisiting Init command
     protected Properties getConfigProperties() {
         return beesClientFactory.getConfigProperties();
-    }
-
-    protected void setApiserver(String apiserver) {
-        beesClientFactory.apiServer = apiserver;
     }
 
     protected void initDefaults(Properties properties) {

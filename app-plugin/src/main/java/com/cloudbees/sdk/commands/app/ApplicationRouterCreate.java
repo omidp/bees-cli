@@ -56,6 +56,11 @@ public class ApplicationRouterCreate extends ApplicationResourceCreate {
     }
 
     @Override
+    protected String getUsageMessage() {
+        return "ROUTER_RESOURCE_NAME";
+    }
+
+    @Override
     protected boolean execute() throws Exception {
         Map<String, String> settings = getSettings();
         if (getCertificate() != null) {

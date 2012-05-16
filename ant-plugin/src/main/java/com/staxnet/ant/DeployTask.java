@@ -107,15 +107,17 @@ public class DeployTask extends Task {
             System.out.println(String.format("application package size: %dMB", mbFileSize));
 
         try {
-            String apiUrl = getAttributeValue("server", null, false);
-            if (apiUrl == null) {
-                apiUrl = getProject().getProperty("beesConfig.bees.api.url");
-                if (apiUrl == null)
-                    apiUrl = "https://api.cloudbees.com/api";
-            }
+            String apiUrl = null;
             if (server != null) {
                 apiUrl = String.format("https://%s/api", server);
+            } else {
+                apiUrl = getAttributeValue("server", null, false);
+                if (apiUrl == null) {
+                    apiUrl = getAttributeValue("api.url", null, false);
+                }
             }
+            if (apiUrl == null)
+                throw new IllegalArgumentException("No API end point url specified");
 
             BeesClientConfiguration beesClientConfiguration = new BeesClientConfiguration(apiUrl, apiKey, apiSecret, "xml", apiVersion);
 
