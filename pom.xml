@@ -25,7 +25,6 @@
 
     <module>app-plugin</module>
     <module>database-plugin</module>
-    <module>debugger-plugin</module>
     <module>ant-plugin</module>
     <module>config-plugin</module>
   </modules>
