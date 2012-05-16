@@ -76,6 +76,12 @@ public abstract class PersistedStore<V> extends AbstractMap<String,V> {
         return key instanceof String ? put((String)key,null) : null;
     }
 
+    public V remove(String key) {
+        V old = get(key);
+        file(key).delete();
+        return old;
+    }
+
     @Override
     public void clear() {
         for (File f : listFiles())
@@ -107,7 +113,7 @@ public abstract class PersistedStore<V> extends AbstractMap<String,V> {
                 for (final File f : listFiles()) {
                     r.add(new Entry<String, V>() {
                         public String getKey() {
-                            return f.getName();
+                            return getKey_(f.getName());
                         }
 
                         public V getValue() {
@@ -133,9 +139,13 @@ public abstract class PersistedStore<V> extends AbstractMap<String,V> {
     public Set<String> keySet() {
         Set<String> r = new TreeSet<String>();
         for (File f : listFiles()) {
-            r.add(f.getName());
+            r.add(getKey_(f.getName()));
         }
         return r;
+    }
+
+    private String getKey_(String name) {
+        return name.substring(0, name.lastIndexOf('.'));
     }
 
     private File[] listFiles()  {

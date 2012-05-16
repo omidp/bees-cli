@@ -3,10 +3,12 @@ package com.cloudbees.sdk;
 import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.DirectoryStructure;
+import com.google.inject.AbstractModule;
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.apache.maven.settings.Server;
+import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
@@ -16,6 +18,7 @@ import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.graph.DependencyFilter;
+import org.sonatype.aether.impl.VersionResolver;
 import org.sonatype.aether.installation.InstallRequest;
 import org.sonatype.aether.repository.Authentication;
 import org.sonatype.aether.repository.LocalRepository;
@@ -65,14 +68,24 @@ public class ArtifactInstallFactory {
     }
 
     private RepositorySystem getRs() {
-        if (rs == null)
+        if (rs == null) {
             try {
-                return new DefaultPlexusContainer().lookup(RepositorySystem.class);
+                DefaultPlexusContainer boot = new DefaultPlexusContainer(
+                        new DefaultContainerConfiguration(),
+                        new AbstractModule() {
+                            @Override
+                            protected void configure() {
+                                bind(VersionResolver.class).to(VersionResolverImpl.class);
+                            }
+                        }
+                );
+                return boot.lookup(RepositorySystem.class);
             } catch (ComponentLookupException e) {
                 throw new RuntimeException("Unable to lookup component RepositorySystem, cannot establish Aether dependency resolver.", e);
             } catch (PlexusContainerException e) {
                 throw new RuntimeException("Unable to load RepositorySystem component by Plexus, cannot establish Aether dependency resolver.", e);
             }
+        }
         return rs;
     }
 
