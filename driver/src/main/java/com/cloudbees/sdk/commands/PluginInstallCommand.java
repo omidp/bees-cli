@@ -90,6 +90,7 @@ public class PluginInstallCommand extends Command {
             ArtifactInstallFactory installFactory = artifactInstallFactoryProvider.get();
             if (localrepo != null)
                 installFactory.setLocalRepository(localrepo);
+            installFactory.setBeesClientConfiguration(getBeesClient().getBeesClientConfiguration());
             GAV gav = parseGav(artifact);
             if (pom != null && jar != null) {
                 gav = installFactory.install(gav, jar, pom);

@@ -1,5 +1,6 @@
 package com.cloudbees.sdk;
 
+import com.cloudbees.api.BeesClientConfiguration;
 import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.DirectoryStructure;
@@ -22,6 +23,7 @@ import org.sonatype.aether.impl.VersionResolver;
 import org.sonatype.aether.installation.InstallRequest;
 import org.sonatype.aether.repository.Authentication;
 import org.sonatype.aether.repository.LocalRepository;
+import org.sonatype.aether.repository.Proxy;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.ArtifactResult;
 import org.sonatype.aether.resolution.DependencyRequest;
@@ -64,7 +66,15 @@ public class ArtifactInstallFactory {
     @Inject
     private DirectoryStructure directoryStructure;
 
+    private BeesClientConfiguration beesClientConfiguration;
+
     public ArtifactInstallFactory() {
+        // NettyAsyncHttpProvider prints some INFO-level messages. suppress them
+        Logger.getLogger("com.ning.http.client.providers.netty.NettyAsyncHttpProvider").setLevel(Level.WARNING);
+    }
+
+    public void setBeesClientConfiguration(BeesClientConfiguration beesClientConfiguration) {
+        this.beesClientConfiguration = beesClientConfiguration;
     }
 
     private RepositorySystem getRs() {
@@ -110,9 +120,28 @@ public class ArtifactInstallFactory {
             if (server != null) {
                 remoteRepository.setAuthentication(new Authentication(server.getUsername(), server.getPassword(), server.getPrivateKey(), server.getPassphrase()));
             }
+            setRemoteRepositoryProxy(remoteRepository);
             req.addRepository(remoteRepository);
         }
-        req.addRepository(new RemoteRepository("cloudbees-public-release", "default", "https://repository-cloudbees.forge.cloudbees.com/public-release/"));
+        RemoteRepository r = new RemoteRepository("cloudbees-public-release", "default", "https://repository-cloudbees.forge.cloudbees.com/public-release/");
+        setRemoteRepositoryProxy(r);
+        req.addRepository(r);
+    }
+
+    private void setRemoteRepositoryProxy(RemoteRepository repo) {
+        if (beesClientConfiguration != null) {
+            if (beesClientConfiguration.getProxyHost() != null && beesClientConfiguration.getProxyPort() > 0) {
+                String proxyType = Proxy.TYPE_HTTP;
+                if (repo.getUrl().startsWith("https"))
+                    proxyType = Proxy.TYPE_HTTPS;
+                Proxy proxy = new Proxy(proxyType, beesClientConfiguration.getProxyHost(), beesClientConfiguration.getProxyPort(), null);
+                if (beesClientConfiguration.getProxyUser() != null) {
+                    Authentication authentication = new Authentication(beesClientConfiguration.getProxyUser(), beesClientConfiguration.getProxyPassword());
+                    proxy.setAuthentication(authentication);
+                }
+                repo.setProxy(proxy);
+            }
+        }
     }
 
     public void setLocalRepository(String repository) {

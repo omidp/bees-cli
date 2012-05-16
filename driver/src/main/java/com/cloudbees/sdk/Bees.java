@@ -54,7 +54,7 @@ public class Bees {
 
     private long time(String msg, long start) {
         long end = System.currentTimeMillis();
-        System.out.println(msg + " : " + (end-start) + " ms");
+//        System.out.println(msg + " : " + (end-start) + " ms");
         return end;
     }
 
