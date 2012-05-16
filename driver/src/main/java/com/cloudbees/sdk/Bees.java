@@ -37,6 +37,7 @@ public class Bees {
     private final static String app_template_xml_name = "sdk/cloudbees-sdk-config-2.xml";
     private final static String app_template_xml_desc = "CloudBees SDK configuration";
     private static final long CHECK_INTERVAL = 1000 * 60 * 60 * 12;  // 12 hours
+    private static final String SDK_PLUGIN_INSTALL = "sdk:plugin:install";
 
     @Inject
     private CommandService commandService;
@@ -194,12 +195,12 @@ public class Bees {
     private void installPlugins() throws Exception {
         Set<Map.Entry<String, GAV>> set = pluginsToInstallList.entrySet();
         if (set.size() > 0) {
-            ICommand installPluginCmd = commandService.getCommand("sdk:plugin:install");
+            ICommand installPluginCmd = commandService.getCommand(SDK_PLUGIN_INSTALL);
             Iterator<Map.Entry<String, GAV>> it = set.iterator();
             while (it.hasNext()) {
                 Map.Entry<String, GAV> entry = it.next();
                 System.out.println("Installing plugin: " + entry.getValue());
-                installPluginCmd.run(Arrays.asList("sdk:plugin:install", entry.getValue().toString()));
+                installPluginCmd.run(Arrays.asList(SDK_PLUGIN_INSTALL, entry.getValue().toString()));
                 pluginsToInstallList.remove(entry.getKey());
             }
         }

@@ -54,8 +54,9 @@ public class PluginInstallCommand extends Command {
         String[] tokens = artifact.split(":");
         if (tokens.length == 3)
             return new GAV(artifact);
-        else
+        else if (tokens.length == 2)
             return new GAV(tokens[0], tokens[1], "LATEST");
+        throw new IllegalArgumentException("Illegal ARTIFACT format (groupId:artifact[:version])");
     }
 
     @Override

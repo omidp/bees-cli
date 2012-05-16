@@ -63,7 +63,6 @@ public abstract class Command extends ICommand {
         addDefaultOptions = true;
         LocalRepository lr = new LocalRepository();
         localRepository = new File(lr.getRepositoryPath());
-        parameters = new ArrayList<String>();
         argumentExpected = 0;
     }
 
@@ -97,6 +96,7 @@ public abstract class Command extends ICommand {
     }
 
     public void init(String commandPrefix, String commandName, String[] args) throws Exception {
+        parameters = new ArrayList<String>();
         this.commandName = commandName;
         this.args = new String[args.length-1];
         System.arraycopy(args, 1, this.args, 0, this.args.length);
