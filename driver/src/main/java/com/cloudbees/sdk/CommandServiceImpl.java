@@ -221,9 +221,9 @@ public class CommandServiceImpl implements CommandService {
         for (String group : map.keySet()) {
             sb.append(NL).append(group).append(" ").append(groupHelp).append(NL);
             for (CommandProperties cmd : map.get(group)) {
-                sb.append("    ").append(cmd.getName());
+                sb.append("    ").append(Helper.getPaddedString(cmd.getName(), 30));
                 if (cmd.getDescription() != null)
-                    sb.append("      ").append(cmd.getDescription()).append(NL);
+                    sb.append(cmd.getDescription()).append(NL);
                 else
                     sb.append(NL);
             }
