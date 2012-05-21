@@ -1,5 +1,5 @@
 #!/bin/bash
-#CloudBees SDK
+# CloudBees SDK
 if [ "$BEES_HOME" == "" ]
 then
  BEES_HOME="$STAX_HOME"
