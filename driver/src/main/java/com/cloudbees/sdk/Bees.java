@@ -87,8 +87,9 @@ public class Bees {
         // Load command definitions
         long start = System.currentTimeMillis();
         start = time("R1", start);
-        commandService.loadCommandProperties();
-        if (commandService.getCount() == 0) {
+        CommandServiceImpl service = (CommandServiceImpl) commandService;
+        service.loadCommandProperties();
+        if (service.getCount() == 0) {
             throw new RuntimeException("Cannot find bees commands");
         }
         start = time("R2", start);
@@ -101,11 +102,11 @@ public class Bees {
             installPlugins();
             start = time("R3", start);
 
-            ICommand command = commandService.getCommand(args[0]);
+            ICommand command = service.getCommand(args[0]);
             if (command==null) {
                 // no such command. print help
                 System.err.println("No such command: "+args[0]);
-                command = commandService.getCommand("help");
+                command = service.getCommand("help");
                 if (command==null)
                     throw new Error("Panic: command "+args[0]+" was not found, and even the help command was not found");
             }

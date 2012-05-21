@@ -32,8 +32,4 @@ public interface CommandService {
      */
     ICommand getCommand(String name) throws IOException, AbortException;
 
-    void loadCommandProperties();
-
-    int getCount();
-
 }
