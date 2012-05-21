@@ -1,12 +1,12 @@
-<!--# SDK commands list-->
+<!--# SDK built-in commands list-->
 <plugin>
     <!--# SDK command-->
     <command group="SDK" name="init" description="Re-initialize the SDK config file" className="com.cloudbees.sdk.commands.Init"/>
     <command group="SDK" name="help" className="com.cloudbees.sdk.commands.Help"/>
-    <command group="SDK" name="sdk:plugin:install" description="Install SDK plugin" className="com.cloudbees.sdk.commands.PluginInstallCommand"/>
+    <command group="SDK" name="sdk:plugin:install" description="Install a SDK plugin" className="com.cloudbees.sdk.commands.PluginInstallCommand"/>
     <command group="SDK" name="sdk:plugin:list" description="List SDK plugins" className="com.cloudbees.sdk.commands.PluginListCommand"/>
-    <command group="SDK" name="sdk:plugin:delete" description="Delete SDK plugin" className="com.cloudbees.sdk.commands.PluginDeleteCommand"/>
-    <command group="SDK" name="sdk:plugin:info" description="Delete SDK plugin" className="com.cloudbees.sdk.commands.PluginInfoCommand"/>
+    <command group="SDK" name="sdk:plugin:delete" description="Delete a SDK plugin" className="com.cloudbees.sdk.commands.PluginDeleteCommand"/>
+    <command group="SDK" name="sdk:plugin:info" description="Get SDK plugin information" className="com.cloudbees.sdk.commands.PluginInfoCommand"/>
 
     <!--# Internal command-->
     <command group="SDK" name="call" className="com.cloudbees.sdk.commands.Call" experimental="true" />
