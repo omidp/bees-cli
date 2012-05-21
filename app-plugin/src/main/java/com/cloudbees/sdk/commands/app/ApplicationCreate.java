@@ -116,7 +116,7 @@ public class ApplicationCreate extends ApplicationBase {
             addOption( null, "withCD", false, "with Continuous Deployment (create|use a repository and create a Continuous Integration job with application Deployment)");
             addOption( null, "ciOptions", true, "Continuous Integration optional parameters", true);
             addOption( null, "useApp", false, "use existing application (do not create a new one) if the application already exists");
-//            addOption( "at", "template", true, "Application template");
+            addOption( "at", "template", true, "Application archetype url template (i.e. git://git.cloudbees.com/cloudbees/the-repository-name)");
             addOption( "rt", "repoType", true, "the repository type [git, svn], default: git", true);
             addOption( "ct", "ciType", true, "the Continuous Integration type [maven, play], default: maven");
             addOption( "t", "type", true, "the deployment container type [tomcat, jboss], default: tomcat");
