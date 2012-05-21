@@ -59,11 +59,11 @@ public class CommandServiceImpl implements CommandService {
     @Inject
     public CommandServiceImpl(DirectoryStructure structure) {
         this.structure = structure;
-        localRepoLoaded = false;
     }
 
     public void loadCommandProperties() {
         plugins = loadCommandFiles(structure.sdkRepository, structure.pluginExtension);
+        localRepoLoaded = false;
     }
 
     private ArrayList<Plugin> loadCommandFiles(File dir, String fileExtension) {
@@ -75,6 +75,7 @@ public class CommandServiceImpl implements CommandService {
                 plugins.addAll(loadPlugins(new File(dir, file)));
             }
         }
+        localRepoLoaded = true;
 
         return plugins;
     }
@@ -168,7 +169,6 @@ public class CommandServiceImpl implements CommandService {
         if (pluginCommand == null) {
             if (!localRepoLoaded) {
                 List<Plugin> localRepoCmds = loadCommandFiles(structure.getPluginDir(), structure.pluginExtension);
-                localRepoLoaded = true;
                 plugins.addAll(localRepoCmds);
                 pluginCommand = getPluginCommand(name, localRepoCmds);
             }
@@ -207,17 +207,26 @@ public class CommandServiceImpl implements CommandService {
         Map<String, List<CommandProperties>> map = new LinkedHashMap<String, List<CommandProperties>>();
         if (!localRepoLoaded) plugins.addAll(loadCommandFiles(structure.getPluginDir(), structure.pluginExtension));
         for (Plugin plugin : plugins) {
-            for (CommandProperties cmd : plugin.getProperties()) {
-                if (cmd.getGroup() != null && (!cmd.isExperimental() || all)) {
-                    List<CommandProperties> list = map.get(cmd.getGroup());
-                    if (list == null) {
-                        list = new ArrayList<CommandProperties>();
-                        map.put(cmd.getGroup(), list);
-                    }
-                    list.add(cmd);
+            setPluginCommandProperties(plugin, map, all);
+        }
+        buildHelp(sb, groupHelp, map);
+        return sb.toString();
+    }
+
+    private void setPluginCommandProperties(Plugin plugin, Map<String, List<CommandProperties>> map, boolean all) {
+        for (CommandProperties cmd : plugin.getProperties()) {
+            if (cmd.getGroup() != null && (!cmd.isExperimental() || all)) {
+                List<CommandProperties> list = map.get(cmd.getGroup());
+                if (list == null) {
+                    list = new ArrayList<CommandProperties>();
+                    map.put(cmd.getGroup(), list);
                 }
+                list.add(cmd);
             }
         }
+    }
+
+    private void buildHelp(StringBuilder sb, String groupHelp, Map<String, List<CommandProperties>> map) {
         for (String group : map.keySet()) {
             sb.append(NL).append(group).append(" ").append(groupHelp).append(NL);
             for (CommandProperties cmd : map.get(group)) {
@@ -228,6 +237,13 @@ public class CommandServiceImpl implements CommandService {
                     sb.append(NL);
             }
         }
+    }
+
+    public String getHelp(Plugin plugin, String groupHelp, boolean all) {
+        StringBuilder sb = new StringBuilder();
+        Map<String, List<CommandProperties>> map = new LinkedHashMap<String, List<CommandProperties>>();
+        setPluginCommandProperties(plugin, map, all);
+        buildHelp(sb, groupHelp, map);
         return sb.toString();
     }
 
@@ -241,16 +257,25 @@ public class CommandServiceImpl implements CommandService {
         return gavs;
     }
 
-    public GAV deletePlugin(String name) {
+    public Plugin getPlugin(String name) {
         if (!localRepoLoaded) plugins.addAll(loadCommandFiles(structure.getPluginDir(), structure.pluginExtension));
         for (Plugin plugin : plugins) {
             if (plugin.getArtifact() != null) {
                 GAV gav = new GAV(plugin.getArtifact());
                 if (gav.artifactId.equalsIgnoreCase(name)) {
-                    File file = new File(structure.getPluginDir(), gav.artifactId + structure.pluginExtension);
-                    if (file.delete()) return gav;
+                    return plugin;
                 }
             }
+        }
+        return null;
+    }
+
+    public GAV deletePlugin(String name) {
+        Plugin plugin = getPlugin(name);
+        if (plugin != null) {
+            GAV gav = new GAV(plugin.getArtifact());
+            File file = new File(structure.getPluginDir(), gav.artifactId + structure.pluginExtension);
+            if (file.delete()) return gav;
         }
         return null;
     }

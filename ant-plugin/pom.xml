@@ -21,9 +21,9 @@
       <version>${parent.version}</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
+    <dependency><!-- used by create command -->
       <groupId>net.stax</groupId>
-      <artifactId>stax-appserver-core</artifactId>
+      <artifactId>stax-appgen</artifactId>
     </dependency>
     <dependency>
       <groupId>net.stax</groupId>

@@ -4,21 +4,34 @@ import com.cloudbees.sdk.CommandServiceImpl;
 import com.cloudbees.sdk.GAV;
 import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandService;
 import com.cloudbees.sdk.utils.Helper;
-
-import javax.inject.Inject;
 
 /**
  * @author Fabian Donze
  */
 @CLICommand("sdk:plugin:list")
 @BeesCommand(group="SDK", description = "List CLI plugins")
-public class PluginListCommand extends Command {
-    @Inject
-    CommandService commandService;
+public class PluginListCommand extends PluginVersionCommand {
+    private Boolean check;
 
     public PluginListCommand() {
+    }
+
+    public boolean check() {
+        return check == null ? false : check;
+    }
+
+    public void setCheck(Boolean check) {
+        this.check = check;
+    }
+
+    @Override
+    protected boolean preParseCommandLine() {
+        if (super.preParseCommandLine()) {
+            addOption(null, "check", false, "check for newest versions");
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -29,6 +42,12 @@ public class PluginListCommand extends Command {
         for (GAV gav: service.getPlugins()) {
             String msg = s(gav.artifactId, 18)+ " " + s(gav.groupId, 36) + gav.version;
             System.out.println(msg);
+        }
+        if (check()) {
+            for (GAV gav: service.getPlugins()) {
+                System.out.println();
+                checkVersion(gav);
+            }
         }
         return true;
     }

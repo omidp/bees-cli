@@ -25,12 +25,12 @@ import org.sonatype.aether.repository.Authentication;
 import org.sonatype.aether.repository.LocalRepository;
 import org.sonatype.aether.repository.Proxy;
 import org.sonatype.aether.repository.RemoteRepository;
-import org.sonatype.aether.resolution.ArtifactResult;
-import org.sonatype.aether.resolution.DependencyRequest;
+import org.sonatype.aether.resolution.*;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.artifact.JavaScopes;
 import org.sonatype.aether.util.artifact.SubArtifact;
 import org.sonatype.aether.util.filter.DependencyFilterUtils;
+import org.sonatype.aether.version.Version;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -108,10 +108,8 @@ public class ArtifactInstallFactory {
         return sessionFactory;
     }
 
-    /**
-     * Sets up repositories we use to resolve artifacts.
-     */
-    private void configureRepositories(CollectRequest req) {
+    private List<RemoteRepository> getRepositories() {
+        List<RemoteRepository> repositories = new ArrayList<RemoteRepository>();
         MavenDependencyResolverSettings resolverSettings = new MavenDependencyResolverSettings();
         resolverSettings.setUseMavenCentral(true);
         List<RemoteRepository> repos = resolverSettings.getRemoteRepositories();
@@ -121,11 +119,12 @@ public class ArtifactInstallFactory {
                 remoteRepository.setAuthentication(new Authentication(server.getUsername(), server.getPassword(), server.getPrivateKey(), server.getPassphrase()));
             }
             setRemoteRepositoryProxy(remoteRepository);
-            req.addRepository(remoteRepository);
+            repositories.add(remoteRepository);
         }
         RemoteRepository r = new RemoteRepository("cloudbees-public-release", "default", "https://repository-cloudbees.forge.cloudbees.com/public-release/");
         setRemoteRepositoryProxy(r);
-        req.addRepository(r);
+        repositories.add(r);
+        return repositories;
     }
 
     private void setRemoteRepositoryProxy(RemoteRepository repo) {
@@ -146,6 +145,23 @@ public class ArtifactInstallFactory {
 
     public void setLocalRepository(String repository) {
         localRepository = new LocalRepository(repository);
+    }
+
+    public VersionRangeResult findVersions(GAV gav) throws Exception {
+        GAV findGAV = new GAV(gav.groupId, gav.artifactId, "[0,)");
+        Artifact artifact = new DefaultArtifact( findGAV.toString() );
+
+        MavenRepositorySystemSession session = getSessionFactory();
+        if (localRepository != null)
+            session.setLocalRepositoryManager(getRs().newLocalRepositoryManager(localRepository));
+
+        VersionRangeRequest rangeRequest = new VersionRangeRequest();
+        rangeRequest.setArtifact(artifact);
+        rangeRequest.setRepositories(getRepositories());
+
+        VersionRangeResult rangeResult = getRs().resolveVersionRange(session, rangeRequest);
+
+        return rangeResult;
     }
 
     public GAV install(GAV gav) throws Exception {
@@ -186,7 +202,7 @@ public class ArtifactInstallFactory {
 
         CollectRequest collectRequest = new CollectRequest();
         collectRequest.setRoot(new Dependency(a, JavaScopes.COMPILE));
-        configureRepositories(collectRequest);
+        collectRequest.setRepositories(getRepositories());
 
         DependencyRequest dependencyRequest = new DependencyRequest(collectRequest, classpathFlter);
 

@@ -6,6 +6,7 @@
     <command group="SDK" name="sdk:plugin:install" description="Install SDK plugin" className="com.cloudbees.sdk.commands.PluginInstallCommand"/>
     <command group="SDK" name="sdk:plugin:list" description="List SDK plugins" className="com.cloudbees.sdk.commands.PluginListCommand"/>
     <command group="SDK" name="sdk:plugin:delete" description="Delete SDK plugin" className="com.cloudbees.sdk.commands.PluginDeleteCommand"/>
+    <command group="SDK" name="sdk:plugin:info" description="Delete SDK plugin" className="com.cloudbees.sdk.commands.PluginInfoCommand"/>
 
     <!--# Internal command-->
     <command group="SDK" name="call" className="com.cloudbees.sdk.commands.Call" experimental="true" />
