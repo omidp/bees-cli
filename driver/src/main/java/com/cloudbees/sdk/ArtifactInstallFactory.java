@@ -5,6 +5,7 @@ import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.DirectoryStructure;
 import com.google.inject.AbstractModule;
+import com.ning.http.client.providers.netty.NettyAsyncHttpProvider;
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
@@ -14,6 +15,7 @@ import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenDependencyResolverSettings;
+import org.slf4j.LoggerFactory;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;
@@ -25,12 +27,14 @@ import org.sonatype.aether.repository.Authentication;
 import org.sonatype.aether.repository.LocalRepository;
 import org.sonatype.aether.repository.Proxy;
 import org.sonatype.aether.repository.RemoteRepository;
-import org.sonatype.aether.resolution.*;
+import org.sonatype.aether.resolution.ArtifactResult;
+import org.sonatype.aether.resolution.DependencyRequest;
+import org.sonatype.aether.resolution.VersionRangeRequest;
+import org.sonatype.aether.resolution.VersionRangeResult;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.artifact.JavaScopes;
 import org.sonatype.aether.util.artifact.SubArtifact;
 import org.sonatype.aether.util.filter.DependencyFilterUtils;
-import org.sonatype.aether.version.Version;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -71,6 +75,7 @@ public class ArtifactInstallFactory {
     public ArtifactInstallFactory() {
         // NettyAsyncHttpProvider prints some INFO-level messages. suppress them
         Logger.getLogger("com.ning.http.client.providers.netty.NettyAsyncHttpProvider").setLevel(Level.WARNING);
+        LoggerFactory.getLogger(NettyAsyncHttpProvider.class);
     }
 
     public void setBeesClientConfiguration(BeesClientConfiguration beesClientConfiguration) {
