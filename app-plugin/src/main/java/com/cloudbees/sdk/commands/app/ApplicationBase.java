@@ -68,9 +68,9 @@ public abstract class  ApplicationBase extends Command {
         if (appid == null || appid.equals(""))
             throw new IllegalArgumentException("No application id specified");
 
-        String defaultAppDomain = getAccount();
         String[] appIdParts = appid.split("/");
         if (appIdParts.length < 2) {
+            String defaultAppDomain = getAccount();
             if (defaultAppDomain != null && !defaultAppDomain.equals("")) {
                 appid = defaultAppDomain + "/" + appid;
             } else {

@@ -25,6 +25,7 @@ import java.util.Arrays;
 @BeesCommand(group="SDK", description = "CLI plugin info")
 public class PluginInfoCommand extends PluginVersionCommand {
     public PluginInfoCommand() {
+        setArgumentExpected(1);
     }
 
     @Override
