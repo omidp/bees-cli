@@ -227,7 +227,7 @@ public class ArtifactInstallFactory {
 
         for (ArtifactResult artifactResult : artifactResults) {
             if (toString(artifactResult.getArtifact()).equals(toString(a))) {
-                plugin.setArtifact(artifactResult.getArtifact().toString());
+                plugin.setArtifact(new GAV(artifactResult.getArtifact().toString()).toString());
  //               System.out.println("Analysing... " + plugin.getArtifact());
 
                 JarFile jarFile = new JarFile(artifactResult.getArtifact().getFile());
