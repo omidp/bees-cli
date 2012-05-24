@@ -252,6 +252,7 @@ public class ArtifactInstallFactory {
         File xmlFile = new File(directoryStructure.getPluginDir(), a.getArtifactId() + ".bees");
         FileWriter fos = null;
         try {
+            xmlFile.getParentFile().mkdirs();
             fos = new FileWriter(xmlFile);
             fos.write(xStream.toXML(plugin));
         } finally {
