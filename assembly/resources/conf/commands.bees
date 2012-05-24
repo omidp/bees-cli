@@ -2,7 +2,7 @@
 <plugin>
     <!--# SDK command-->
     <command group="SDK" name="init" description="Re-initialize the SDK config file" className="com.cloudbees.sdk.commands.Init"/>
-    <command group="SDK" name="help" className="com.cloudbees.sdk.commands.Help"/>
+    <command group="SDK" name="help" description="List all commands" className="com.cloudbees.sdk.commands.Help"/>
     <command group="SDK" name="sdk:plugin:install" description="Install a SDK plugin" className="com.cloudbees.sdk.commands.PluginInstallCommand"/>
     <command group="SDK" name="sdk:plugin:list" description="List SDK plugins" className="com.cloudbees.sdk.commands.PluginListCommand"/>
     <command group="SDK" name="sdk:plugin:delete" description="Delete a SDK plugin" className="com.cloudbees.sdk.commands.PluginDeleteCommand"/>
