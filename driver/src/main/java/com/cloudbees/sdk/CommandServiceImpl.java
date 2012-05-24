@@ -348,9 +348,7 @@ public class CommandServiceImpl implements CommandService {
                 return null; // failed to find the command
             }
             return p.get();
-        } catch (IOException e) {
-            throw (IOException) new IOException("Failed to resolve command: " + name).initCause(e);
-        } catch (InstantiationException e) {
+        } catch (Throwable e) {
             throw (IOException) new IOException("Failed to resolve command: " + name).initCause(e);
         }
     }
