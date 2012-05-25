@@ -9,7 +9,7 @@ import com.cloudbees.sdk.utils.Helper;
 /**
  * @author Fabian Donze
  */
-@CLICommand("sdk:plugin:list")
+@CLICommand("plugin:list")
 @BeesCommand(group="SDK", description = "List CLI plugins")
 public class PluginListCommand extends PluginVersionCommand {
     private Boolean check;

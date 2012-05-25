@@ -12,7 +12,7 @@ import javax.inject.Inject;
 /**
  * @author Fabian Donze
  */
-@CLICommand("sdk:plugin:list")
+@CLICommand("plugin:list")
 @BeesCommand(group="SDK", description = "List CLI plugins")
 public class PluginDeleteCommand extends Command {
     private Boolean force;

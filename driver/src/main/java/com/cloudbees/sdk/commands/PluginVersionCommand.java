@@ -1,6 +1,7 @@
 package com.cloudbees.sdk.commands;
 
 import com.cloudbees.sdk.ArtifactInstallFactory;
+import com.cloudbees.sdk.Bees;
 import com.cloudbees.sdk.GAV;
 import com.cloudbees.sdk.cli.CommandService;
 import com.cloudbees.sdk.cli.ICommand;
@@ -18,7 +19,6 @@ import java.util.Arrays;
  * @author Fabian Donze
  */
 public abstract class PluginVersionCommand extends Command {
-    private static final String SDK_PLUGIN_INSTALL = "sdk:plugin:install";
 
     private Boolean force;
 
@@ -77,12 +77,12 @@ public abstract class PluginVersionCommand extends Command {
                 System.out.println();
                 GAV newGAV = new GAV(gav.groupId, gav.artifactId, newestVersion.toString());
                 if (install) {
-                    ICommand installPluginCmd = commandService.getCommand(SDK_PLUGIN_INSTALL);
+                    ICommand installPluginCmd = commandService.getCommand(Bees.SDK_PLUGIN_INSTALL);
                     System.out.println("Installing plugin: " + newGAV);
-                    installPluginCmd.run(Arrays.asList(SDK_PLUGIN_INSTALL, newGAV.toString()));
+                    installPluginCmd.run(Arrays.asList(Bees.SDK_PLUGIN_INSTALL, newGAV.toString()));
                 } else {
                     System.out.println("You can install the latest version with:");
-                    System.out.println("> bees " + SDK_PLUGIN_INSTALL + " " + newGAV.toString());
+                    System.out.println("> bees " + Bees.SDK_PLUGIN_INSTALL + " " + newGAV.toString());
                 }
             } else {
                 System.out.println("The latest version is already installed");

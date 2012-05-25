@@ -1,27 +1,17 @@
 package com.cloudbees.sdk.commands;
 
-import com.cloudbees.sdk.ArtifactInstallFactory;
 import com.cloudbees.sdk.CommandServiceImpl;
 import com.cloudbees.sdk.GAV;
 import com.cloudbees.sdk.Plugin;
 import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.CommandService;
-import com.cloudbees.sdk.cli.ICommand;
-import com.cloudbees.sdk.utils.Helper;
-import com.google.inject.Provider;
-import hudson.util.VersionNumber;
-import org.sonatype.aether.resolution.VersionRangeResult;
-import org.sonatype.aether.version.Version;
 
-import javax.inject.Inject;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * @author Fabian Donze
  */
-@CLICommand("sdk:plugin:info")
+@CLICommand("plugin:info")
 @BeesCommand(group="SDK", description = "CLI plugin info")
 public class PluginInfoCommand extends PluginVersionCommand {
     private Boolean check;

@@ -14,7 +14,7 @@ import java.io.IOException;
 /**
  * @author Fabian Donze
  */
-@CLICommand("sdk:plugin:install")
+@CLICommand("plugin:install")
 @BeesCommand(group="SDK", description = "Installs a CLI plugin")
 public class PluginInstallCommand extends Command {
 
