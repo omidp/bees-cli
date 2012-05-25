@@ -12,8 +12,8 @@ import javax.inject.Inject;
 /**
  * @author Fabian Donze
  */
-@CLICommand("plugin:list")
-@BeesCommand(group="SDK", description = "List CLI plugins")
+@CLICommand("plugin:delete")
+@BeesCommand(group="SDK", description = "Delete a SDK plugin")
 public class PluginDeleteCommand extends Command {
     private Boolean force;
 
@@ -36,7 +36,7 @@ public class PluginDeleteCommand extends Command {
     @Override
     protected boolean preParseCommandLine() {
         // add the Options
-        addOption( "f", "force", false, "force update to newest version without prompting" );
+        addOption( "f", "force", false, "force deletion without prompting" );
 
         return true;
     }
