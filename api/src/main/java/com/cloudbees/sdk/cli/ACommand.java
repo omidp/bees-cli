@@ -8,7 +8,7 @@ import java.util.List;
  * @author Kohsuke Kawaguchi
  */
 @ExtensionPoint
-public abstract class ICommand {
+public abstract class ACommand {
 
     /**
      * Executes this command.

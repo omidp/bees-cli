@@ -56,12 +56,12 @@ public class PluginInstallCommand extends Command {
             return new GAV(artifact);
         else if (tokens.length == 2)
             return new GAV(tokens[0], tokens[1], "LATEST");
-        throw new IllegalArgumentException("Illegal ARTIFACT format (groupId:artifact[:version])");
+        throw new IllegalArgumentException("Illegal ARTIFACT format (groupId:name[:version])");
     }
 
     @Override
     protected String getUsageMessage() {
-        return "ARTIFACT (groupId:artifact[:version] of the plugin to install)";
+        return "ARTIFACT (groupId:name[:version])";
     }
 
     @Override
@@ -69,7 +69,7 @@ public class PluginInstallCommand extends Command {
         // add the Options
         addOption("j", "jar", true, "the plugin jar file to install");
         addOption("p", "pom", true, "the plugin pom.xml file to install");
-        addOption("l", "localrepo", true, "the maven local repo", true);
+        addOption(null, "localrepo", true, "the maven local repo", true);
 
         return true;
     }

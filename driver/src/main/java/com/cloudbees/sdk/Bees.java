@@ -3,7 +3,7 @@ package com.cloudbees.sdk;
 import com.cloudbees.api.BeesClientException;
 import com.cloudbees.sdk.cli.CommandScope;
 import com.cloudbees.sdk.cli.CommandService;
-import com.cloudbees.sdk.cli.ICommand;
+import com.cloudbees.sdk.cli.ACommand;
 import com.cloudbees.sdk.extensibility.AnnotationLiteral;
 import com.cloudbees.sdk.utils.Helper;
 import com.google.inject.AbstractModule;
@@ -102,7 +102,7 @@ public class Bees {
             installPlugins();
             start = time("R3", start);
 
-            ICommand command = service.getCommand(args[0]);
+            ACommand command = service.getCommand(args[0]);
             if (command==null) {
                 // no such command. print help
                 System.err.println("No such command: "+args[0]);
@@ -196,7 +196,7 @@ public class Bees {
     private void installPlugins() throws Exception {
         Set<Map.Entry<String, GAV>> set = pluginsToInstallList.entrySet();
         if (set.size() > 0) {
-            ICommand installPluginCmd = commandService.getCommand(SDK_PLUGIN_INSTALL);
+            ACommand installPluginCmd = commandService.getCommand(SDK_PLUGIN_INSTALL);
             Iterator<Map.Entry<String, GAV>> it = set.iterator();
             while (it.hasNext()) {
                 Map.Entry<String, GAV> entry = it.next();
@@ -222,9 +222,12 @@ public class Bees {
         } catch (BeesClientException e) {
             System.err.println();
             String errCode = e.getError().getErrorCode();
-            if (errCode != null && errCode.equals("AuthFailure"))
-                System.err.println("ERROR: Authentication failure, please check credentials!");
-            else
+            if (errCode != null && errCode.equals("AuthFailure")) {
+                if (e.getError().getMessage() != null)
+                    System.err.println("ERROR: " +  e.getError().getMessage());
+                else
+                    System.err.println("ERROR: Authentication failure, please check credentials!");
+            } else
                 System.err.println("ERROR: " +  e.getMessage());
 //            e.printStackTrace();
             System.exit(2);

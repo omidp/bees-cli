@@ -11,7 +11,7 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
- * Marks a class as a discoverable implementation of {@link ICommand} bound to a particular command name.
+ * Marks a class as a discoverable implementation of {@link ACommand} bound to a particular command name.
  *
  * <p>
  * This is a binding annotation, so additional characteristics about a command needs to be defined

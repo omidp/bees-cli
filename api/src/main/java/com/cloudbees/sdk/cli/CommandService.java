@@ -30,6 +30,6 @@ public interface CommandService {
      *      If an anticipated problem happens, this exception is thrown. The caller must
      *      handle this exception without reporting a stack trace.
      */
-    ICommand getCommand(String name) throws IOException, AbortException;
+    ACommand getCommand(String name) throws IOException, AbortException;
 
 }

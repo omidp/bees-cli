@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Partial implementation of {@link ICommand} that uses args4j.
+ * Partial implementation of {@link ACommand} that uses args4j.
  * @author Kohsuke Kawaguchi
  */
-public abstract class AbstractCommand extends ICommand {
+public abstract class AbstractCommand extends ACommand {
     @Inject
     Verbose verbose;
 

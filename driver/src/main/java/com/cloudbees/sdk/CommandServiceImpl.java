@@ -162,7 +162,7 @@ public class CommandServiceImpl implements CommandService {
             return attrNode.getNodeValue();
     }
 
-    public ICommand getCommand(String name) throws IOException {
+    public ACommand getCommand(String name) throws IOException {
         PluginCommand pluginCommand = getPluginCommand(name, plugins);
 
         // Look for additional command definition in the local repository
@@ -174,7 +174,7 @@ public class CommandServiceImpl implements CommandService {
             }
         }
 
-        ICommand command = null;
+        ACommand command = null;
 
         if (pluginCommand != null) {
             command = getCommand(name, pluginCommand);
@@ -319,7 +319,7 @@ public class CommandServiceImpl implements CommandService {
     /**
      * Look up a command from Guice,
      */
-    private ICommand getInjectorCommand(String name, List<String> jars) throws IOException {
+    private ACommand getInjectorCommand(String name, List<String> jars) throws IOException {
         try {
             Injector injector = this.injector;
 
@@ -335,14 +335,14 @@ public class CommandServiceImpl implements CommandService {
 
             // CommandResolvers take precedence over our default
             for (CommandResolver cr : resolvers.list(injector)) {
-                ICommand cmd = cr.resolve(name);
+                ACommand cmd = cr.resolve(name);
                 if (cmd!=null)
                     return cmd;
             }
 
-            Provider<ICommand> p;
+            Provider<ACommand> p;
             try {
-                p = injector.getProvider(Key.get(ICommand.class, AnnotationLiteral.of(CLICommand.class, name)));
+                p = injector.getProvider(Key.get(ACommand.class, AnnotationLiteral.of(CLICommand.class, name)));
             } catch (ConfigurationException e) {
                 if (verbose.isVerbose()) LOGGER.log(Level.WARNING, "failed to find the command", e);
                 return null; // failed to find the command
@@ -361,8 +361,8 @@ public class CommandServiceImpl implements CommandService {
         return new URLClassLoader(urls.toArray(new URL[urls.size()]), parent);
     }
 
-    private ICommand getCommand(String name, PluginCommand pluginCommand) throws IOException {
-        ICommand command;
+    private ACommand getCommand(String name, PluginCommand pluginCommand) throws IOException {
+        ACommand command;
         try {
             String className = pluginCommand.commandProperties.getClassName();
             List<String> jars = pluginCommand.plugin.getJars();
@@ -374,7 +374,7 @@ public class CommandServiceImpl implements CommandService {
                 extClassLoader = createClassLoader(urls, extClassLoader);
                 injector = createChildModule(injector, extClassLoader);
             }
-            Provider<ICommand> p;
+            Provider<ACommand> p;
             try {
                 Class cl = Class.forName(className, true, extClassLoader);
                 p = injector.getProvider(Key.get(cl));

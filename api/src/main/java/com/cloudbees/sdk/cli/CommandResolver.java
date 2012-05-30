@@ -3,7 +3,7 @@ package com.cloudbees.sdk.cli;
 import com.cloudbees.sdk.extensibility.ExtensionPoint;
 
 /**
- * Participates in the resolution process of the command name to {@link ICommand} object.
+ * Participates in the resolution process of the command name to {@link ACommand} object.
  *
  * To contribute this extension point to bees CLI, you need to be an extension, not just a plugin.
  * 
@@ -11,5 +11,5 @@ import com.cloudbees.sdk.extensibility.ExtensionPoint;
  */
 @ExtensionPoint
 public abstract class CommandResolver {
-    public abstract ICommand resolve(String commandName);
+    public abstract ACommand resolve(String commandName);
 }

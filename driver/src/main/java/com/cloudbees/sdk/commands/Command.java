@@ -2,7 +2,7 @@ package com.cloudbees.sdk.commands;
 
 import com.cloudbees.api.BeesClient;
 import com.cloudbees.sdk.cli.BeesClientFactory;
-import com.cloudbees.sdk.cli.ICommand;
+import com.cloudbees.sdk.cli.ACommand;
 import com.cloudbees.sdk.cli.Verbose;
 import com.staxnet.repository.LocalRepository;
 import com.thoughtworks.xstream.XStream;
@@ -26,7 +26,7 @@ import java.util.Properties;
 /**
  * @author Fabian Donze
  */
-public abstract class Command extends ICommand {
+public abstract class Command extends ACommand {
     private String commandName;
 
     private String[] args;

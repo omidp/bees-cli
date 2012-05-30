@@ -4,7 +4,7 @@ import com.cloudbees.sdk.CommandServiceImpl;
 import com.cloudbees.sdk.cli.AbstractCommand;
 import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
-import com.cloudbees.sdk.cli.ICommand;
+import com.cloudbees.sdk.cli.ACommand;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
 
@@ -34,7 +34,7 @@ public class Help extends AbstractCommand {
 
     @Override
     public int main() throws Exception {
-        ICommand cmd = null;
+        ACommand cmd = null;
 
         if (subCommand!=null)
             cmd = commandService.getCommand(subCommand);

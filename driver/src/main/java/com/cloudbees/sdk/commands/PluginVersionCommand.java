@@ -4,7 +4,7 @@ import com.cloudbees.sdk.ArtifactInstallFactory;
 import com.cloudbees.sdk.Bees;
 import com.cloudbees.sdk.GAV;
 import com.cloudbees.sdk.cli.CommandService;
-import com.cloudbees.sdk.cli.ICommand;
+import com.cloudbees.sdk.cli.ACommand;
 import com.cloudbees.sdk.utils.Helper;
 import com.google.inject.Provider;
 import hudson.util.VersionNumber;
@@ -45,7 +45,7 @@ public abstract class PluginVersionCommand extends Command {
     protected boolean preParseCommandLine() {
         // add the Options
         addOption("f", "force", false, "force update to newest version without prompting");
-        addOption("l", "localrepo", true, "the maven local repo", true);
+        addOption(null, "localrepo", true, "the maven local repo", true);
 
         return true;
     }
@@ -77,7 +77,7 @@ public abstract class PluginVersionCommand extends Command {
                 System.out.println();
                 GAV newGAV = new GAV(gav.groupId, gav.artifactId, newestVersion.toString());
                 if (install) {
-                    ICommand installPluginCmd = commandService.getCommand(Bees.SDK_PLUGIN_INSTALL);
+                    ACommand installPluginCmd = commandService.getCommand(Bees.SDK_PLUGIN_INSTALL);
                     System.out.println("Installing plugin: " + newGAV);
                     installPluginCmd.run(Arrays.asList(Bees.SDK_PLUGIN_INSTALL, newGAV.toString()));
                 } else {
