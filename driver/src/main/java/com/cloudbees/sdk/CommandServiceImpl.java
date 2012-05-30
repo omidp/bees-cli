@@ -83,22 +83,6 @@ public class CommandServiceImpl implements CommandService {
     private ArrayList<Plugin> loadPlugins(File commandFile) {
         ArrayList<Plugin> plugins = new ArrayList<Plugin>();
 
-/*
-        FileReader reader = null;
-        try {
-            reader = new FileReader(commandFile);
-            Plugin plugin = (Plugin) getXStream().fromXML(reader);
-            plugins.add(plugin);
-        } catch (IOException ex) {
-            System.err.println("ERROR: Cannot find file: " + commandFile);
-        } finally {
-            if (reader != null) try {
-                reader.close();
-            } catch (IOException ignored) {
-            }
-        }
-*/
-
         try {
             Plugin plugin = parsePluginFile(commandFile);
             plugins.add(plugin);
@@ -188,12 +172,6 @@ public class CommandServiceImpl implements CommandService {
                 }
             }
         }
-//            command.setCommandProperties(commandProp);
-
-/*
-        if (command != null)
-            command.setJars(pluginCommand.plugin.getJars());
-*/
 
         return command;
     }
@@ -388,27 +366,6 @@ public class CommandServiceImpl implements CommandService {
         }
         return command;
     }
-
-/*
-    private static XStream getXStream() {
-        if (xstream == null) {
-//            long start = System.currentTimeMillis();
-            xstream = new XStream();
-            xstream.setMode(XStream.NO_REFERENCES);
-*/
-/*
-            xstream.alias("plugin", Plugin.class);
-            xstream.addImplicitCollection(Plugin.class, "properties");
-            xstream.alias("command", CommandProperties.class);
-*//*
-
-            xstream.processAnnotations(Plugin.class);
-            xstream.processAnnotations(CommandProperties.class);
-//            System.out.println("XStream: " + (System.currentTimeMillis()-start) + " ms");
-        }
-        return xstream;
-    }
-*/
 
     protected Injector createChildModule(Injector parent, final ClassLoader cl) throws InstantiationException, IOException {
         final List<Module> childModules = new ArrayList<Module>();

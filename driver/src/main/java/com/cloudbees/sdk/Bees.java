@@ -34,7 +34,7 @@ public class Bees {
     public static VersionNumber version = loadVersion();
 
     private final static String app_template_xml_url = "http://cloudbees-downloads.s3.amazonaws.com/";
-    private final static String app_template_xml_name = "sdk/cloudbees-sdk-config-2.xml";
+    private final static String app_template_xml_name = "sdk/cloudbees-sdk-config-3.xml";
     private final static String app_template_xml_desc = "CloudBees SDK configuration";
     private static final long CHECK_INTERVAL = 1000 * 60 * 60 * 12;  // 12 hours
     public static final String SDK_PLUGIN_INSTALL = "plugin:install";
@@ -79,6 +79,12 @@ public class Bees {
         this.injector = injector;
         this.injector.injectMembers(this);
         start = time("S3", start);
+        CommandServiceImpl service = (CommandServiceImpl) commandService;
+        service.loadCommandProperties();
+        if (service.getCount() == 0) {
+            throw new RuntimeException("Cannot find bees commands");
+        }
+
         initialize(false);
         start = time("S4", start);
     }
@@ -87,36 +93,29 @@ public class Bees {
         // Load command definitions
         long start = System.currentTimeMillis();
         start = time("R1", start);
-        CommandServiceImpl service = (CommandServiceImpl) commandService;
-        service.loadCommandProperties();
-        if (service.getCount() == 0) {
-            throw new RuntimeException("Cannot find bees commands");
-        }
-        start = time("R2", start);
-
         if (args.length==0) args = new String[]{"help"};
 
         Object context = CommandScopeImpl.begin();
         try {
             // Install plugins
             installPlugins();
-            start = time("R3", start);
+            start = time("R2", start);
 
-            ACommand command = service.getCommand(args[0]);
+            ACommand command = commandService.getCommand(args[0]);
             if (command==null) {
                 // no such command. print help
                 System.err.println("No such command: "+args[0]);
-                command = service.getCommand("help");
+                command = commandService.getCommand("help");
                 if (command==null)
                     throw new Error("Panic: command "+args[0]+" was not found, and even the help command was not found");
             }
-            start = time("R4", start);
+            start = time("R3", start);
 
             int r = command.run(Arrays.asList(args));
             if (r == 99) {
                 initialize(true);
             }
-            start = time("R5", start);
+            start = time("R4", start);
             return r;
         } finally {
             CommandScopeImpl.end(context);
@@ -126,7 +125,6 @@ public class Bees {
     private String getHome() {
         return System.getProperty("bees.home");
     }
-
 
     private void initialize(boolean force) throws Exception {
         LocalRepository localRepository = new LocalRepository();
@@ -160,10 +158,10 @@ public class Bees {
             if (currentVersion.compareTo(availableVersion) < 0) {
                 System.out.println();
                 if (currentVersion.compareTo(minimunVersion) < 0) {
-                    throw new AbortException("Error - This version of the CloudBees SDK is no longer supported," + "" +
+                    throw new AbortException("ERROR - This version of the CloudBees SDK is no longer supported," + "" +
                             " please install the latest version (" + availVersion + ").");
                 } else if (currentVersion.compareTo(availableVersion) < 0) {
-                    System.out.println("A new version of the CloudBees SDK is available, please install the latest version (" + availVersion + ").");
+                    System.out.println("WARNING - A new version of the CloudBees SDK is available, please install the latest version (" + availVersion + ").");
                 }
 
                 String hRef = e.getAttribute("href");
@@ -179,9 +177,64 @@ public class Bees {
                         homeRef = href.getTextContent();
                     }
                 }
+
+                NodeList libsNL = e.getElementsByTagName("libraries");
+                Node libsNode = null;
+                if (libsNL.getLength() > 0) {
+                    libsNode = libsNL.item(0);
+                }
+                if (libsNode != null) {
+                    NodeList libNL = e.getElementsByTagName("library");
+                    for (int i = 0; i < libNL.getLength(); i++) {
+                        Node node = libNL.item(i);
+                        NamedNodeMap nodeMap = node.getAttributes();
+                        Node nameNode = nodeMap.getNamedItem("name");
+                        Node refNode = nodeMap.getNamedItem("href");
+                        if (nameNode != null && refNode != null) {
+                            String libName = nameNode.getTextContent();
+                            String libUrlString = refNode.getTextContent().trim();
+                            int idx = libUrlString.lastIndexOf('/');
+                            String libFileName = libUrlString.substring(idx);
+                            localRepository.getURLAsFile(libUrlString, "lib1" + libFileName, libName);
+                        }
+                    }
+                }
+
                 System.out.println("  SDK home:     " + homeRef);
                 System.out.println("  SDK download: " + hRef);
                 System.out.println();
+            }
+
+            // Check plugins version
+            NodeList pluginsNL = e.getElementsByTagName("plugins");
+            Node pluginsNode = null;
+            if (pluginsNL.getLength() > 0) {
+                pluginsNode = pluginsNL.item(0);
+            }
+            if (pluginsNode != null) {
+                NodeList pluginNL = e.getElementsByTagName("plugin");
+                CommandServiceImpl service = (CommandServiceImpl) commandService;
+                for (int i = 0; i < pluginNL.getLength(); i++) {
+                    Node node = pluginNL.item(i);
+                    NamedNodeMap nodeMap = node.getAttributes();
+                    Node nameNode = nodeMap.getNamedItem("artifact");
+                    if (nameNode != null) {
+                        String pluginArtifact = nameNode.getTextContent();
+                        GAV gav = new GAV(pluginArtifact);
+                        VersionNumber pluginVersion = new VersionNumber(gav.version);
+                        Plugin plugin = service.getPlugin(gav.artifactId);
+                        if (plugin != null) {
+                            GAV pgav = new GAV(plugin.getArtifact());
+                            VersionNumber currentPluginVersion = new VersionNumber(pgav.version);
+                            if(currentPluginVersion.compareTo(pluginVersion) < 0) {
+                                System.out.println();
+                                System.out.println("WARNING - A newer version of the [" + gav.artifactId + "] plugin is available, please update with:");
+                                System.out.println(" > bees plugin:info --check " + gav.artifactId);
+                                System.out.println();
+                            }
+                        }
+                    }
+                }
             }
 
             // Update last check
