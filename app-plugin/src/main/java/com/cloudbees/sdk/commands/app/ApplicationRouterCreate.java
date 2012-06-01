@@ -14,7 +14,6 @@ import java.util.Map;
 public class ApplicationRouterCreate extends ApplicationResourceCreate {
     private String certificate;
     private String privateKey;
-    private Boolean ssl;
 
     public ApplicationRouterCreate() {
     }
@@ -35,20 +34,11 @@ public class ApplicationRouterCreate extends ApplicationResourceCreate {
         this.privateKey = privateKey;
     }
 
-    public Boolean getSsl() {
-        return ssl;
-    }
-
-    public void setSsl(Boolean ssl) {
-        this.ssl = ssl;
-    }
-
     @Override
     protected boolean preParseCommandLine() {
         if(super.preParseCommandLine()) {
             addOption( "cert", "certificate", true, "SSL certificate file" );
             addOption( "pk", "privateKey", true, "SSL private key file" );
-            addOption( "ssl", false, "SSL router" );
 
             return true;
         }
@@ -75,8 +65,6 @@ public class ApplicationRouterCreate extends ApplicationResourceCreate {
                 throw new IllegalArgumentException("Private key file not found: " + getPrivateKey());
             }
         }
-        if (getSsl() != null)
-            settings.put("ssl", getSsl().toString());
         return super.execute();
     }
 }

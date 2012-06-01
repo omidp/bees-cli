@@ -54,8 +54,6 @@ public class CommandServiceImpl implements CommandService {
     List<Plugin> plugins;
     boolean localRepoLoaded;
 
-//    static XStream xstream;
-
     @Inject
     public CommandServiceImpl(DirectoryStructure structure) {
         this.structure = structure;
