@@ -58,7 +58,10 @@ public class ApplicationResourceList extends ApplicationResourceBase {
             List<ServiceResourceInfo> resources = res.getResources();
             System.out.println("Resources:");
             for (ServiceResourceInfo resource: resources) {
-                System.out.println(resource.getService() + ":" + resource.getId());
+                if (resource.getResourceType() != null)
+                    System.out.println(resource.getResourceType() + " " + resource.getService() + ":" + resource.getId());
+                else
+                    System.out.println(resource.getService() + ":" + resource.getId());
                 Map<String, String> config = resource.getConfig();
                 if(config != null && config.size() > 0) {
                     System.out.println("  config:");
