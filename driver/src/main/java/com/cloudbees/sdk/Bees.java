@@ -269,7 +269,7 @@ public class Bees {
     }
 
     public static void main(String[] args) {
-        System.out.println("# CloudBees SDK version: " + version);
+        if (isVerbose(args)) System.out.println("# CloudBees SDK version: " + version);
         try {
             new Bees().run(args);
         } catch (BeesClientException e) {
