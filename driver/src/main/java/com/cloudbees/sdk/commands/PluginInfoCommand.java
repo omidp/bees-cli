@@ -51,8 +51,8 @@ public class PluginInfoCommand extends PluginVersionCommand {
             System.out.println("Plugin: " + plugin.getArtifact());
             String help = service.getHelp(plugin, "subcommands:", true);
             System.out.println(help);
-            GAV gav = new GAV(plugin.getArtifact());
             if (check()) {
+                GAV gav = new GAV(plugin.getArtifact());
                 return checkVersion(gav);
             }
         } else {

@@ -31,6 +31,7 @@ public abstract class PluginVersionCommand extends Command {
     Provider<ArtifactInstallFactory> artifactInstallFactoryProvider;
 
     public PluginVersionCommand() {
+        setAddDefaultOptions(false);
     }
 
     public void setForce(Boolean force) {

@@ -27,6 +27,7 @@ public class PluginInstallCommand extends Command {
     Provider<ArtifactInstallFactory> artifactInstallFactoryProvider;
 
     public PluginInstallCommand() {
+        setAddDefaultOptions(false);
     }
 
     public void setArtifact(String artifact) {
@@ -67,10 +68,9 @@ public class PluginInstallCommand extends Command {
     @Override
     protected boolean preParseCommandLine() {
         // add the Options
-        addOption("j", "jar", true, "the plugin jar file to install");
-        addOption("p", "pom", true, "the plugin pom.xml file to install");
+        addOption("j", "jar", true, "the plugin jar file to install", true);
+        addOption("p", "pom", true, "the plugin pom.xml file to install", true);
         addOption(null, "localrepo", true, "the maven local repo", true);
-
         return true;
     }
 

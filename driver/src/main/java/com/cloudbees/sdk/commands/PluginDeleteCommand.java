@@ -26,6 +26,7 @@ public class PluginDeleteCommand extends Command {
 
     public PluginDeleteCommand() {
         setArgumentExpected(1);
+        setAddDefaultOptions(false);
     }
 
     @Override
