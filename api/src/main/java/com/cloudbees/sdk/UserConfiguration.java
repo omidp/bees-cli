@@ -80,6 +80,8 @@ public class UserConfiguration {
      */
     public Properties create(int credentialType, Map<String, String> paramaters) {
         Properties properties = new Properties();
+        properties.setProperty("bees.api.url.us", "https://api.cloudbees.com/api");
+        properties.setProperty("bees.api.url.eu", "https://api-eu.cloudbees.com/api");
         System.out.println();
         System.out.println("You have not created a CloudBees configuration profile, let's create one now...");
 
