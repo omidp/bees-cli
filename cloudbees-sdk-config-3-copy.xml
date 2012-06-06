@@ -7,4 +7,11 @@
         <application-template id="basic" href="http://cloudbees-downloads.s3.amazonaws.com/app-templates/basic-1.0.zip"/>
     </application-templates>
 
+    <plugins>
+        <plugin artifact="org.cloudbees.sdk.plugins:app-plugin:1.0-beta-4-SNAPSHOT" />
+        <plugin artifact="org.cloudbees.sdk.plugins:db-plugin:1.0-beta-4-SNAPSHOT" />
+        <plugin artifact="org.cloudbees.sdk.plugins:ant-plugin:1.0-beta-4-SNAPSHOT" />
+        <plugin artifact="org.cloudbees.sdk.plugins:config-plugin:1.0-beta-4-SNAPSHOT" />
+    </plugins>
+
 </sdk>
