@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.cloudbees.sdk</groupId>
     <artifactId>bees-cli-parent</artifactId>
-    <version>1.0-beta-4-SNAPSHOT</version>
+    <version>1.0</version>
   </parent>
 
   <groupId>org.cloudbees.sdk.plugins</groupId>
