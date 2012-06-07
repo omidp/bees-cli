@@ -4,11 +4,12 @@
   <parent>
     <groupId>com.cloudbees.sdk</groupId>
     <artifactId>bees-cli-parent</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.cloudbees.sdk.plugins</groupId>
   <artifactId>app-plugin</artifactId>
+  <version>1.2.0-SNAPSHOT</version>
 
   <dependencies>
     <dependency>
