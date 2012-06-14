@@ -38,6 +38,7 @@ public class PluginDeleteCommand extends Command {
     protected boolean preParseCommandLine() {
         // add the Options
         addOption( "f", "force", false, "force deletion without prompting" );
+        addOption("v", "verbose", false, "verbose output");
 
         return true;
     }

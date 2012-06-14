@@ -71,6 +71,7 @@ public class PluginInstallCommand extends Command {
         addOption("j", "jar", true, "the plugin jar file to install", true);
         addOption("p", "pom", true, "the plugin pom.xml file to install", true);
         addOption(null, "localrepo", true, "the maven local repo", true);
+        addOption("v", "verbose", false, "verbose output");
         return true;
     }
 

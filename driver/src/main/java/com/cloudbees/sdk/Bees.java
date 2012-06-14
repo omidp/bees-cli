@@ -98,7 +98,7 @@ public class Bees {
         Object context = CommandScopeImpl.begin();
         try {
             // Install plugins
-            installPlugins();
+            installPlugins(args);
             start = time("R2", start);
 
             ACommand command = commandService.getCommand(args[0]);
@@ -246,7 +246,7 @@ public class Bees {
         }
     }
 
-    private void installPlugins() throws Exception {
+    private void installPlugins(String[] args) throws Exception {
         Set<Map.Entry<String, GAV>> set = pluginsToInstallList.entrySet();
         if (set.size() > 0) {
             ACommand installPluginCmd = commandService.getCommand(SDK_PLUGIN_INSTALL);
@@ -254,7 +254,12 @@ public class Bees {
             while (it.hasNext()) {
                 Map.Entry<String, GAV> entry = it.next();
                 System.out.println("Installing plugin: " + entry.getValue());
-                installPluginCmd.run(Arrays.asList(SDK_PLUGIN_INSTALL, entry.getValue().toString()));
+                List<String> piArgs;
+                if (isVerbose(args))
+                    piArgs = Arrays.asList(SDK_PLUGIN_INSTALL, entry.getValue().toString(), "-v");
+                else
+                    piArgs = Arrays.asList(SDK_PLUGIN_INSTALL, entry.getValue().toString());
+                installPluginCmd.run(piArgs);
                 pluginsToInstallList.remove(entry.getKey());
             }
         }
@@ -269,7 +274,10 @@ public class Bees {
     }
 
     public static void main(String[] args) {
-        if (isVerbose(args)) System.out.println("# CloudBees SDK version: " + version);
+        if (isVerbose(args)) {
+            System.out.println("# CloudBees SDK version: " + version);
+            System.out.println(System.getProperties());
+        }
         try {
             new Bees().run(args);
         } catch (BeesClientException e) {

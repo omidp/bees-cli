@@ -32,6 +32,7 @@ public class PluginInfoCommand extends PluginVersionCommand {
     protected boolean preParseCommandLine() {
         if (super.preParseCommandLine()) {
             addOption(null, "check", false, "check for newest version");
+            addOption("v", "verbose", false, "verbose output");
             return true;
         }
         return false;

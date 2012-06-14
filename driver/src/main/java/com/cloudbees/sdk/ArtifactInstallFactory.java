@@ -4,6 +4,9 @@ import com.cloudbees.api.BeesClientConfiguration;
 import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.DirectoryStructure;
+import com.cloudbees.sdk.cli.Verbose;
+import com.cloudbees.sdk.maven.ConsoleRepositoryListener;
+import com.cloudbees.sdk.maven.ConsoleTransferListener;
 import com.google.inject.AbstractModule;
 import com.ning.http.client.providers.netty.NettyAsyncHttpProvider;
 import com.thoughtworks.xstream.XStream;
@@ -70,6 +73,9 @@ public class ArtifactInstallFactory {
     @Inject
     private DirectoryStructure directoryStructure;
 
+    @Inject
+    private Verbose verbose;
+
     private BeesClientConfiguration beesClientConfiguration;
 
     public ArtifactInstallFactory() {
@@ -109,6 +115,10 @@ public class ArtifactInstallFactory {
             sessionFactory = new MavenRepositorySystemSession();
             LocalRepository localRepo = new LocalRepository(new File(new File(System.getProperty("user.home")), ".m2/repository"));
             sessionFactory.setLocalRepositoryManager(getRs().newLocalRepositoryManager(localRepo));
+            if (verbose.isVerbose()) {
+                sessionFactory.setTransferListener( new ConsoleTransferListener() );
+                sessionFactory.setRepositoryListener( new ConsoleRepositoryListener() );
+            }
         }
         return sessionFactory;
     }
