@@ -1,7 +1,7 @@
 package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.ApplicationListResponse;
-import com.cloudbees.api.StaxClient;
+import com.cloudbees.api.BeesClient;
 import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.commands.Command;
@@ -44,7 +44,7 @@ public class ApplicationList extends Command {
 
     @Override
     protected boolean execute() throws Exception {
-        StaxClient client = getStaxClient(StaxClient.class);
+        BeesClient client = getBeesClient();
         ApplicationListResponse res = client.applicationList(getAccount());
 
         if (isTextOutput()) {

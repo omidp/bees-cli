@@ -1,7 +1,7 @@
 package com.cloudbees.sdk.commands.app;
 
 import com.cloudbees.api.ApplicationScaleResponse;
-import com.cloudbees.api.StaxClient;
+import com.cloudbees.api.BeesClient;
 import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
 
@@ -65,7 +65,7 @@ public class ApplicationScale extends ApplicationBase {
         else
             quantity = -Integer.parseInt(getDown());
 
-        StaxClient client = getStaxClient(StaxClient.class);
+        BeesClient client = getBeesClient();
         ApplicationScaleResponse res = client.applicationScale(appid, quantity);
         if (isTextOutput()) {
             System.out.println("application - " + appid + ": " + res.getStatus());
