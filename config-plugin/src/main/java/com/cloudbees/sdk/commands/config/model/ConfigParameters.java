@@ -7,6 +7,7 @@ package com.cloudbees.sdk.commands.config.model;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import sun.security.krb5.Config;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -126,6 +127,7 @@ public class ConfigParameters {
 
     private static XStream createXStream() {
         XStream xstream = new XStream();
+        xstream.setClassLoader(ConfigParameters.class.getClassLoader());
         xstream.processAnnotations(ParameterSettings.class);
         xstream.processAnnotations(ResourceSettings.class);
         xstream.processAnnotations(Environment.class);
