@@ -22,11 +22,6 @@
     <module>api</module>
     <module>driver</module>
     <module>assembly</module>
-
-    <module>app-plugin</module>
-    <module>database-plugin</module>
-    <module>ant-plugin</module>
-    <module>config-plugin</module>
   </modules>
 
   <build>
