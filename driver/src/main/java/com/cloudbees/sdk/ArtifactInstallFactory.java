@@ -26,10 +26,7 @@ import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.graph.DependencyFilter;
 import org.sonatype.aether.impl.VersionResolver;
 import org.sonatype.aether.installation.InstallRequest;
-import org.sonatype.aether.repository.Authentication;
-import org.sonatype.aether.repository.LocalRepository;
-import org.sonatype.aether.repository.Proxy;
-import org.sonatype.aether.repository.RemoteRepository;
+import org.sonatype.aether.repository.*;
 import org.sonatype.aether.resolution.ArtifactResult;
 import org.sonatype.aether.resolution.DependencyRequest;
 import org.sonatype.aether.resolution.VersionRangeRequest;
@@ -78,6 +75,8 @@ public class ArtifactInstallFactory {
 
     private BeesClientConfiguration beesClientConfiguration;
 
+    private boolean force;
+
     public ArtifactInstallFactory() {
         // NettyAsyncHttpProvider prints some INFO-level messages. suppress them
         Logger.getLogger("com.ning.http.client.providers.netty.NettyAsyncHttpProvider").setLevel(Level.WARNING);
@@ -86,6 +85,10 @@ public class ArtifactInstallFactory {
 
     public void setBeesClientConfiguration(BeesClientConfiguration beesClientConfiguration) {
         this.beesClientConfiguration = beesClientConfiguration;
+    }
+
+    public void setForceInstall(boolean force) {
+        this.force = force;
     }
 
     private RepositorySystem getRs() {
@@ -115,6 +118,9 @@ public class ArtifactInstallFactory {
             sessionFactory = new MavenRepositorySystemSession();
             LocalRepository localRepo = new LocalRepository(new File(new File(System.getProperty("user.home")), ".m2/repository"));
             sessionFactory.setLocalRepositoryManager(getRs().newLocalRepositoryManager(localRepo));
+            if (force) {
+                sessionFactory.setUpdatePolicy( RepositoryPolicy.UPDATE_POLICY_ALWAYS );
+            }
             if (verbose.isVerbose()) {
                 sessionFactory.setTransferListener( new ConsoleTransferListener() );
                 sessionFactory.setRepositoryListener( new ConsoleRepositoryListener() );

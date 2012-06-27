@@ -256,9 +256,9 @@ public class Bees {
                 System.out.println("Installing plugin: " + entry.getValue());
                 List<String> piArgs;
                 if (isVerbose(args))
-                    piArgs = Arrays.asList(SDK_PLUGIN_INSTALL, entry.getValue().toString(), "-v");
+                    piArgs = Arrays.asList(SDK_PLUGIN_INSTALL, entry.getValue().toString(), "-f", "-v");
                 else
-                    piArgs = Arrays.asList(SDK_PLUGIN_INSTALL, entry.getValue().toString());
+                    piArgs = Arrays.asList(SDK_PLUGIN_INSTALL, entry.getValue().toString(), "-f");
                 installPluginCmd.run(piArgs);
                 pluginsToInstallList.remove(entry.getKey());
             }
@@ -274,9 +274,10 @@ public class Bees {
     }
 
     public static void main(String[] args) {
-        if (isVerbose(args)) {
+        boolean verbose = isVerbose(args);
+        if (verbose || isHelp(args)) {
             System.out.println("# CloudBees SDK version: " + version);
-            System.out.println(System.getProperties());
+            if (verbose) System.out.println(System.getProperties());
         }
         try {
             new Bees().run(args);
@@ -344,6 +345,15 @@ public class Bees {
     private static boolean isVerbose(String[] args) {
         for (String arg: args) {
             if (arg.equalsIgnoreCase("-v") || arg.equalsIgnoreCase("--verbose"))
+                return true;
+        }
+        return false;
+    }
+
+    private static boolean isHelp(String[] args) {
+        if (args.length == 0) return true;
+        for (String arg: args) {
+            if (arg.equalsIgnoreCase("help"))
                 return true;
         }
         return false;

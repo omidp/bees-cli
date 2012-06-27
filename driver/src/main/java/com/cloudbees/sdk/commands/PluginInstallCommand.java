@@ -22,6 +22,7 @@ public class PluginInstallCommand extends Command {
     String localrepo;
     File jar;
     File pom;
+    Boolean force;
 
     @Inject
     Provider<ArtifactInstallFactory> artifactInstallFactoryProvider;
@@ -51,6 +52,14 @@ public class PluginInstallCommand extends Command {
         this.localrepo = localrepo;
     }
 
+    public void setForce(Boolean force) {
+        this.force = force;
+    }
+
+    private boolean forceInstall() {
+        return force != null ? force : false;
+    }
+
     private GAV parseGav(String artifact) {
         String[] tokens = artifact.split(":");
         if (tokens.length == 3)
@@ -72,6 +81,7 @@ public class PluginInstallCommand extends Command {
         addOption("p", "pom", true, "the plugin pom.xml file to install", true);
         addOption(null, "localrepo", true, "the maven local repo", true);
         addOption("v", "verbose", false, "verbose output");
+        addOption("f", "force", false, "force install");
         return true;
     }
 
@@ -89,6 +99,8 @@ public class PluginInstallCommand extends Command {
         // install the artifact
         try {
             ArtifactInstallFactory installFactory = artifactInstallFactoryProvider.get();
+            if (forceInstall())
+                installFactory.setForceInstall(true);
             if (localrepo != null)
                 installFactory.setLocalRepository(localrepo);
             installFactory.setBeesClientConfiguration(getBeesClient().getBeesClientConfiguration());
