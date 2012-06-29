@@ -1,1 +1,1 @@
-org.cloudbees.sdk.plugins:config-plugin:LATEST
+org.cloudbees.sdk.plugins:config-plugin

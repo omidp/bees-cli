@@ -18,14 +18,16 @@ public final class GAV {
     
     public GAV(String id) {
         String[] tokens = id.split(":");
-        int versionIdx = 2;
         if (tokens.length == 4) {
-            versionIdx = 3;
-        }
-        else if (tokens.length!=3)   throw new IllegalArgumentException("Expected GROUPID:ARTIFACTID:VERSION but got '"+id+"'");
+            this.version    = tokens[3];
+        } else if (tokens.length == 3) {
+            this.version    = tokens[2];
+        } else if (tokens.length == 2) {
+            this.version = "RELEASE";
+        } else throw new IllegalArgumentException("Expected GROUPID:ARTIFACTID:VERSION but got '"+id+"'");
+
         this.groupId    = tokens[0];
         this.artifactId = tokens[1];
-        this.version    = tokens[versionIdx];
     }
 
     @Override

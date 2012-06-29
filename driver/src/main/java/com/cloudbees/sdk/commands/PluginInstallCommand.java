@@ -60,15 +60,6 @@ public class PluginInstallCommand extends Command {
         return force != null ? force : false;
     }
 
-    private GAV parseGav(String artifact) {
-        String[] tokens = artifact.split(":");
-        if (tokens.length == 3)
-            return new GAV(artifact);
-        else if (tokens.length == 2)
-            return new GAV(tokens[0], tokens[1], "LATEST");
-        throw new IllegalArgumentException("Illegal ARTIFACT format (groupId:name[:version])");
-    }
-
     @Override
     protected String getUsageMessage() {
         return "ARTIFACT (groupId:name[:version])";
@@ -104,7 +95,7 @@ public class PluginInstallCommand extends Command {
             if (localrepo != null)
                 installFactory.setLocalRepository(localrepo);
             installFactory.setBeesClientConfiguration(getBeesClient().getBeesClientConfiguration());
-            GAV gav = parseGav(artifact);
+            GAV gav = new GAV(artifact);
             if (pom != null && jar != null) {
                 gav = installFactory.install(gav, jar, pom);
             } else
