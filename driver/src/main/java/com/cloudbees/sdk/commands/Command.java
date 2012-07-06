@@ -520,10 +520,16 @@ public abstract class Command extends ACommand {
         return beesClientFactory.get();
     }
 
+    /**
+     * @deprecated
+     */
     protected <T extends BeesClient> T getStaxClient(Class<T> type) throws IOException {
         return beesClientFactory.get(type);
     }
-    
+    protected <T extends BeesClient> T getBeesClient(Class<T> type) throws IOException {
+        return beesClientFactory.get(type);
+    }
+
     private boolean isHelp(String[] args) {
          return (args != null && args.length > 0 && args[0].equalsIgnoreCase("help"));
      }
