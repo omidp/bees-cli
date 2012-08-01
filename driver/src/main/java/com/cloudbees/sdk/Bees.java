@@ -232,6 +232,8 @@ public class Bees {
                                 System.out.println(" > bees plugin:info --check " + gav.artifactId);
                                 System.out.println();
                             }
+                        } else {
+                            pluginsToInstallList.put(gav.artifactId, gav);
                         }
                     }
                 }
