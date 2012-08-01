@@ -43,9 +43,18 @@ public class PluginDeleteCommand extends Command {
         return true;
     }
 
+    private String getPluginName() {
+        String name = getParameters().get(0);
+        if (name.indexOf(':') > -1) {
+            String[] parts = name.split(":");
+            name = parts[1];
+        }
+        return name;
+    }
+
     @Override
     protected boolean execute() throws Exception {
-        String name = getParameters().get(0);
+        String name = getPluginName();
         if (force == null || !force.booleanValue()) {
             if (!Helper.promptMatches("Are you sure you want to delete this plugin [" + name + "]: (y/n) ", "[yY].*")) {
                 return true;

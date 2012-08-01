@@ -28,7 +28,7 @@ public class PluginListCommand extends PluginVersionCommand {
     @Override
     protected boolean preParseCommandLine() {
         if (super.preParseCommandLine()) {
-            addOption(null, "check", false, "check for newest versions");
+            addOption(null, "check", false, "check for newer versions");
             return true;
         }
         return false;

@@ -31,7 +31,7 @@ public class PluginInfoCommand extends PluginVersionCommand {
     @Override
     protected boolean preParseCommandLine() {
         if (super.preParseCommandLine()) {
-            addOption(null, "check", false, "check for newest version");
+            addOption(null, "check", false, "check for newer version");
             addOption("v", "verbose", false, "verbose output");
             return true;
         }
@@ -42,10 +42,19 @@ public class PluginInfoCommand extends PluginVersionCommand {
         return "PLUGIN_NAME";
     }
 
+    private String getPluginName() {
+        String name = getParameters().get(0);
+        if (name.indexOf(':') > -1) {
+            String[] parts = name.split(":");
+            name = parts[1];
+        }
+        return name;
+    }
+
     @Override
     protected boolean execute() throws Exception {
         CommandServiceImpl service = (CommandServiceImpl) commandService;
-        String name = getParameters().get(0);
+        String name = getPluginName();
         Plugin plugin = service.getPlugin(name);
         if (plugin != null) {
             System.out.println();
