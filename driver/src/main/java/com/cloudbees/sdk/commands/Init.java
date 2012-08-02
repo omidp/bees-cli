@@ -93,6 +93,8 @@ public class Init extends Command {
             if (userConfigFile.exists()) {
                 String input = "y";
                 if (getForce() == null || !getForce().booleanValue()) {
+                    System.out.println("WARNING: This command will delete your current configuration directory, including all installed plugins. " +
+                            "Answering \"no\" will only re-initialize your bees.config file and leave your installed plugins intact.");
                     input = Helper.promptFor("Are you sure you want to delete your '" + getLocalRepository() + "' configuration directory?  (y/n) ", true);
                 }
                 input = input.toLowerCase().trim();

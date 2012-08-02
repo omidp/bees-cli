@@ -5,6 +5,7 @@ import org.kohsuke.args4j.ClassParser;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.ExampleMode;
+import org.kohsuke.args4j.spi.OptionHandler;
 
 import javax.inject.Inject;
 import java.lang.reflect.Field;
@@ -75,7 +76,23 @@ public abstract class AbstractCommand extends ACommand {
     @Override
     public void printHelp(List<String> args) {
         CmdLineParser p = createParser();
-        System.err.println("Usage: bees "+args.get(0)+" "+p.printExample(ExampleMode.REQUIRED));
+        if (getUsageMessage() != null)
+            System.err.println("Usage: bees "+args.get(0)+" "+getUsageMessage());
+        else {
+            System.err.print("Usage: bees "+args.get(0)+p.printExample(ExampleMode.REQUIRED));
+            for (OptionHandler optionHandler: p.getArguments()) {
+                if (optionHandler.option.required())
+                    System.err.print(" " + optionHandler.getMetaVariable(null));
+                else
+                    System.err.print(" [" + optionHandler.getMetaVariable(null) + "]");
+            }
+            System.err.println();
+        }
         p.printUsage(System.err);
     }
+
+    protected String getUsageMessage() {
+        return null;
+    }
+
 }
