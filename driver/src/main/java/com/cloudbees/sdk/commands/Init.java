@@ -4,6 +4,7 @@ import com.cloudbees.sdk.UserConfiguration;
 import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.utils.Helper;
+import com.staxnet.repository.LocalRepository;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -103,6 +104,13 @@ public class Init extends Command {
                 }
             }
 
+            // Reset the version check
+            LocalRepository localRepository = new LocalRepository();
+            String beesRepoPath = localRepository.getRepositoryPath();
+            File lastCheckFile = new File(beesRepoPath, "sdk/check.dat");
+            if (lastCheckFile.exists()) lastCheckFile.delete();
+
+            // Reset the bees.config
             Map<String, String> params = beesClientFactory.getParameters();
             add(params, "email", getEmail());
             add(params, "password", getPassword());

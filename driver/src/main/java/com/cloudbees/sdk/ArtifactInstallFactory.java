@@ -116,8 +116,7 @@ public class ArtifactInstallFactory {
     private MavenRepositorySystemSession getSessionFactory() {
         if (sessionFactory == null) {
             sessionFactory = new MavenRepositorySystemSession();
-            LocalRepository localRepo = new LocalRepository(new File(new File(System.getProperty("user.home")), ".m2/repository"));
-            sessionFactory.setLocalRepositoryManager(getRs().newLocalRepositoryManager(localRepo));
+            sessionFactory.setLocalRepositoryManager(getRs().newLocalRepositoryManager(getLocalRepository()));
             if (force) {
                 sessionFactory.setUpdatePolicy( RepositoryPolicy.UPDATE_POLICY_ALWAYS );
             }
@@ -168,13 +167,24 @@ public class ArtifactInstallFactory {
         localRepository = new LocalRepository(repository);
     }
 
+    public LocalRepository getLocalRepository() {
+        if (localRepository == null) {
+            // Try to get local repository from settings.xml
+            MavenDependencyResolverSettings resolverSettings = new MavenDependencyResolverSettings();
+            String localRepositoryName = resolverSettings.getSettings().getLocalRepository();
+            if (localRepositoryName != null)
+                localRepository = new LocalRepository(new File(localRepositoryName));
+            else
+                localRepository = new LocalRepository(new File(new File(System.getProperty("user.home")), ".m2/repository"));
+        }
+        return localRepository;
+    }
+
     public VersionRangeResult findVersions(GAV gav) throws Exception {
         GAV findGAV = new GAV(gav.groupId, gav.artifactId, "[0,)");
         Artifact artifact = new DefaultArtifact( findGAV.toString() );
 
         MavenRepositorySystemSession session = getSessionFactory();
-        if (localRepository != null)
-            session.setLocalRepositoryManager(getRs().newLocalRepositoryManager(localRepository));
 
         VersionRangeRequest rangeRequest = new VersionRangeRequest();
         rangeRequest.setArtifact(artifact);
@@ -203,8 +213,6 @@ public class ArtifactInstallFactory {
         installRequest.addArtifact(jarArtifact).addArtifact(pomArtifact);
 
         MavenRepositorySystemSession session = getSessionFactory();
-        if (localRepository != null)
-            session.setLocalRepositoryManager(getRs().newLocalRepositoryManager(localRepository));
         getRs().install(session, installRequest);
 
         return install(gav);
@@ -215,9 +223,6 @@ public class ArtifactInstallFactory {
      */
     private GAV install(Artifact a) throws Exception {
         MavenRepositorySystemSession session = getSessionFactory();
-        if (localRepository != null)
-            session.setLocalRepositoryManager(getRs().newLocalRepositoryManager(localRepository));
-//        System.out.println("Local repo: " + session.getLocalRepositoryManager().getRepository().getBasedir());
 
         DependencyFilter classpathFlter = DependencyFilterUtils.classpathFilter(JavaScopes.COMPILE);
 
