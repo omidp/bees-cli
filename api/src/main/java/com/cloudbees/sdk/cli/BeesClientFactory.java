@@ -108,8 +108,11 @@ public class BeesClientFactory implements HasOptions {
         else {
             if (endPoint != null)
                 apiUrl = properties.getProperty("bees.api.url." + endPoint);
-            else
+            else {
                 apiUrl = properties.getProperty("bees.api.url");
+                if (apiUrl == null)
+                    apiUrl = properties.getProperty("bees.api.url.us");
+            }
         }
         return apiUrl;
     }
