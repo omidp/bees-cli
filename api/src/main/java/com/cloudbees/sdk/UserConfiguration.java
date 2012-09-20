@@ -68,6 +68,18 @@ public class UserConfiguration {
             properties = create(credentialType, parameters);
         }
 
+        // Setup java http proxy system properties
+        if (properties.getProperty("bees.api.proxy.host") != null && properties.getProperty("bees.api.proxy.port") != null) {
+            System.setProperty("http.proxyHost", properties.getProperty("bees.api.proxy.host"));
+            System.setProperty("http.proxyPort", properties.getProperty("bees.api.proxy.port"));
+            if (properties.getProperty("bees.api.proxy.user") != null) {
+                System.setProperty("http.proxyUser", properties.getProperty("bees.api.proxy.user"));
+            }
+            if (properties.getProperty("bees.api.proxy.password") != null) {
+                System.setProperty("http.proxyPassword", properties.getProperty("bees.api.proxy.password"));
+            }
+        }
+
         return properties;
     }
 

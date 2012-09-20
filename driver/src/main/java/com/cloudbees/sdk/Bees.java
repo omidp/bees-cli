@@ -84,8 +84,6 @@ public class Bees {
         if (service.getCount() == 0) {
             throw new RuntimeException("Cannot find bees commands");
         }
-
-        initialize(false);
         start = time("S4", start);
     }
 
@@ -97,6 +95,15 @@ public class Bees {
 
         Object context = CommandScopeImpl.begin();
         try {
+            // Setup the configuration file
+            ACommand setupCommand = commandService.getCommand("setup");
+            if (setupCommand == null)
+                throw new Error("Panic: setup error");
+            setupCommand.run(Arrays.asList(args));
+
+            // Initialize the SDK
+            initialize(false);
+
             // Install plugins
             installPlugins(args);
             start = time("R2", start);
@@ -264,6 +271,9 @@ public class Bees {
                 installPluginCmd.run(piArgs);
                 pluginsToInstallList.remove(entry.getKey());
             }
+            // Reload the plugins commands
+            CommandServiceImpl service = (CommandServiceImpl) commandService;
+            service.loadCommandProperties();
         }
     }
 
