@@ -89,6 +89,15 @@ public class Init extends Command {
 
     @Override
     protected Properties getConfigProperties() {
+        return new Properties();
+    }
+
+    private void add(Map<String, String> params, String key, String value) {
+        if (value!=null)    params.put(key,value);
+    }
+
+    @Override
+    protected boolean execute() {
         try {
             File userConfigFile = new File(getLocalRepository(), "bees.config");
             if (userConfigFile.exists()) {
@@ -101,6 +110,8 @@ public class Init extends Command {
                 input = input.toLowerCase().trim();
                 if (input.startsWith("y")) {
                     Helper.deleteDirectory(getLocalRepository());
+                } else {
+                    userConfigFile.delete();
                 }
             }
 
@@ -117,18 +128,10 @@ public class Init extends Command {
             add(params, "domain", getAccount());
 
             int credentialType = getUseKeys() == null ? UserConfiguration.EMAIL_CREDENTIALS : UserConfiguration.KEYS_CREDENTIALS;
-            return config.create(credentialType, params);
+            config.load(credentialType, params);
         } catch (Exception e) {
             throw new RuntimeException("Initialization failure: " + e.getMessage(), e);
         }
-    }
-
-    private void add(Map<String, String> params, String key, String value) {
-        if (value!=null)    params.put(key,value);
-    }
-
-    @Override
-    protected boolean execute() {
         return true;
     }
 

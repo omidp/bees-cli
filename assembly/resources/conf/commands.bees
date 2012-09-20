@@ -10,7 +10,6 @@
 
     <!--# Internal command-->
     <command group="SDK" name="call" className="com.cloudbees.sdk.commands.Call" experimental="true" />
-    <command group="SDK" name="setup" className="com.cloudbees.sdk.commands.Setup" experimental="true" />
 </plugin>
 
 

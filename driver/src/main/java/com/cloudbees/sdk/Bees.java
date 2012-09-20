@@ -70,7 +70,7 @@ public class Bees {
                     protected void configure() {
                         bind(CommandService.class).to(CommandServiceImpl.class);
                         bind(ClassLoader.class).annotatedWith(AnnotationLiteral.of(ExtensionClassLoader.class)).toInstance(extLoader);
-                        bindScope(CommandScope.class,new CommandScopeImpl());
+                        bindScope(CommandScope.class, new CommandScopeImpl());
                     }
                 }
         );
@@ -91,41 +91,51 @@ public class Bees {
         // Load command definitions
         long start = System.currentTimeMillis();
         start = time("R1", start);
-        if (args.length==0) args = new String[]{"help"};
+        if (args.length == 0) args = new String[]{"help"};
 
         Object context = CommandScopeImpl.begin();
         try {
-            // Setup the configuration file
-            ACommand setupCommand = commandService.getCommand("setup");
-            if (setupCommand == null)
-                throw new Error("Panic: setup error");
-            setupCommand.run(Arrays.asList(args));
+            // If it is the init command, execute before anything else
+            if (args[0].equalsIgnoreCase("init")) {
+                // Setup the configuration file
+                ACommand setupCommand = commandService.getCommand(args[0]);
+                if (setupCommand == null)
+                    throw new Error("Panic: init error");
+                setupCommand.run(Arrays.asList(args));
 
-            // Initialize the SDK
-            initialize(false);
+                // Initialize the SDK
+                initialize(false);
 
-            // Install plugins
-            installPlugins(args);
-            start = time("R2", start);
+                // Install plugins
+                installPlugins(args);
 
-            ACommand command = commandService.getCommand(args[0]);
-            if (command==null) {
-                // no such command. print help
-                System.err.println("No such command: "+args[0]);
-                command = commandService.getCommand("help");
-                if (command==null)
-                    throw new Error("Panic: command "+args[0]+" was not found, and even the help command was not found");
+                return 0;
+            } else {
+                // Initialize the SDK
+                initialize(false);
+
+                // Install plugins
+                installPlugins(args);
+
+                ACommand command = commandService.getCommand(args[0]);
+                if (command == null) {
+                    // no such command. print help
+                    System.err.println("No such command: " + args[0]);
+                    command = commandService.getCommand("help");
+                    if (command == null)
+                        throw new Error("Panic: command " + args[0] + " was not found, and even the help command was not found");
+                }
+
+                int r = command.run(Arrays.asList(args));
+                if (r == 99) {
+                    initialize(true);
+                }
+                return r;
             }
-            start = time("R3", start);
 
-            int r = command.run(Arrays.asList(args));
-            if (r == 99) {
-                initialize(true);
-            }
-            start = time("R4", start);
-            return r;
         } finally {
             CommandScopeImpl.end(context);
+            time("R2", start);
         }
     }
 
@@ -151,7 +161,7 @@ public class Bees {
 
         if (checkVersion) {
             // Check SDK version
-            File sdkConfig = getURLAsFile(localRepository,app_template_xml_url + app_template_xml_name,
+            File sdkConfig = getURLAsFile(localRepository, app_template_xml_url + app_template_xml_name,
                     app_template_xml_name, app_template_xml_desc);
             Document doc = XmlHelper.readXMLFromFile(sdkConfig.getCanonicalPath());
             Element e = doc.getDocumentElement();
@@ -233,7 +243,7 @@ public class Bees {
                         if (plugin != null) {
                             GAV pgav = new GAV(plugin.getArtifact());
                             VersionNumber currentPluginVersion = new VersionNumber(pgav.version);
-                            if(currentPluginVersion.compareTo(pluginVersion) < 0) {
+                            if (currentPluginVersion.compareTo(pluginVersion) < 0) {
                                 System.out.println();
                                 System.out.println("WARNING - A newer version of the [" + gav.artifactId + "] plugin is available, please update with:");
                                 System.out.println(" > bees plugin:info --check " + gav.artifactId);
@@ -247,7 +257,7 @@ public class Bees {
             }
 
             // Update last check
-            p.setProperty("last", ""+System.currentTimeMillis());
+            p.setProperty("last", "" + System.currentTimeMillis());
             lastCheckFile.getParentFile().mkdirs();
             FileOutputStream fos = new FileOutputStream(lastCheckFile);
             p.store(fos, "CloudBees SDK check");
@@ -277,11 +287,11 @@ public class Bees {
         }
     }
 
-    private File getURLAsFile(LocalRepository localRepository,String urlStr, String localCachePath, String description) throws IOException {
+    private File getURLAsFile(LocalRepository localRepository, String urlStr, String localCachePath, String description) throws IOException {
         try {
-            return localRepository.getURLAsFile(urlStr,localCachePath,description);
+            return localRepository.getURLAsFile(urlStr, localCachePath, description);
         } catch (Exception e) {
-            throw (IOException)new IOException("Failed to retrieve "+urlStr).initCause(e);
+            throw (IOException) new IOException("Failed to retrieve " + urlStr).initCause(e);
         }
     }
 
@@ -298,11 +308,11 @@ public class Bees {
             String errCode = e.getError().getErrorCode();
             if (errCode != null && errCode.equals("AuthFailure")) {
                 if (e.getError().getMessage() != null)
-                    System.err.println("ERROR: " +  e.getError().getMessage());
+                    System.err.println("ERROR: " + e.getError().getMessage());
                 else
                     System.err.println("ERROR: Authentication failure, please check credentials!");
             } else
-                System.err.println("ERROR: " +  e.getMessage());
+                System.err.println("ERROR: " + e.getMessage());
 //            e.printStackTrace();
             System.exit(2);
         } catch (UnrecognizedOptionException e) {
@@ -325,16 +335,17 @@ public class Bees {
             System.exit(2);
         }
     }
+
     /**
      * Parses the version number of SDK from the resource file that Maven produces.
-     *
+     * <p/>
      * To support running this from IDE and elsewhere, work gracefully if the version
      * is not available or not filtered.
      */
     private static VersionNumber loadVersion() {
         Properties props = new Properties();
         InputStream in = Bees.class.getResourceAsStream("version.properties");
-        if (in!=null) {
+        if (in != null) {
             try {
                 props.load(in);
             } catch (IOException e) {
@@ -344,7 +355,7 @@ public class Bees {
             }
         }
         Object v = props.get("version");
-        if (v!=null)
+        if (v != null)
             try {
                 return new VersionNumber(v.toString());
             } catch (Exception e) {
@@ -355,7 +366,7 @@ public class Bees {
     }
 
     private static boolean isVerbose(String[] args) {
-        for (String arg: args) {
+        for (String arg : args) {
             if (arg.equalsIgnoreCase("-v") || arg.equalsIgnoreCase("--verbose"))
                 return true;
         }
@@ -364,7 +375,7 @@ public class Bees {
 
     private static boolean isHelp(String[] args) {
         if (args.length == 0) return true;
-        for (String arg: args) {
+        for (String arg : args) {
             if (arg.equalsIgnoreCase("help"))
                 return true;
         }
