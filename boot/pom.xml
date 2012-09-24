@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.cloudbees.sdk</groupId>
     <artifactId>bees-cli-parent</artifactId>
-    <version>1.2.2-SNAPSHOT</version>
+    <version>1.2.2</version>
   </parent>
 
   <artifactId>bees-boot</artifactId>
