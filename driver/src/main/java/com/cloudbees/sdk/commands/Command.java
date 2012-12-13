@@ -67,17 +67,8 @@ public abstract class Command extends ACommand {
     }
 
     @Override
-    public int run(List<String> args) throws Exception {
+    public void parse(List<String> args) throws Exception {
         init("bees"/*TODO:get rid of this*/, args.get(0), args.toArray(new String[args.size()]));
-
-        // Add shutdown hook
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                Command.this.stop();
-            }
-        });
-
-        return run();
     }
 
     @Override
@@ -149,6 +140,11 @@ public abstract class Command extends ACommand {
 
     }
 
+    @Override
+    public final int invoke() throws Exception {
+        return run();
+    }
+
     public int run() throws Exception {
         boolean success = false;
         try {
@@ -163,6 +159,16 @@ public abstract class Command extends ACommand {
             printHelp(help);
             return 0;
         }
+
+        // Add shutdown hook
+        // TODO: I'd say this shouldn't be here as it prevents long-running processes (think Eclipse)
+        // from calling a large number of commands without leaking memory.
+        // I recommend this be moved to specific commands that are meant never to return. - Kohsuke
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                Command.this.stop();
+            }
+        });
 
         if (!execute()) {
             printHelp(help);

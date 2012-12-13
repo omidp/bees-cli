@@ -24,20 +24,21 @@ public abstract class AbstractCommand extends ACommand {
     public abstract int main() throws Exception;
 
     @Override
-    public int run(List<String> args) throws Exception {
+    public void parse(List<String> args) throws Exception {
         CmdLineParser p = createParser();
         try {
             p.parseArgument(args.subList(1,args.size()));
-            return main();
-        } catch (AbortException e) {
-            System.err.println(e.getMessage());
-            return 1;
         } catch (CmdLineException e) {
             System.err.println(e.getMessage());
             System.err.println("Usage: bees "+args.get(0)+" "+p.printExample(ExampleMode.REQUIRED));
             p.printUsage(System.err);
-            return 1;
+            throw new AbortException();
         }
+    }
+
+    @Override
+    public final int invoke() throws Exception {
+        return main();
     }
 
     protected CmdLineParser createParser() {
