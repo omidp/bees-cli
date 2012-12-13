@@ -8,7 +8,7 @@
     </application-templates>
 
     <plugins>
-        <plugin artifact="org.cloudbees.sdk.plugins:app-plugin:1.3.0" />
+        <plugin artifact="org.cloudbees.sdk.plugins:app-plugin:1.4.0" />
         <plugin artifact="org.cloudbees.sdk.plugins:db-plugin:1.1" />
         <plugin artifact="org.cloudbees.sdk.plugins:ant-plugin:1.1" />
         <plugin artifact="org.cloudbees.sdk.plugins:config-plugin:1.2.0" />
