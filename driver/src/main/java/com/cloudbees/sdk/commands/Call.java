@@ -1,7 +1,7 @@
 package com.cloudbees.sdk.commands;
 
 
-import com.cloudbees.api.BeesClient;
+import com.cloudbees.sdk.api.BeesAPIClient;
 import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
 
@@ -35,7 +35,7 @@ public class Call extends Command {
     @Override
     protected boolean execute() throws Exception {
         // call the application to the server
-        BeesClient client = getBeesClient();
+        BeesAPIClient client = getBeesClient(BeesAPIClient.class);
 
         client.mainCall(otherArgs);
 

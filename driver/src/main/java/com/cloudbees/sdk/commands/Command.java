@@ -1,6 +1,6 @@
 package com.cloudbees.sdk.commands;
 
-import com.cloudbees.api.BeesClient;
+import com.cloudbees.api.BeesClientBase;
 import com.cloudbees.sdk.cli.BeesClientFactory;
 import com.cloudbees.sdk.cli.ACommand;
 import com.cloudbees.sdk.cli.Verbose;
@@ -516,17 +516,11 @@ public abstract class Command extends ACommand {
     }
 
 
-    protected BeesClient getBeesClient() throws IOException {
+    protected BeesClientBase getBeesClientBase() throws IOException {
         return beesClientFactory.get();
     }
 
-    /**
-     * @deprecated
-     */
-    protected <T extends BeesClient> T getStaxClient(Class<T> type) throws IOException {
-        return beesClientFactory.get(type);
-    }
-    protected <T extends BeesClient> T getBeesClient(Class<T> type) throws IOException {
+    protected <T extends BeesClientBase> T getBeesClient(Class<T> type) throws IOException {
         return beesClientFactory.get(type);
     }
 

@@ -1,6 +1,6 @@
 package com.cloudbees.sdk.cli;
 
-import com.cloudbees.api.BeesClient;
+import com.cloudbees.api.BeesClientBase;
 import com.cloudbees.api.BeesClientConfiguration;
 import com.cloudbees.sdk.UserConfiguration;
 import com.cloudbees.sdk.utils.Helper;
@@ -16,7 +16,7 @@ import java.util.Properties;
 
 /**
  * Component that you can inject to your command object to
- * build {@link BeesClient} from a set of command line options.
+ * build {@link com.cloudbees.sdk.api.BeesAPIClient} from a set of command line options.
  * 
  * @author Kohsuke Kawaguchi
  */
@@ -56,11 +56,11 @@ public class BeesClientFactory implements HasOptions {
     @Inject
     Verbose verbose;
 
-    public BeesClient get() throws IOException {
-        return get(BeesClient.class);
+    public BeesClientBase get() throws IOException {
+        return get(BeesClientBase.class);
     }
     
-    public <T extends BeesClient> T get(Class<T> clientType) throws IOException {
+    public <T extends BeesClientBase> T get(Class<T> clientType) throws IOException {
         BeesClientConfiguration beesClientConfiguration = createConfigurations();
 
         try {

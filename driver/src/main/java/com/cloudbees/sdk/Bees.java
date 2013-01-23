@@ -4,6 +4,7 @@ import com.cloudbees.api.BeesClientException;
 import com.cloudbees.sdk.cli.CommandScope;
 import com.cloudbees.sdk.cli.CommandService;
 import com.cloudbees.sdk.cli.ACommand;
+import com.cloudbees.sdk.cli.DirectoryStructure;
 import com.cloudbees.sdk.extensibility.AnnotationLiteral;
 import com.cloudbees.sdk.utils.Helper;
 import com.google.inject.AbstractModule;
@@ -34,7 +35,7 @@ public class Bees {
     public static VersionNumber version = loadVersion();
 
     private final static String app_template_xml_url = "http://cloudbees-downloads.s3.amazonaws.com/";
-    private final static String app_template_xml_name = "sdk/cloudbees-sdk-config-3.xml";
+    private final static String app_template_xml_name = "sdk/cloudbees-sdk-config-4.xml";
     private final static String app_template_xml_desc = "CloudBees SDK configuration";
     private static final long CHECK_INTERVAL = 1000 * 60 * 60 * 12;  // 12 hours
     public static final String SDK_PLUGIN_INSTALL = "plugin:install";
@@ -236,22 +237,28 @@ public class Bees {
                     NamedNodeMap nodeMap = node.getAttributes();
                     Node nameNode = nodeMap.getNamedItem("artifact");
                     if (nameNode != null) {
+                        boolean required = true;
                         String pluginArtifact = nameNode.getTextContent();
                         GAV gav = new GAV(pluginArtifact);
                         VersionNumber pluginVersion = new VersionNumber(gav.version);
                         Plugin plugin = service.getPlugin(gav.artifactId);
                         if (plugin != null) {
+                            Node n = nodeMap.getNamedItem("required");
+                            if (n != null && Boolean.parseBoolean(n.getTextContent())) required = true;
+                            else required = false;
+
                             GAV pgav = new GAV(plugin.getArtifact());
                             VersionNumber currentPluginVersion = new VersionNumber(pgav.version);
-                            if (currentPluginVersion.compareTo(pluginVersion) < 0) {
+                            if (!required && currentPluginVersion.compareTo(pluginVersion) < 0) {
                                 System.out.println();
                                 System.out.println("WARNING - A newer version of the [" + gav.artifactId + "] plugin is available, please update with:");
-                                System.out.println(" > bees plugin:info --check " + gav.artifactId);
+                                System.out.println(" > bees plugin:update " + gav.artifactId);
                                 System.out.println();
                             }
-                        } else {
-                            pluginsToInstallList.put(gav.artifactId, gav);
                         }
+                        if (required)
+                            pluginsToInstallList.put(gav.artifactId, gav);
+
                     }
                 }
             }
@@ -289,6 +296,11 @@ public class Bees {
 
     private File getURLAsFile(LocalRepository localRepository, String urlStr, String localCachePath, String description) throws IOException {
         try {
+            DirectoryStructure ds = new DirectoryStructure();
+            Properties properties = new Properties();
+            if (Helper.loadProperties(new File(ds.localRepository, "bees.config"), properties)) {
+                Helper.setJVMProxySettings(properties);
+            }
             return localRepository.getURLAsFile(urlStr, localCachePath, description);
         } catch (Exception e) {
             throw (IOException) new IOException("Failed to retrieve " + urlStr).initCause(e);
@@ -297,7 +309,7 @@ public class Bees {
 
     public static void main(String[] args) {
         boolean verbose = isVerbose(args);
-        if (verbose || isHelp(args)) {
+        if (verbose || isHelp(args) || isPluginCmd(args)) {
             System.out.println("# CloudBees SDK version: " + version);
             if (verbose) System.out.println(System.getProperties());
         }
@@ -377,6 +389,15 @@ public class Bees {
         if (args.length == 0) return true;
         for (String arg : args) {
             if (arg.equalsIgnoreCase("help"))
+                return true;
+        }
+        return false;
+    }
+
+    private static boolean isPluginCmd(String[] args) {
+        if (args.length == 0) return false;
+        for (String arg : args) {
+            if (arg.startsWith("plugin:"))
                 return true;
         }
         return false;

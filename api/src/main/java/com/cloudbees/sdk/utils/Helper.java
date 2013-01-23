@@ -170,4 +170,21 @@ public class Helper {
             envList[prependEnvs.length + i] = envSplit[i].trim();
         return envList;
     }
+
+    public static void setJVMProxySettings(Properties properties) {
+        // Setup java http proxy system properties
+        if (properties.getProperty("bees.api.proxy.host") != null && properties.getProperty("bees.api.proxy.port") != null) {
+            if (System.getProperty("http.proxyHost") == null)
+                System.setProperty("http.proxyHost", properties.getProperty("bees.api.proxy.host"));
+            if (System.getProperty("http.proxyPort") == null)
+                System.setProperty("http.proxyPort", properties.getProperty("bees.api.proxy.port"));
+            if (properties.getProperty("bees.api.proxy.user") != null && System.getProperty("http.proxyUser") == null) {
+                System.setProperty("http.proxyUser", properties.getProperty("bees.api.proxy.user"));
+            }
+            if (properties.getProperty("bees.api.proxy.password") != null && System.getProperty("http.proxyPassword") == null) {
+                System.setProperty("http.proxyPassword", properties.getProperty("bees.api.proxy.password"));
+            }
+        }
+    }
+
 }

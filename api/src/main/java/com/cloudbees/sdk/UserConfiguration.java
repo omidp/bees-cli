@@ -1,11 +1,10 @@
 package com.cloudbees.sdk;
 
-import com.cloudbees.api.AccountInfo;
-import com.cloudbees.api.AccountKeysResponse;
-import com.cloudbees.api.AccountListResponse;
-import com.cloudbees.api.BeesClient;
-import com.cloudbees.api.BeesClientConfiguration;
-import com.cloudbees.api.BeesClientException;
+import com.cloudbees.api.*;
+import com.cloudbees.sdk.api.AccountInfo;
+import com.cloudbees.sdk.api.AccountKeysResponse;
+import com.cloudbees.sdk.api.AccountListResponse;
+import com.cloudbees.sdk.api.BeesAPIClient;
 import com.cloudbees.sdk.cli.DirectoryStructure;
 import com.cloudbees.sdk.cli.Verbose;
 import com.cloudbees.sdk.utils.Helper;
@@ -31,7 +30,7 @@ import java.util.Properties;
  * API key, whereas "parameters" would use "key".
  *
  * <p>
- * "config properties" are tied to the persisted {@ccode ~/.bees/bees.config} whereas
+ * "config properties" are tied to the persisted {@code ~/.bees/bees.config} whereas
  * parameters appear to be transient within one invocation.
  *
  * <p>
@@ -69,16 +68,7 @@ public class UserConfiguration {
         }
 
         // Setup java http proxy system properties
-        if (properties.getProperty("bees.api.proxy.host") != null && properties.getProperty("bees.api.proxy.port") != null) {
-            System.setProperty("http.proxyHost", properties.getProperty("bees.api.proxy.host"));
-            System.setProperty("http.proxyPort", properties.getProperty("bees.api.proxy.port"));
-            if (properties.getProperty("bees.api.proxy.user") != null) {
-                System.setProperty("http.proxyUser", properties.getProperty("bees.api.proxy.user"));
-            }
-            if (properties.getProperty("bees.api.proxy.password") != null) {
-                System.setProperty("http.proxyPassword", properties.getProperty("bees.api.proxy.password"));
-            }
-        }
+        Helper.setJVMProxySettings(properties);
 
         return properties;
     }
@@ -135,7 +125,7 @@ public class UserConfiguration {
                     beesClientConfiguration.setProxyUser(paramaters.get("proxy.user"));
                     beesClientConfiguration.setProxyPassword(paramaters.get("proxy.password"));
 
-                    BeesClient staxClient = new BeesClient(beesClientConfiguration);
+                    BeesAPIClient staxClient = new BeesAPIClient(beesClientConfiguration);
                     staxClient.setVerbose(verbose.isVerbose());
                     AccountKeysResponse response = staxClient.accountKeys(domain, email, password);
                     key = response.getKey();
@@ -144,7 +134,7 @@ public class UserConfiguration {
                     // Get the default account name
                     beesClientConfiguration.setApiKey(key);
                     beesClientConfiguration.setSecret(secret);
-                    staxClient = new BeesClient(beesClientConfiguration);
+                    staxClient = new BeesAPIClient(beesClientConfiguration);
                     staxClient.setVerbose(verbose.isVerbose());
                     AccountListResponse listResponse = staxClient.accountList();
                     List<AccountInfo> accounts = listResponse.getAccounts();
