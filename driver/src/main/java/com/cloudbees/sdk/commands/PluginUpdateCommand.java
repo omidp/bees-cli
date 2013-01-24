@@ -12,7 +12,7 @@ import java.io.IOException;
  * @author Fabian Donze
  */
 @CLICommand("plugin:update")
-@BeesCommand(group="SDK", description = "CLI plugin upadte")
+@BeesCommand(group="SDK", description = "CLI plugin update")
 public class PluginUpdateCommand extends PluginVersionCommand {
 
     public PluginUpdateCommand() {
