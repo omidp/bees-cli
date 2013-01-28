@@ -67,22 +67,7 @@
     <dependencies>
       <dependency>
         <groupId>net.stax</groupId>
-        <artifactId>stax-appserver</artifactId>
-        <version>${run-appserver.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.stax</groupId>
         <artifactId>stax-appserver-core</artifactId>
-        <version>${run-appserver.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.stax</groupId>
-        <artifactId>stax-api-client</artifactId>
-        <version>${run-appserver.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.stax</groupId>
-        <artifactId>stax-appgen</artifactId>
         <version>${run-appserver.version}</version>
       </dependency>
     </dependencies>

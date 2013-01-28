@@ -237,26 +237,31 @@ public class Bees {
                     NamedNodeMap nodeMap = node.getAttributes();
                     Node nameNode = nodeMap.getNamedItem("artifact");
                     if (nameNode != null) {
-                        boolean required = true;
+                        Node n = nodeMap.getNamedItem("required");
+                        boolean forceInstall = (n != null && Boolean.parseBoolean(n.getTextContent()));
+
                         String pluginArtifact = nameNode.getTextContent();
                         GAV gav = new GAV(pluginArtifact);
                         VersionNumber pluginVersion = new VersionNumber(gav.version);
                         Plugin plugin = service.getPlugin(gav.artifactId);
                         if (plugin != null) {
-                            Node n = nodeMap.getNamedItem("required");
-                            if (n != null && Boolean.parseBoolean(n.getTextContent())) required = true;
-                            else required = false;
-
+                            forceInstall = false;
                             GAV pgav = new GAV(plugin.getArtifact());
                             VersionNumber currentPluginVersion = new VersionNumber(pgav.version);
-                            if (!required && currentPluginVersion.compareTo(pluginVersion) < 0) {
-                                System.out.println();
-                                System.out.println("WARNING - A newer version of the [" + gav.artifactId + "] plugin is available, please update with:");
-                                System.out.println(" > bees plugin:update " + gav.artifactId);
-                                System.out.println();
+                            if (currentPluginVersion.compareTo(pluginVersion) < 0) {
+                                Node nf = nodeMap.getNamedItem("force-upgrade");
+                                boolean forced = (nf != null && Boolean.parseBoolean(nf.getTextContent()));
+                                if (forced) {
+                                    forceInstall = true;
+                                } else {
+                                    System.out.println();
+                                    System.out.println("WARNING - A newer version of the [" + gav.artifactId + "] plugin is available, please update with:");
+                                    System.out.println(" > bees plugin:update " + gav.artifactId);
+                                    System.out.println();
+                                }
                             }
                         }
-                        if (required)
+                        if (forceInstall)
                             pluginsToInstallList.put(gav.artifactId, gav);
 
                     }

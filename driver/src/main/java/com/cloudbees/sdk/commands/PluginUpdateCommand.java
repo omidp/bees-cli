@@ -5,15 +5,20 @@ import com.cloudbees.sdk.GAV;
 import com.cloudbees.sdk.Plugin;
 import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
+import com.cloudbees.sdk.cli.CommandService;
 
+import javax.inject.Inject;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Fabian Donze
  */
 @CLICommand("plugin:update")
 @BeesCommand(group="SDK", description = "CLI plugin update")
-public class PluginUpdateCommand extends PluginVersionCommand {
+public class PluginUpdateCommand extends PluginInstallCommand {
+    @Inject
+     CommandService commandService;
 
     public PluginUpdateCommand() {
         setArgumentExpected(1);
@@ -29,7 +34,7 @@ public class PluginUpdateCommand extends PluginVersionCommand {
     }
     @Override
     protected String getUsageMessage() {
-        return "PLUGIN_NAME";
+        return "PLUGIN_NAME [version]";
     }
 
     private String getPluginName() {
@@ -41,6 +46,14 @@ public class PluginUpdateCommand extends PluginVersionCommand {
         return name;
     }
 
+    private String getPluginVersion() {
+        List<String> parameters = getParameters();
+        if (parameters.size() > 1) {
+            return getParameters().get(1);
+        }
+        return "RELEASE";
+    }
+
     @Override
     protected boolean execute() throws Exception {
         CommandServiceImpl service = (CommandServiceImpl) commandService;
@@ -50,7 +63,9 @@ public class PluginUpdateCommand extends PluginVersionCommand {
             System.out.println();
             System.out.println("Plugin: " + plugin.getArtifact());
             GAV gav = new GAV(plugin.getArtifact());
-            return checkVersion(gav);
+            GAV gav1 = new GAV(gav.groupId, gav.artifactId, getPluginVersion());
+            setArtifact(gav1.toString());
+            return super.execute();
         } else {
             throw new IOException("Plugin not found: " + name);
         }
