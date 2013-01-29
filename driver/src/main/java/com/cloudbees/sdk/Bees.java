@@ -1,9 +1,9 @@
 package com.cloudbees.sdk;
 
 import com.cloudbees.api.BeesClientException;
+import com.cloudbees.sdk.cli.ACommand;
 import com.cloudbees.sdk.cli.CommandScope;
 import com.cloudbees.sdk.cli.CommandService;
-import com.cloudbees.sdk.cli.ACommand;
 import com.cloudbees.sdk.cli.DirectoryStructure;
 import com.cloudbees.sdk.extensibility.AnnotationLiteral;
 import com.cloudbees.sdk.utils.Helper;
@@ -38,6 +38,7 @@ public class Bees {
     private final static String app_template_xml_name = "sdk/cloudbees-sdk-config-4.xml";
     private final static String app_template_xml_desc = "CloudBees SDK configuration";
     private static final long CHECK_INTERVAL = 1000 * 60 * 60 * 12;  // 12 hours
+    private final static String CHECK_FILE = "sdk/check-4.dat";
     public static final String SDK_PLUGIN_INSTALL = "plugin:install";
 
     @Inject
@@ -53,17 +54,8 @@ public class Bees {
 
     private final ClassLoader extLoader;
 
-    private long time(String msg, long start) {
-        long end = System.currentTimeMillis();
-//        System.out.println(msg + " : " + (end-start) + " ms");
-        return end;
-    }
-
     public Bees() throws Exception {
-        long start = System.currentTimeMillis();
-
         extLoader = getClass().getClassLoader();
-        start = time("S1", start);
         //  container that includes all the things that make a bees CLI.
         Injector injector = Guice.createInjector(
                 new AbstractModule() {
@@ -75,23 +67,18 @@ public class Bees {
                     }
                 }
         );
-        start = time("S2", start);
 
         this.injector = injector;
         this.injector.injectMembers(this);
-        start = time("S3", start);
         CommandServiceImpl service = (CommandServiceImpl) commandService;
         service.loadCommandProperties();
         if (service.getCount() == 0) {
             throw new RuntimeException("Cannot find bees commands");
         }
-        start = time("S4", start);
     }
 
     public int run(String[] args) throws Exception {
         // Load command definitions
-        long start = System.currentTimeMillis();
-        start = time("R1", start);
         if (args.length == 0) args = new String[]{"help"};
 
         Object context = CommandScopeImpl.begin();
@@ -136,7 +123,6 @@ public class Bees {
 
         } finally {
             CommandScopeImpl.end(context);
-            time("R2", start);
         }
     }
 
@@ -148,7 +134,7 @@ public class Bees {
         LocalRepository localRepository = new LocalRepository();
 
         String beesRepoPath = localRepository.getRepositoryPath();
-        File lastCheckFile = new File(beesRepoPath, "sdk/check.dat");
+        File lastCheckFile = new File(beesRepoPath, CHECK_FILE);
         boolean checkVersion = true;
         Properties p = new Properties();
         if (!force && Helper.loadProperties(lastCheckFile, p)) {
