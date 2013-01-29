@@ -16,12 +16,12 @@
     <dependency>
       <groupId>com.cloudbees.sdk</groupId>
       <artifactId>bees-driver</artifactId>
-      <version>${parent.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>com.cloudbees.sdk</groupId>
       <artifactId>bees-boot</artifactId>
-      <version>${parent.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
   </dependencies>
 
