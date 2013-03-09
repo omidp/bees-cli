@@ -4,6 +4,7 @@ import com.cloudbees.api.BeesClientConfiguration;
 import com.cloudbees.sdk.cli.BeesClientFactory;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.ning.http.client.providers.netty.NettyAsyncHttpProvider;
 import org.apache.maven.settings.Server;
 import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
@@ -11,6 +12,7 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenDependencyResolverSettings;
+import org.slf4j.LoggerFactory;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.impl.VersionResolver;
 import org.sonatype.aether.repository.Authentication;
@@ -22,6 +24,8 @@ import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Module that adds {@link RepositorySystem} to Guice.
@@ -36,6 +40,10 @@ public class RepositorySystemModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(VersionResolver.class).to(VersionResolverImpl.class);
+
+        // NettyAsyncHttpProvider prints some INFO-level messages. suppress them
+        Logger.getLogger("com.ning.http.client.providers.netty.NettyAsyncHttpProvider").setLevel(Level.WARNING);
+        LoggerFactory.getLogger(NettyAsyncHttpProvider.class);
     }
 
     @Provides @Aether @Singleton

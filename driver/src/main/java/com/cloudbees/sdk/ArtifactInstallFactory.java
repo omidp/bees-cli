@@ -71,9 +71,6 @@ public class ArtifactInstallFactory {
     Provider<RepositoryService> repo; // needs to be indirect because setForceInstall can potentially reconfigure the session factory after this component is instantiated
 
     public ArtifactInstallFactory() {
-        // NettyAsyncHttpProvider prints some INFO-level messages. suppress them
-        Logger.getLogger("com.ning.http.client.providers.netty.NettyAsyncHttpProvider").setLevel(Level.WARNING);
-        LoggerFactory.getLogger(NettyAsyncHttpProvider.class);
     }
 
     /**
