@@ -5,18 +5,13 @@ import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
 import com.cloudbees.sdk.cli.DirectoryStructure;
 import com.cloudbees.sdk.cli.Verbose;
-import com.cloudbees.sdk.maven.ConsoleRepositoryListener;
-import com.cloudbees.sdk.maven.ConsoleTransferListener;
-import com.google.inject.AbstractModule;
+import com.cloudbees.sdk.maven.LocalRepositorySetting;
+import com.cloudbees.sdk.maven.MavenRepositorySystemSessionFactory;
 import com.ning.http.client.providers.netty.NettyAsyncHttpProvider;
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.apache.maven.settings.Server;
-import org.codehaus.plexus.DefaultContainerConfiguration;
-import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.PlexusContainerException;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenDependencyResolverSettings;
 import org.slf4j.LoggerFactory;
 import org.sonatype.aether.RepositorySystem;
@@ -24,9 +19,11 @@ import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.graph.DependencyFilter;
-import org.sonatype.aether.impl.VersionResolver;
 import org.sonatype.aether.installation.InstallRequest;
-import org.sonatype.aether.repository.*;
+import org.sonatype.aether.repository.Authentication;
+import org.sonatype.aether.repository.LocalRepository;
+import org.sonatype.aether.repository.Proxy;
+import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.ArtifactResult;
 import org.sonatype.aether.resolution.DependencyRequest;
 import org.sonatype.aether.resolution.VersionRangeRequest;
@@ -61,12 +58,11 @@ import java.util.logging.Logger;
 public class ArtifactInstallFactory {
     private static final Logger LOGGER = Logger.getLogger(ArtifactInstallFactory.class.getName());
 
+    @Inject
     MavenRepositorySystemSession sessionFactory;
 
     @Inject
     RepositorySystem rs;
-
-    private LocalRepository localRepository;
 
     @Inject
     private DirectoryStructure directoryStructure;
@@ -76,7 +72,11 @@ public class ArtifactInstallFactory {
 
     private BeesClientConfiguration beesClientConfiguration;
 
-    private boolean force;
+    @Inject
+    LocalRepositorySetting localRepositorySetting;
+
+    @Inject
+    MavenRepositorySystemSessionFactory mavenRepositorySystemSessionFactory;
 
     public ArtifactInstallFactory() {
         // NettyAsyncHttpProvider prints some INFO-level messages. suppress them
@@ -88,23 +88,12 @@ public class ArtifactInstallFactory {
         this.beesClientConfiguration = beesClientConfiguration;
     }
 
+    /**
+     * @deprecated
+     *      Use {@link MavenRepositorySystemSessionFactory#setForce(boolean)}.
+     */
     public void setForceInstall(boolean force) {
-        this.force = force;
-    }
-
-    private MavenRepositorySystemSession getSessionFactory() {
-        if (sessionFactory == null) {
-            sessionFactory = new MavenRepositorySystemSession();
-            sessionFactory.setLocalRepositoryManager(rs.newLocalRepositoryManager(getLocalRepository()));
-            if (force) {
-                sessionFactory.setUpdatePolicy( RepositoryPolicy.UPDATE_POLICY_ALWAYS );
-            }
-            if (verbose.isVerbose()) {
-                sessionFactory.setTransferListener( new ConsoleTransferListener() );
-                sessionFactory.setRepositoryListener( new ConsoleRepositoryListener() );
-            }
-        }
-        return sessionFactory;
+        mavenRepositorySystemSessionFactory.setForce(force);
     }
 
     private List<RemoteRepository> getRepositories() {
@@ -142,28 +131,19 @@ public class ArtifactInstallFactory {
         }
     }
 
+    /**
+     * @deprecated
+     *      Use {@link LocalRepositorySetting#set(LocalRepository)}
+     */
     public void setLocalRepository(String repository) {
-        localRepository = new LocalRepository(repository);
-    }
-
-    public LocalRepository getLocalRepository() {
-        if (localRepository == null) {
-            // Try to get local repository from settings.xml
-            MavenDependencyResolverSettings resolverSettings = new MavenDependencyResolverSettings();
-            String localRepositoryName = resolverSettings.getSettings().getLocalRepository();
-            if (localRepositoryName != null)
-                localRepository = new LocalRepository(new File(localRepositoryName));
-            else
-                localRepository = new LocalRepository(new File(new File(System.getProperty("user.home")), ".m2/repository"));
-        }
-        return localRepository;
+        localRepositorySetting.set(new LocalRepository(repository));
     }
 
     public VersionRangeResult findVersions(GAV gav) throws Exception {
         GAV findGAV = new GAV(gav.groupId, gav.artifactId, "[0,)");
         Artifact artifact = new DefaultArtifact( findGAV.toString() );
 
-        MavenRepositorySystemSession session = getSessionFactory();
+        MavenRepositorySystemSession session = sessionFactory;
 
         VersionRangeRequest rangeRequest = new VersionRangeRequest();
         rangeRequest.setArtifact(artifact);
@@ -191,7 +171,7 @@ public class ArtifactInstallFactory {
         InstallRequest installRequest = new InstallRequest();
         installRequest.addArtifact(jarArtifact).addArtifact(pomArtifact);
 
-        MavenRepositorySystemSession session = getSessionFactory();
+        MavenRepositorySystemSession session = sessionFactory;
         rs.install(session, installRequest);
 
         return install(gav);
@@ -201,7 +181,7 @@ public class ArtifactInstallFactory {
      * Installs the given artifact and all its transitive dependencies
      */
     private GAV install(Artifact a) throws Exception {
-        MavenRepositorySystemSession session = getSessionFactory();
+        MavenRepositorySystemSession session = sessionFactory;
 
         DependencyFilter classpathFlter = DependencyFilterUtils.classpathFilter(JavaScopes.COMPILE);
 

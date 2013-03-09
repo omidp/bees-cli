@@ -6,6 +6,8 @@ import com.cloudbees.sdk.cli.CommandScope;
 import com.cloudbees.sdk.cli.CommandService;
 import com.cloudbees.sdk.cli.DirectoryStructure;
 import com.cloudbees.sdk.extensibility.AnnotationLiteral;
+import com.cloudbees.sdk.maven.LocalRepositorySetting;
+import com.cloudbees.sdk.maven.MavenRepositorySystemSessionFactory;
 import com.cloudbees.sdk.maven.RepositorySystemModule;
 import com.cloudbees.sdk.utils.Helper;
 import com.google.inject.AbstractModule;
@@ -16,6 +18,7 @@ import com.staxnet.repository.LocalRepository;
 import hudson.util.VersionNumber;
 import org.apache.commons.cli.UnrecognizedOptionException;
 import org.apache.commons.io.IOUtils;
+import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.w3c.dom.*;
 
 import javax.inject.Inject;
@@ -65,6 +68,8 @@ public class Bees {
                         bind(CommandService.class).to(CommandServiceImpl.class);
                         bind(ClassLoader.class).annotatedWith(AnnotationLiteral.of(ExtensionClassLoader.class)).toInstance(extLoader);
                         bindScope(CommandScope.class, new CommandScopeImpl());
+                        bind(org.sonatype.aether.repository.LocalRepository.class).toProvider(LocalRepositorySetting.class);
+                        bind(MavenRepositorySystemSession.class).toProvider(MavenRepositorySystemSessionFactory.class);
                     }
                 },
                 new RepositorySystemModule()
