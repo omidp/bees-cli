@@ -30,6 +30,13 @@ public final class GAV {
         this.artifactId = tokens[1];
     }
 
+    /**
+     * Returns "groupId:artifactId"
+     */
+    public String ga() {
+        return groupId+':'+artifactId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
