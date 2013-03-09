@@ -63,6 +63,7 @@ public class ArtifactInstallFactory {
 
     MavenRepositorySystemSession sessionFactory;
 
+    @Inject
     RepositorySystem rs;
 
     private LocalRepository localRepository;
@@ -91,32 +92,10 @@ public class ArtifactInstallFactory {
         this.force = force;
     }
 
-    private RepositorySystem getRs() {
-        if (rs == null) {
-            try {
-                DefaultPlexusContainer boot = new DefaultPlexusContainer(
-                        new DefaultContainerConfiguration(),
-                        new AbstractModule() {
-                            @Override
-                            protected void configure() {
-                                bind(VersionResolver.class).to(VersionResolverImpl.class);
-                            }
-                        }
-                );
-                return boot.lookup(RepositorySystem.class);
-            } catch (ComponentLookupException e) {
-                throw new RuntimeException("Unable to lookup component RepositorySystem, cannot establish Aether dependency resolver.", e);
-            } catch (PlexusContainerException e) {
-                throw new RuntimeException("Unable to load RepositorySystem component by Plexus, cannot establish Aether dependency resolver.", e);
-            }
-        }
-        return rs;
-    }
-
     private MavenRepositorySystemSession getSessionFactory() {
         if (sessionFactory == null) {
             sessionFactory = new MavenRepositorySystemSession();
-            sessionFactory.setLocalRepositoryManager(getRs().newLocalRepositoryManager(getLocalRepository()));
+            sessionFactory.setLocalRepositoryManager(rs.newLocalRepositoryManager(getLocalRepository()));
             if (force) {
                 sessionFactory.setUpdatePolicy( RepositoryPolicy.UPDATE_POLICY_ALWAYS );
             }
@@ -190,7 +169,7 @@ public class ArtifactInstallFactory {
         rangeRequest.setArtifact(artifact);
         rangeRequest.setRepositories(getRepositories());
 
-        VersionRangeResult rangeResult = getRs().resolveVersionRange(session, rangeRequest);
+        VersionRangeResult rangeResult = rs.resolveVersionRange(session, rangeRequest);
 
         return rangeResult;
     }
@@ -213,7 +192,7 @@ public class ArtifactInstallFactory {
         installRequest.addArtifact(jarArtifact).addArtifact(pomArtifact);
 
         MavenRepositorySystemSession session = getSessionFactory();
-        getRs().install(session, installRequest);
+        rs.install(session, installRequest);
 
         return install(gav);
     }
@@ -232,7 +211,7 @@ public class ArtifactInstallFactory {
 
         DependencyRequest dependencyRequest = new DependencyRequest(collectRequest, classpathFlter);
 
-        List<ArtifactResult> artifactResults = getRs().resolveDependencies(session, dependencyRequest).getArtifactResults();
+        List<ArtifactResult> artifactResults = rs.resolveDependencies(session, dependencyRequest).getArtifactResults();
 
         Plugin plugin = new Plugin();
         List<CommandProperties> command = plugin.getProperties();
