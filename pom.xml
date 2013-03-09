@@ -20,6 +20,7 @@
   <modules>
     <module>boot</module>
     <module>api</module>
+    <module>bees-maven-components</module>
     <module>driver</module>
     <module>assembly</module>
   </modules>

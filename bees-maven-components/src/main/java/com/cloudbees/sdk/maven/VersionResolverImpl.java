@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.cloudbees.sdk;
+package com.cloudbees.sdk.maven;
 
 import hudson.util.VersionNumber;
 import org.apache.maven.artifact.repository.metadata.Snapshot;

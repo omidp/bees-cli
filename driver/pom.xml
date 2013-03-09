@@ -16,6 +16,11 @@
             <artifactId>bees-api</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bees-maven-components</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>net.stax</groupId>
@@ -33,63 +38,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-util</artifactId>
-            <version>${aether.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-impl</artifactId>
-            <version>${aether.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-connector-file</artifactId>
-            <version>${aether.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-connector-asynchttpclient</artifactId>
-            <version>${aether.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-aether-provider</artifactId>
-            <version>3.0.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jenkins-ci</groupId>
-            <artifactId>version-number</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.shrinkwrap.resolver</groupId>
-            <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-            <version>1.0.0-beta-7</version>
-            <exclusions>
-                <!-- to use Aether we need to use sisu, a modified version of Guice -->
-                <exclusion>
-                    <groupId>com.google.inject</groupId>
-                    <artifactId>guice</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.google.inject.extensions</groupId>
-                    <artifactId>guice-multibindings</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-container-default</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
             <version>1.6.2</version>
         </dependency>
     </dependencies>
-    <properties>
-        <aether.version>1.13</aether.version>
-    </properties>
 </project>

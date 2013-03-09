@@ -1,6 +1,5 @@
 package com.cloudbees.sdk.maven;
 
-import com.cloudbees.sdk.VersionResolverImpl;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import org.codehaus.plexus.DefaultContainerConfiguration;
