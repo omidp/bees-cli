@@ -12,12 +12,16 @@ import org.sonatype.aether.collection.DependencyCollectionException;
 import org.sonatype.aether.deployment.DeployRequest;
 import org.sonatype.aether.deployment.DeployResult;
 import org.sonatype.aether.deployment.DeploymentException;
+import org.sonatype.aether.graph.Dependency;
+import org.sonatype.aether.graph.DependencyFilter;
 import org.sonatype.aether.installation.InstallRequest;
 import org.sonatype.aether.installation.InstallResult;
 import org.sonatype.aether.installation.InstallationException;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.*;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
+import org.sonatype.aether.util.artifact.JavaScopes;
+import org.sonatype.aether.util.filter.DependencyFilterUtils;
 
 import javax.inject.Inject;
 import java.util.Collection;
@@ -142,6 +146,32 @@ public class RepositoryService {
      */
     public DependencyResult resolveDependencies( DependencyRequest request ) throws DependencyResolutionException {
         return repository.resolveDependencies(session, request);
+    }
+
+    /**
+     * Resolves dependencies transitively from the given jar artifact with the runtime scope.
+     *
+     * Since bees extensibility is used primarily at the runtime of the given artifact,
+     * runtime resolution should be the preferred scope of the dependency resolution.
+     */
+    public DependencyResult resolveDependencies(GAV a) throws DependencyResolutionException {
+        return resolveDependencies(a,JavaScopes.RUNTIME);
+    }
+
+    /**
+     * Resolves dependencies transitively from the given jar artifact, with the specified Maven scope
+     * (compile, runtime, and so on.)
+     */
+    public DependencyResult resolveDependencies(GAV a, String scope) throws DependencyResolutionException {
+        DependencyFilter classpathFlter = DependencyFilterUtils.classpathFilter(scope);
+
+        CollectRequest collectRequest = new CollectRequest();
+        collectRequest.setRoot(new Dependency(new DefaultArtifact(a.toString()), JavaScopes.COMPILE));
+        collectRequest.setRepositories(remoteRepositories);
+
+        DependencyRequest dependencyRequest = new DependencyRequest(collectRequest, classpathFlter);
+
+        return resolveDependencies(dependencyRequest);
     }
 
     /**

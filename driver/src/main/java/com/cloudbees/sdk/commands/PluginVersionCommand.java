@@ -57,7 +57,6 @@ public abstract class PluginVersionCommand extends Command {
             ArtifactInstallFactory installFactory = artifactInstallFactoryProvider.get();
             if (localrepo != null)
                 installFactory.setLocalRepository(localrepo);
-            installFactory.setBeesClientConfiguration(getBeesClientBase().getBeesClientConfiguration());
 
             VersionRangeResult rangeResult = installFactory.findVersions(gav);
             Version newestVersion = rangeResult.getHighestVersion();

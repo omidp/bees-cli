@@ -15,21 +15,16 @@ import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.slf4j.LoggerFactory;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.collection.CollectRequest;
-import org.sonatype.aether.graph.Dependency;
-import org.sonatype.aether.graph.DependencyFilter;
 import org.sonatype.aether.installation.InstallRequest;
 import org.sonatype.aether.repository.LocalRepository;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.ArtifactResult;
-import org.sonatype.aether.resolution.DependencyRequest;
 import org.sonatype.aether.resolution.VersionRangeResult;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
-import org.sonatype.aether.util.artifact.JavaScopes;
 import org.sonatype.aether.util.artifact.SubArtifact;
-import org.sonatype.aether.util.filter.DependencyFilterUtils;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import java.io.File;
 import java.io.FileWriter;
 import java.net.URL;
@@ -73,10 +68,7 @@ public class ArtifactInstallFactory {
     MavenRepositorySystemSessionFactory mavenRepositorySystemSessionFactory;
 
     @Inject
-    List<RemoteRepository> remoteRepositories;
-
-    @Inject
-    RepositoryService repo;
+    Provider<RepositoryService> repo; // needs to be indirect because setForceInstall can potentially reconfigure the session factory after this component is instantiated
 
     public ArtifactInstallFactory() {
         // NettyAsyncHttpProvider prints some INFO-level messages. suppress them
@@ -97,6 +89,7 @@ public class ArtifactInstallFactory {
      */
     public void setForceInstall(boolean force) {
         mavenRepositorySystemSessionFactory.setForce(force);
+        session = mavenRepositorySystemSessionFactory.get(); // we need to get a new session
     }
 
     /**
@@ -108,11 +101,7 @@ public class ArtifactInstallFactory {
     }
 
     public VersionRangeResult findVersions(GAV gav) throws Exception {
-        return repo.resolveVersionRange(gav);
-    }
-
-    public GAV install(GAV gav) throws Exception {
-        return install(toArtifact(gav));
+        return repo.get().resolveVersionRange(gav);
     }
 
     /**
@@ -136,16 +125,9 @@ public class ArtifactInstallFactory {
     /**
      * Installs the given artifact and all its transitive dependencies
      */
-    private GAV install(Artifact a) throws Exception {
-        DependencyFilter classpathFlter = DependencyFilterUtils.classpathFilter(JavaScopes.COMPILE);
-
-        CollectRequest collectRequest = new CollectRequest();
-        collectRequest.setRoot(new Dependency(a, JavaScopes.COMPILE));
-        collectRequest.setRepositories(remoteRepositories);
-
-        DependencyRequest dependencyRequest = new DependencyRequest(collectRequest, classpathFlter);
-
-        List<ArtifactResult> artifactResults = rs.resolveDependencies(session, dependencyRequest).getArtifactResults();
+    public GAV install(GAV gav) throws Exception {
+        Artifact a = toArtifact(gav);
+        List<ArtifactResult> artifactResults = repo.get().resolveDependencies(gav).getArtifactResults();
 
         Plugin plugin = new Plugin();
         List<CommandProperties> command = plugin.getProperties();
