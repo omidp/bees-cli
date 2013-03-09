@@ -189,6 +189,20 @@ public class RepositoryService {
     }
 
     /**
+     * Resolves a single jar artifact of the given coordinate and returns it.
+     */
+    public ArtifactResult resolveArtifact( GAV gav ) throws ArtifactResolutionException {
+        return resolveArtifact(new DefaultArtifact(gav.toString()));
+    }
+
+    /**
+     * Resolves a single artifact and returns it.
+     */
+    public ArtifactResult resolveArtifact( Artifact artifact ) throws ArtifactResolutionException {
+        return resolveArtifact(new ArtifactRequest(artifact,remoteRepositories,null));
+    }
+
+    /**
      * Resolves the paths for a collection of artifacts. Artifacts will be downloaded if necessary. Artifacts that are
      * already resolved will be skipped and are not re-resolved. Note that this method assumes that any relocations have
      * already been processed.
