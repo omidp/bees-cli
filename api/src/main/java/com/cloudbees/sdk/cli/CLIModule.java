@@ -18,5 +18,5 @@ import com.google.inject.Module;
  * @author Kohsuke Kawaguchi
  */
 @ExtensionPoint
-public abstract class CLIModule implements Module {
+public interface CLIModule extends Module {
 }
