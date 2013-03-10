@@ -19,7 +19,6 @@ import org.sonatype.aether.repository.Authentication;
 import org.sonatype.aether.repository.Proxy;
 import org.sonatype.aether.repository.RemoteRepository;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,22 +38,20 @@ import java.util.logging.Logger;
 public class RepositorySystemModule extends AbstractModule {
     @Override
     protected void configure() {
-        bind(VersionResolver.class).to(VersionResolverImpl.class);
-
         // NettyAsyncHttpProvider prints some INFO-level messages. suppress them
         Logger.getLogger("com.ning.http.client.providers.netty.NettyAsyncHttpProvider").setLevel(Level.WARNING);
         LoggerFactory.getLogger(NettyAsyncHttpProvider.class);
     }
 
     @Provides @Aether @Singleton
-    public PlexusContainer aetherContainer(final VersionResolver resolver) {
+    public PlexusContainer aetherContainer() {
         try {
             return new DefaultPlexusContainer(
                 new DefaultContainerConfiguration(),
                 new AbstractModule() {
                     @Override
                     protected void configure() {
-                        bind(VersionResolver.class).toInstance(resolver);
+                        bind(VersionResolver.class).to(VersionResolverImpl.class);
                     }
                 }
             );
