@@ -5,6 +5,19 @@ import com.cloudbees.sdk.extensibility.ExtensionPoint;
 import java.util.List;
 
 /**
+ * A CLI command.
+ *
+ * <p>
+ * This is the contract of CLI commands. All the abstract subtypes are merely convenient
+ * partial implementations.
+ * <p>
+ * A command in CloudBees SDK is usually invoked as a sub-command of the <tt>bees</tt> command.
+ * It takes arbitrary numbers of arguments, whose meanings are entirely up to command implmeentations.
+ * A command interacts with stdin/stdout/stderr.
+ *
+ * <p>
+ * Commands are instantiated with Guice, so they receive dependency injections.
+ *
  * @author Kohsuke Kawaguchi
  */
 @ExtensionPoint

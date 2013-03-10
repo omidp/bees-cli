@@ -7,7 +7,11 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Bees command definition
+ * Bees command definition.
+ *
+ * This annotation is used in conjunction with {@link CLICommand} to provide
+ * metadata about the command.
+ *
  * @author Fabian Donze
  */
 @Retention(RUNTIME)

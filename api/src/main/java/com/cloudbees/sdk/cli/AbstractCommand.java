@@ -1,10 +1,12 @@
 package com.cloudbees.sdk.cli;
 
 import com.cloudbees.sdk.AbortException;
+import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.ClassParser;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.ExampleMode;
+import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.spi.OptionHandler;
 
 import javax.inject.Inject;
@@ -14,7 +16,26 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Partial implementation of {@link ACommand} that uses args4j.
+ * Partial implementation of {@link ACommand} that provides more integration
+ * between argument parsing and dependency injections.
+ *
+ * <p>
+ * To encourage commonality between various commands and simplify the development of new commands,
+ * this subtype handles argument processing via <a href="http://args4j.kohsuke.org/">args4j</a>.
+ * Primarily this means you'll be defining your command line options as annotated fields or setter
+ * methods on subtypes. See {@link Option} and {@link Argument} for more details.
+ *
+ * <p>
+ * In addition to annotating setters and fields, the argument parsing code also looks for any
+ * {@linkplain Inject injected} fields whose type has {@link HasOptions} marker interface.
+ * There are several injectable option fragment components (such as {@link Verbose}) that contains
+ * this marker interface, and whatever options that these components define also becomes a part of
+ * the recognizable options.
+ *
+ * <p>
+ * By sharing and reusing such option fragment components, users will see consistent user interfaces
+ * and command developers are freed from lower-level option parsing.
+ *
  * @author Kohsuke Kawaguchi
  */
 public abstract class AbstractCommand extends ACommand {
