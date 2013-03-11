@@ -299,14 +299,13 @@ public class CommandServiceImpl implements CommandService {
         try {
             Injector injector = this.injector;
 
-
             if (jars != null) {
                 List<URL> urls = new ArrayList<URL>();
                 for (String jar : jars) {
                     urls.add(new File(jar).toURI().toURL());
                 }
-                extClassLoader = createClassLoader(urls, extClassLoader);
-                injector = createChildModule(injector, extClassLoader);
+                ClassLoader pluginClassLoader = createClassLoader(urls, extClassLoader);
+                injector = createChildModule(injector, pluginClassLoader);
             }
 
             // CommandResolvers take precedence over our default
@@ -340,6 +339,9 @@ public class CommandServiceImpl implements CommandService {
     private ACommand getCommand(String name, PluginCommand pluginCommand) throws IOException {
         ACommand command;
         try {
+            Injector injector = this.injector;
+            ClassLoader pluginClassLoader = this.extClassLoader;
+
             String className = pluginCommand.commandProperties.getClassName();
             List<String> jars = pluginCommand.plugin.getJars();
             if (jars != null) {
@@ -347,12 +349,12 @@ public class CommandServiceImpl implements CommandService {
                 for (String jar : jars) {
                     urls.add(new File(jar).toURI().toURL());
                 }
-                extClassLoader = createClassLoader(urls, extClassLoader);
-                injector = createChildModule(injector, extClassLoader);
+                pluginClassLoader = createClassLoader(urls, pluginClassLoader);
+                injector = createChildModule(injector, pluginClassLoader);
             }
             Provider<ACommand> p;
             try {
-                Class cl = Class.forName(className, true, extClassLoader);
+                Class cl = Class.forName(className, true, pluginClassLoader);
                 p = injector.getProvider(Key.get(cl));
             } catch (ConfigurationException e) {
                 if (verbose.isVerbose()) LOGGER.log(Level.WARNING, "failed to find the command", e);
