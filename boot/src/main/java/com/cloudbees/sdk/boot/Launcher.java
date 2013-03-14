@@ -13,11 +13,14 @@ import java.util.ArrayList;
  * @author Fabian Donze
  */
 public class Launcher {
-    public final static String BEES_CLASS = "com.cloudbees.sdk.Bees";
+    public final static String BEES_CLASS = "com.cloudbees.sdk.boot2.BeesLoader";
     public final static File DEFAULT_REPO_DIR = new File(System.getProperty("user.home"), ".bees");
 
     public static void main(String[] args) {
-//        System.out.println(System.getProperties());
+        if (System.getProperty("profile")!=null) {
+            System.out.println("Starting");
+            System.setProperty("profile",String.valueOf(System.nanoTime()));
+        }
 
         try {
             URL[] urls = getJarUrls();
@@ -31,7 +34,7 @@ public class Launcher {
             Class beesClass = loader.loadClass(BEES_CLASS);
             Thread.currentThread().setContextClassLoader(loader);
 
-            Method mainMethod = beesClass.getDeclaredMethod("main", new Class[]{ String[].class });
+            Method mainMethod = beesClass.getDeclaredMethod("main", String[].class);
             Object obj = mainMethod.invoke(null, new Object[]{args});
             int returnValue = 0;
             if (obj instanceof Integer) {

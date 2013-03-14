@@ -1,10 +1,9 @@
 package com.cloudbees.sdk.maven;
 
-import com.cloudbees.api.BeesClientConfiguration;
-import com.cloudbees.sdk.cli.BeesClientFactory;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.ning.http.client.providers.netty.NettyAsyncHttpProvider;
+import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.apache.maven.settings.Server;
 import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
@@ -16,11 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.impl.VersionResolver;
 import org.sonatype.aether.repository.Authentication;
-import org.sonatype.aether.repository.Proxy;
+import org.sonatype.aether.repository.LocalRepository;
 import org.sonatype.aether.repository.RemoteRepository;
 
 import javax.inject.Singleton;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -41,6 +39,9 @@ public class RepositorySystemModule extends AbstractModule {
         // NettyAsyncHttpProvider prints some INFO-level messages. suppress them
         Logger.getLogger("com.ning.http.client.providers.netty.NettyAsyncHttpProvider").setLevel(Level.WARNING);
         LoggerFactory.getLogger(NettyAsyncHttpProvider.class);
+
+        bind(LocalRepository.class).toProvider(LocalRepositorySetting.class);
+        bind(MavenRepositorySystemSession.class).toProvider(MavenRepositorySystemSessionFactory.class);
     }
 
     @Provides @Aether @Singleton
@@ -69,9 +70,7 @@ public class RepositorySystemModule extends AbstractModule {
      * List of remote repositories to resolve artifacts from.
      */
     @Provides @Singleton
-    public List<RemoteRepository> getRemoteRepositories(BeesClientFactory bees) throws IOException {
-        BeesClientConfiguration bcc = bees.get().getBeesClientConfiguration();
-
+    public List<RemoteRepository> getRemoteRepositories(RemoteRepositoryDecorator decorator) {
         List<RemoteRepository> repositories = new ArrayList<RemoteRepository>();
         MavenDependencyResolverSettings resolverSettings = new MavenDependencyResolverSettings();
         resolverSettings.setUseMavenCentral(true);
@@ -81,31 +80,12 @@ public class RepositorySystemModule extends AbstractModule {
             if (server != null) {
                 remoteRepository.setAuthentication(new Authentication(server.getUsername(), server.getPassword(), server.getPrivateKey(), server.getPassphrase()));
             }
-            setRemoteRepositoryProxy(remoteRepository, bcc);
-            repositories.add(remoteRepository);
+            repositories.add(decorator.decorate(remoteRepository));
         }
         RemoteRepository r = new RemoteRepository("cloudbees-public-release", "default", "https://repository-cloudbees.forge.cloudbees.com/public-release/");
-        repositories.add(setRemoteRepositoryProxy(r,bcc));
+        repositories.add(decorator.decorate(r));
         return repositories;
     }
-
-    private RemoteRepository setRemoteRepositoryProxy(RemoteRepository repo, BeesClientConfiguration bcc) {
-        if (bcc==null)  return repo;
-
-        if (bcc.getProxyHost() != null && bcc.getProxyPort() > 0) {
-            String proxyType = Proxy.TYPE_HTTP;
-            if (repo.getUrl().startsWith("https"))
-                proxyType = Proxy.TYPE_HTTPS;
-            Proxy proxy = new Proxy(proxyType, bcc.getProxyHost(), bcc.getProxyPort(), null);
-            if (bcc.getProxyUser() != null) {
-                Authentication authentication = new Authentication(bcc.getProxyUser(), bcc.getProxyPassword());
-                proxy.setAuthentication(authentication);
-            }
-            repo.setProxy(proxy);
-        }
-        return repo;
-    }
-
 
     protected  <T> T lookup(PlexusContainer aether, Class<T> type) {
         try {
