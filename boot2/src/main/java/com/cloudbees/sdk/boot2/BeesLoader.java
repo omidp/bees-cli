@@ -67,6 +67,9 @@ public class BeesLoader {
         File tools = findToolsJar();
         if (tools != null)  jars.add(tools);
 
+        // we don't let this classloader delegate to the 2nd stage boot classloader
+        // in this way, the environment that the driver sees can be fully updated (including Guice, Aether, and Plexus)
+        // without updating the SDK itself.
         URLClassLoader loader = new URLClassLoader(toURL(jars), null);
         Class<?> beesClass = loader.loadClass("com.cloudbees.sdk.Bees");
 
