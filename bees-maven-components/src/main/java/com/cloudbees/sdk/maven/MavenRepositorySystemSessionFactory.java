@@ -1,6 +1,5 @@
 package com.cloudbees.sdk.maven;
 
-import com.cloudbees.sdk.cli.Verbose;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.repository.LocalRepository;
@@ -24,9 +23,6 @@ public class MavenRepositorySystemSessionFactory implements Provider<MavenReposi
     @Inject
     RepositorySystem rs;
 
-    @Inject
-    Verbose verbose;
-
     private boolean force;
 
     @Inject
@@ -38,10 +34,6 @@ public class MavenRepositorySystemSessionFactory implements Provider<MavenReposi
         session.setLocalRepositoryManager(rs.newLocalRepositoryManager(localRepository.get()));
         if (force) {
             session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS);
-        }
-        if (verbose.isVerbose()) {
-            session.setTransferListener(new ConsoleTransferListener());
-            session.setRepositoryListener(new ConsoleRepositoryListener());
         }
         return session;
     }

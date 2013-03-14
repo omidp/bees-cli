@@ -5,6 +5,7 @@ package com.cloudbees.sdk;
  *
  * @author Kohsuke Kawaguchi
  */
+// it's in the wrong package for historical reasons
 public final class GAV {
     public final String groupId, artifactId, version;
 

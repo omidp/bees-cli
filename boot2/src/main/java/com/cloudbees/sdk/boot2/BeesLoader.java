@@ -57,7 +57,7 @@ public class BeesLoader {
     private static void reportTime() {
         String profile = System.getProperty("profile");
         if (profile !=null) {
-            System.out.println(BeesLoader.class.getName()+": "+(System.nanoTime()-Long.valueOf(profile))/1000000L+"ms");
+            System.out.println(BeesLoader.class.getName() + ": " + (System.nanoTime() - Long.valueOf(profile)) / 1000000L + "ms");
         }
     }
 }

@@ -15,9 +15,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>bees-api</artifactId>
-            <version>${project.parent.version}</version>
+          <groupId>com.cloudbees</groupId>
+          <artifactId>extensibility</artifactId>
+          <version>1.0</version>
         </dependency>
 
         <dependency>
