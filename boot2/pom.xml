@@ -12,6 +12,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bees-boot</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.cloudbees.sdk</groupId>
             <artifactId>bees-maven-components</artifactId>
             <version>${project.version}</version>

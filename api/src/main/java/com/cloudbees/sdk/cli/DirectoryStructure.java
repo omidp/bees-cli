@@ -19,7 +19,7 @@ public class DirectoryStructure {
 
     public DirectoryStructure() {
         this.sdkRepository = new File(System.getProperty("bees.home"), "conf");
-        this.localRepository = getLocalRepository();
+        this.localRepository = calcLocalRepository();
     }
 
     /**
@@ -33,7 +33,11 @@ public class DirectoryStructure {
         return new File(localRepository,"plugins");
     }
 
-    private File getLocalRepository() {
+    public File getLocalRepository() {
+        return localRepository;
+    }
+
+    private File calcLocalRepository() {
         if(System.getenv("BEES_REPO") != null)
             return new File(System.getenv("BEES_REPO"));
         else if(System.getProperty("bees.repo") != null)

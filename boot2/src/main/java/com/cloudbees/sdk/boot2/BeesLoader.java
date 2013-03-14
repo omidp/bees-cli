@@ -1,19 +1,20 @@
 package com.cloudbees.sdk.boot2;
 
 import com.cloudbees.sdk.GAV;
+import com.cloudbees.sdk.boot.Launcher;
 import com.cloudbees.sdk.maven.RepositoryService;
 import com.cloudbees.sdk.maven.RepositorySystemModule;
+import com.cloudbees.sdk.maven.ResolvedDependenciesCache;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import org.sonatype.aether.resolution.ArtifactResult;
+import org.sonatype.aether.artifact.Artifact;
+import org.sonatype.aether.resolution.ArtifactResolutionException;
+import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.resolution.DependencyResult;
 
-import javax.inject.Inject;
+import java.io.File;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 2nd-level bootstrapping.
@@ -21,29 +22,45 @@ import java.util.List;
  * @author Kohsuke Kawaguchi
  */
 public class BeesLoader {
+
     public static void main(String[] args) throws Exception {
         reportTime();
 
-        //  container that includes all the things that make a bees CLI.
-        Injector injector = Guice.createInjector(new RepositorySystemModule());
-
-        BeesLoader loader = new BeesLoader();
-        injector.injectMembers(loader);
-        loader.run(args);
+        new BeesLoader().run(args);
     }
 
-    @Inject
-    public RepositoryService rs;
+    private Injector injector;
+    private RepositoryService rs;
 
     private void run(String[] args) throws Exception {
-        DependencyResult r = rs.resolveDependencies(new GAV("com.cloudbees.sdk", "bees-driver", "LATEST"));
+        ResolvedDependenciesCache cache = new ResolvedDependenciesCache() {
+            private RepositoryService getRepositoryService() {
+                if (injector==null)
+                    injector = Guice.createInjector(new RepositorySystemModule());
+                if (rs==null)
+                    rs = injector.getInstance(RepositoryService.class);
+                return rs;
+            }
 
-        List<URL> jars = new ArrayList<URL>();
-        for (ArtifactResult a : r.getArtifactResults()) {
-            jars.add(a.getArtifact().getFile().toURI().toURL());
-        }
+            @Override
+            protected File getCacheDir() {
+                return Launcher.DEFAULT_REPO_DIR;
+            }
 
-        URLClassLoader loader = new URLClassLoader(jars.toArray(new URL[jars.size()]), null);
+            @Override
+            protected DependencyResult forceResolve(GAV gav) throws DependencyResolutionException {
+                RepositoryService rs = getRepositoryService();
+                return rs.resolveDependencies(gav);
+            }
+
+            @Override
+            protected File resolveArtifact(Artifact a) throws ArtifactResolutionException {
+                return getRepositoryService().resolveArtifact(a).getArtifact().getFile();
+            }
+        };
+
+        GAV main = new GAV("com.cloudbees.sdk", "bees-driver", "LATEST");
+        URLClassLoader loader = new URLClassLoader(cache.resolveToURLs(main), null);
         Class<?> beesClass = loader.loadClass("com.cloudbees.sdk.Bees");
 
         Thread.currentThread().setContextClassLoader(loader);
