@@ -86,28 +86,6 @@ public class Launcher {
             addJars(parentFile, list);
         }
 
-        // Add the tools.jar
-        String javaHome = System.getenv("JAVA_HOME");
-        // Try to define it
-        if (javaHome == null) {
-            String[] paths = System.getProperty("sun.boot.library.path").split(",");
-            if (paths != null && paths.length > 0) {
-                javaHome = paths[0].trim();
-            }
-        }
-        if (javaHome != null) {
-            File javaHomeDir = new File(javaHome);
-            File tools = findToolsJar(javaHomeDir);
-            if (tools != null && tools.exists()) {
-//                System.out.println("Add tools.jar");
-                list.add(tools.toURI().toURL());
-/*
-            } else {
-                System.err.println("WARNING: Cannot find JAVA_HOME. Some commands might not work properly");
-*/
-            }
-        }
-
         return list.toArray(new URL[list.size()]);
 
     }
@@ -123,16 +101,6 @@ public class Launcher {
                 URL u = new File(dir, files[i]).toURI().toURL();
                 list.add(u);
             }
-        }
-    }
-
-    private static File findToolsJar(File dir) {
-        if (dir == null) return null;
-        File tools = new File(dir, "/lib/tools.jar");
-        if (tools.exists()) {
-            return tools;
-        } else {
-            return findToolsJar(dir.getParentFile());
         }
     }
 }

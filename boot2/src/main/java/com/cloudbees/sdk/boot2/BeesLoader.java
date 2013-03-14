@@ -14,7 +14,10 @@ import org.sonatype.aether.resolution.DependencyResult;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.List;
 
 /**
  * 2nd-level bootstrapping.
@@ -59,8 +62,12 @@ public class BeesLoader {
             }
         };
 
-        GAV main = new GAV("com.cloudbees.sdk", "bees-driver", "LATEST");
-        URLClassLoader loader = new URLClassLoader(cache.resolveToURLs(main), null);
+        List<File> jars= cache.resolve(new GAV("com.cloudbees.sdk", "bees-driver", "LATEST"));
+
+        File tools = findToolsJar();
+        if (tools != null)  jars.add(tools);
+
+        URLClassLoader loader = new URLClassLoader(toURL(jars), null);
         Class<?> beesClass = loader.loadClass("com.cloudbees.sdk.Bees");
 
         Thread.currentThread().setContextClassLoader(loader);
@@ -71,10 +78,37 @@ public class BeesLoader {
             System.exit((Integer)obj);
     }
 
+    private URL[] toURL(List<File> files) throws MalformedURLException {
+        URL[] jars = new URL[files.size()];
+        int i=0;
+        for (File f : files) {
+            jars[i++] = f.toURI().toURL();
+        }
+        return jars;
+    }
+
     private static void reportTime() {
         String profile = System.getProperty("profile");
         if (profile !=null) {
             System.out.println(BeesLoader.class.getName() + ": " + (System.nanoTime() - Long.valueOf(profile)) / 1000000L + "ms");
         }
+    }
+
+    private static File findToolsJar() {
+        String javaHome = System.getenv("JAVA_HOME");
+        // Try to define it
+        if (javaHome == null) {
+            String[] paths = System.getProperty("sun.boot.library.path").split(",");
+            if (paths != null && paths.length > 0) {
+                javaHome = paths[0].trim();
+            }
+        }
+        if (javaHome == null)   return null;
+
+        File dir = new File(javaHome);
+        File tools = new File(dir, "lib/tools.jar");
+        if (tools.exists())     return tools;
+
+        return null;
     }
 }
