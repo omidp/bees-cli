@@ -17,9 +17,9 @@
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.cloudbees.sdk</groupId>
+            <groupId>com.cloudbees</groupId>
             <artifactId>bees-maven-components</artifactId>
-            <version>${project.version}</version>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

@@ -28,7 +28,7 @@ import java.util.List;
  * partial implementations.
  * <p>
  * A command in CloudBees SDK is usually invoked as a sub-command of the <tt>bees</tt> command.
- * It takes arbitrary numbers of arguments, whose meanings are entirely up to command implmeentations.
+ * It takes arbitrary numbers of arguments, whose meanings are entirely up to command implmentations.
  * A command interacts with stdin/stdout/stderr.
  *
  * <p>

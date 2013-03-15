@@ -78,6 +78,9 @@ public class ArtifactInstallFactory {
     LocalRepositorySetting localRepositorySetting;
 
     @Inject
+    CliMavenRepositorySystemSessionDecorator mavenSessionDecorator;
+
+    @Inject
     MavenRepositorySystemSessionFactory mavenRepositorySystemSessionFactory;
 
     @Inject
@@ -95,10 +98,10 @@ public class ArtifactInstallFactory {
 
     /**
      * @deprecated
-     *      Use {@link MavenRepositorySystemSessionFactory#setForce(boolean)}.
+     *      Use {@link CliMavenRepositorySystemSessionDecorator#setForce(boolean)}.
      */
     public void setForceInstall(boolean force) {
-        mavenRepositorySystemSessionFactory.setForce(force);
+        mavenSessionDecorator.setForce(force);
         session = mavenRepositorySystemSessionFactory.get(); // we need to get a new session
     }
 

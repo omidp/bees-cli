@@ -17,10 +17,13 @@
 package com.cloudbees.sdk;
 
 import com.cloudbees.sdk.cli.Verbose;
+import com.cloudbees.sdk.extensibility.Extension;
 import com.cloudbees.sdk.maven.ConsoleRepositoryListener;
 import com.cloudbees.sdk.maven.ConsoleTransferListener;
+import com.cloudbees.sdk.maven.MavenRepositorySystemSessionDecorator;
 import com.cloudbees.sdk.maven.MavenRepositorySystemSessionFactory;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
+import org.sonatype.aether.repository.RepositoryPolicy;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -30,14 +33,18 @@ import javax.inject.Singleton;
  *
  * @author Kohsuke Kawaguchi
  */
-@Singleton
-public class CliMavenRepositorySystemSessionFactory extends MavenRepositorySystemSessionFactory {
+@Extension
+public class CliMavenRepositorySystemSessionDecorator extends MavenRepositorySystemSessionDecorator {
     @Inject
     Verbose verbose;
 
+    private boolean force;
+
     @Override
-    public MavenRepositorySystemSession get() {
-        MavenRepositorySystemSession session = super.get();
+    public MavenRepositorySystemSession decorate(MavenRepositorySystemSession session) {
+        if (force) {
+            session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS);
+        }
         if (verbose.isVerbose()) {
             session.setTransferListener(new ConsoleTransferListener());
             session.setRepositoryListener(new ConsoleRepositoryListener());
@@ -45,4 +52,10 @@ public class CliMavenRepositorySystemSessionFactory extends MavenRepositorySyste
         return session;
     }
 
+    /**
+     * Force update from the remote repository.
+     */
+    public void setForce(boolean force) {
+        this.force = force;
+    }
 }

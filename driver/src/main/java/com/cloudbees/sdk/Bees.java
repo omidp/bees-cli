@@ -22,20 +22,16 @@ import com.cloudbees.sdk.cli.CommandScope;
 import com.cloudbees.sdk.cli.CommandService;
 import com.cloudbees.sdk.cli.DirectoryStructure;
 import com.cloudbees.sdk.extensibility.AnnotationLiteral;
-import com.cloudbees.sdk.maven.MavenRepositorySystemSessionFactory;
 import com.cloudbees.sdk.maven.RemoteRepositoryDecorator;
-import com.cloudbees.sdk.maven.RepositorySystemModule;
 import com.cloudbees.sdk.utils.Helper;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.util.Modules;
 import com.staxnet.appserver.utils.XmlHelper;
 import com.staxnet.repository.LocalRepository;
 import hudson.util.VersionNumber;
 import org.apache.commons.cli.UnrecognizedOptionException;
 import org.apache.commons.io.IOUtils;
-import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.w3c.dom.*;
 
 import javax.inject.Inject;
@@ -87,13 +83,7 @@ public class Bees {
                         bindScope(CommandScope.class, new CommandScopeImpl());
                         bind(RemoteRepositoryDecorator.class).to(RemoteRepositoryDecoratorImpl.class);
                     }
-                },
-                Modules.override(new RepositorySystemModule()).with(new AbstractModule() {
-                    @Override
-                    protected void configure() {
-                        bind(MavenRepositorySystemSession.class).toProvider(CliMavenRepositorySystemSessionFactory.class);
-                    }
-                })
+                }
         );
 
         this.injector = injector;

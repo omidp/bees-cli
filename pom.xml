@@ -21,7 +21,6 @@
     <module>boot</module>
     <module>boot2</module>
     <module>api</module>
-    <module>bees-maven-components</module>
     <module>driver</module>
     <module>assembly</module>
   </modules>
