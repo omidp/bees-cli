@@ -64,33 +64,4 @@
     <connection>scm:git:git@github.com:cloudbees/bees-cli.git</connection>
     <tag>HEAD</tag>
   </scm>
-
-  <distributionManagement>
-    <repository>
-      <id>cloudbees-public-release</id>
-      <url>dav:https://repository-cloudbees.forge.cloudbees.com/public-release</url>
-    </repository>
-    <snapshotRepository>
-      <id>cloudbees-public-snapshot</id>
-      <url>dav:https://repository-cloudbees.forge.cloudbees.com/public-snapshot</url>
-    </snapshotRepository>
-  </distributionManagement>
-
-  <profiles>
-    <profile>
-      <id>cloudbees-internal-release</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-source-plugin</artifactId>
-            <configuration>
-              <!-- do not release source jars -->
-              <attach>false</attach>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-
 </project>
