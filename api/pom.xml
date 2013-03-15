@@ -9,7 +9,7 @@
 
     <artifactId>bees-api</artifactId>
 
-    <name>CloudBees SDK Command line tool API</name>
+    <name>CloudBees SDK CLI API</name>
 
     <dependencies>
         <dependency>
