@@ -67,7 +67,7 @@ public class CommandServiceImpl implements CommandService {
 
     DirectoryStructure structure;
 
-    List<Plugin> plugins;
+    List<Plugin> plugins = new ArrayList<Plugin>();
     boolean localRepoLoaded;
 
     @Inject
