@@ -16,21 +16,11 @@
             <artifactId>bees-api</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.cloudbees</groupId>
-            <artifactId>bees-maven-components</artifactId>
-            <version>1.0</version>
-        </dependency>
 
         <dependency>
             <groupId>net.stax</groupId>
             <artifactId>stax-appserver-core</artifactId>
             <version>${run-appserver.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
