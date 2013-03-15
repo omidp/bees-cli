@@ -18,10 +18,7 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @author Fabian Donze
@@ -270,7 +267,7 @@ public abstract class Command extends ACommand {
     }
 
     protected List<String> getParameters() {
-        return parameters;
+        return parameters != null ? parameters : Collections.<String>emptyList();
     }
 
     protected void addParameter(String parameter) {
