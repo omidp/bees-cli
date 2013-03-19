@@ -12,10 +12,10 @@
         <plugin artifact="org.cloudbees.sdk.plugins:db-plugin:1.3.0" required="true" force-upgrade="true"/>
         <plugin artifact="org.cloudbees.sdk.plugins:ant-plugin:1.3.0" required="true" force-upgrade="true"/>
         <plugin artifact="org.cloudbees.sdk.plugins:config-plugin:1.3.0" required="true" force-upgrade="true"/>
+        <plugin artifact="com.cloudbees.sdk.plugins:service-plugin:1.2.0" required="true" force-upgrade="true"/>
 
         <plugin artifact="com.cloudbees.sdk.plugins:server-plugin:1.2.0" force-upgrade="true"/>
         <plugin artifact="com.cloudbees.sdk.plugins:newrelic-plugin:1.1.0" force-upgrade="true"/>
-        <plugin artifact="com.cloudbees.sdk.plugins:service-plugin:1.2.0" force-upgrade="true"/>
     </plugins>
 
 </sdk>
