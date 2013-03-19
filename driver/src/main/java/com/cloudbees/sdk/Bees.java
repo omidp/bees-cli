@@ -52,10 +52,10 @@ public class Bees {
     public static VersionNumber version = loadVersion();
 
     private final static String app_template_xml_url = "http://cloudbees-downloads.s3.amazonaws.com/";
-    private final static String app_template_xml_name = "sdk/cloudbees-sdk-config-4.xml";
+    private final static String app_template_xml_name = "sdk/cloudbees-sdk-config-5.xml";
     private final static String app_template_xml_desc = "CloudBees SDK configuration";
     private static final long CHECK_INTERVAL = 1000 * 60 * 60 * 12;  // 12 hours
-    private final static String CHECK_FILE = "sdk/check-4.dat";
+    private final static String CHECK_FILE = "sdk/check-5.dat";
     public static final String SDK_PLUGIN_INSTALL = "plugin:install";
 
     @Inject
