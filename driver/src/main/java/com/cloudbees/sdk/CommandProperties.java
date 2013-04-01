@@ -23,7 +23,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  *
  */
 @XStreamAlias("command")
-public class CommandProperties {
+public class CommandProperties implements Comparable<CommandProperties> {
     @XStreamAsAttribute
     String group;
 
@@ -110,6 +110,7 @@ public class CommandProperties {
         this.priority = priority;
     }
 
+
     @Override
     public String toString() {
         return "CommandProperties{" +
@@ -121,5 +122,10 @@ public class CommandProperties {
                 ", experimental=" + experimental +
                 ", priority=" + priority +
                 '}';
+    }
+
+    @Override
+    public int compareTo(CommandProperties o) {
+        return name.compareTo(o.getName());
     }
 }
