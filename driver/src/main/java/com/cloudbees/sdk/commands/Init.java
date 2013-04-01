@@ -16,6 +16,7 @@
 
 package com.cloudbees.sdk.commands;
 
+import com.cloudbees.sdk.Bees;
 import com.cloudbees.sdk.UserConfiguration;
 import com.cloudbees.sdk.cli.BeesCommand;
 import com.cloudbees.sdk.cli.CLICommand;
@@ -134,7 +135,7 @@ public class Init extends Command {
             // Reset the version check
             LocalRepository localRepository = new LocalRepository();
             String beesRepoPath = localRepository.getRepositoryPath();
-            File lastCheckFile = new File(beesRepoPath, "sdk/check.dat");
+            File lastCheckFile = new File(beesRepoPath, Bees.CHECK_FILE);
             if (lastCheckFile.exists()) lastCheckFile.delete();
 
             // Reset the bees.config
