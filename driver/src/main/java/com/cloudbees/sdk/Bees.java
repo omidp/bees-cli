@@ -23,6 +23,7 @@ import com.cloudbees.sdk.cli.CommandService;
 import com.cloudbees.sdk.cli.DirectoryStructure;
 import com.cloudbees.sdk.extensibility.AnnotationLiteral;
 import com.cloudbees.sdk.maven.RemoteRepositoryDecorator;
+import com.cloudbees.sdk.maven.RepositorySystemModule;
 import com.cloudbees.sdk.utils.Helper;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -83,7 +84,8 @@ public class Bees {
                         bindScope(CommandScope.class, new CommandScopeImpl());
                         bind(RemoteRepositoryDecorator.class).to(RemoteRepositoryDecoratorImpl.class);
                     }
-                }
+                },
+                new RepositorySystemModule()
         );
 
         this.injector = injector;
