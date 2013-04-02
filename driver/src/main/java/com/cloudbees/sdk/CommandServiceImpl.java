@@ -371,8 +371,7 @@ public class CommandServiceImpl implements CommandService {
                 Class cl = Class.forName(className, true, pluginClassLoader);
                 p = injector.getProvider(Key.get(cl));
             } catch (ConfigurationException e) {
-                if (verbose.isVerbose()) LOGGER.log(Level.WARNING, "failed to find the command", e);
-                return null; // failed to find the command
+                throw (IOException)new IOException("Failed to instantiate a command: "+name).initCause(e);
             }
             command = p.get();
         } catch (Exception e) {
