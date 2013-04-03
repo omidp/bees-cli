@@ -47,6 +47,7 @@ import java.util.*;
  * @author Kohsuke Kawaguchi
  */
 public class Bees {
+    public static String BOOTSTRAP_VERSION = "1.3.2";
     /**
      * Version of the bees CLI.
      */
@@ -177,13 +178,13 @@ public class Bees {
             String availVersion = e.getAttribute("version");
             String minVersion = e.getAttribute("min-version");
 
-            VersionNumber currentVersion = version;
+            VersionNumber currentVersion = new VersionNumber(BOOTSTRAP_VERSION);
             VersionNumber availableVersion = new VersionNumber(availVersion);
-            VersionNumber minimunVersion = new VersionNumber(minVersion);
+            VersionNumber minimumVersion = new VersionNumber(minVersion);
 
             if (currentVersion.compareTo(availableVersion) < 0) {
                 System.out.println();
-                if (currentVersion.compareTo(minimunVersion) < 0) {
+                if (currentVersion.compareTo(minimumVersion) < 0) {
                     throw new AbortException("ERROR - This version of the CloudBees SDK is no longer supported," + "" +
                             " please install the latest version (" + availVersion + ").");
                 } else if (currentVersion.compareTo(availableVersion) < 0) {
@@ -325,7 +326,8 @@ public class Bees {
 
         boolean verbose = isVerbose(args);
         if (verbose || isHelp(args) || isPluginCmd(args)) {
-            System.out.println("# CloudBees SDK version: " + version);
+            System.out.println("# CloudBees SDK version: " + BOOTSTRAP_VERSION);
+            System.out.println("# CloudBees Driver version: " + version);
             if (verbose) System.out.println(System.getProperties());
         }
         try {
