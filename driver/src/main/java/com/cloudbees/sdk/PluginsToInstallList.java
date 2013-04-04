@@ -32,6 +32,6 @@ public class PluginsToInstallList extends PersistedGAVStore {
     DirectoryStructure structure;
 
     protected File getStorageDirectory() {
-        return new File(structure.sdkRepository.getParent(), "plugins");
+        return structure.getPluginDir();
     }
 }
