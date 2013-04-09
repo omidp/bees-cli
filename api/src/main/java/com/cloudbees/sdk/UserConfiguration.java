@@ -111,6 +111,7 @@ public class UserConfiguration {
                 }
 */
             if (endPoint == null) endPoint = "us";
+            else endPoint = endPoint.toLowerCase();
 
             String server = paramaters.get("server");
             if (server == null) server = properties.getProperty("bees.api.url." + endPoint);
