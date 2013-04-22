@@ -22,6 +22,7 @@ import com.cloudbees.sdk.cli.CommandScope;
 import com.cloudbees.sdk.cli.CommandService;
 import com.cloudbees.sdk.cli.DirectoryStructure;
 import com.cloudbees.sdk.extensibility.AnnotationLiteral;
+import com.cloudbees.sdk.maven.MavenRepositorySystemSessionDecorator;
 import com.cloudbees.sdk.maven.RemoteRepositoryDecorator;
 import com.cloudbees.sdk.maven.RepositorySystemModule;
 import com.cloudbees.sdk.utils.Helper;
@@ -84,6 +85,7 @@ public class Bees {
                         bind(ClassLoader.class).annotatedWith(AnnotationLiteral.of(ExtensionClassLoader.class)).toInstance(extLoader);
                         bindScope(CommandScope.class, new CommandScopeImpl());
                         bind(RemoteRepositoryDecorator.class).to(RemoteRepositoryDecoratorImpl.class);
+                        bind(MavenRepositorySystemSessionDecorator.class).to(CliMavenRepositorySystemSessionDecorator.class);
                     }
                 },
                 new RepositorySystemModule()
