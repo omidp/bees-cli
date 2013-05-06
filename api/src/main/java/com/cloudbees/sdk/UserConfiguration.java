@@ -105,11 +105,9 @@ public class UserConfiguration {
 
         try {
             String endPoint = paramaters.get("endPoint");
-/*
-                while (endPoint == null || endPoint.equalsIgnoreCase("us") || endPoint.equalsIgnoreCase("eu")) {
-                    endPoint = Helper.promptFor("Enter your default CloudBees API end point [us | eu]: ", true);
-                }
-*/
+            while (endPoint == null || (!endPoint.equalsIgnoreCase("us") && !endPoint.equalsIgnoreCase("eu"))) {
+                endPoint = Helper.promptFor("Enter your default CloudBees API end point [us | eu]: ", true);
+            }
             if (endPoint == null) endPoint = "us";
             else endPoint = endPoint.toLowerCase();
 
