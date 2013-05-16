@@ -147,24 +147,26 @@ public class UserConfiguration {
                     secret = response.getSecret();
 
                     // Get the default account name
-                    beesClientConfiguration.setApiKey(key);
-                    beesClientConfiguration.setSecret(secret);
-                    staxClient = new BeesAPIClient(beesClientConfiguration);
-                    staxClient.setVerbose(verbose.isVerbose());
-                    AccountListResponse listResponse = staxClient.accountList();
-                    List<AccountInfo> accounts = listResponse.getAccounts();
-                    if (accounts.size() == 1) {
-                        domain = accounts.get(0).getName();
-                    } else {
-                        String accountsString = null;
-                        for (AccountInfo info: accounts) {
-                            if (accountsString == null)
-                                accountsString = info.getName();
-                            else
-                                accountsString += "," + info.getName();
+                    if (domain == null) {
+                        beesClientConfiguration.setApiKey(key);
+                        beesClientConfiguration.setSecret(secret);
+                        staxClient = new BeesAPIClient(beesClientConfiguration);
+                        staxClient.setVerbose(verbose.isVerbose());
+                        AccountListResponse listResponse = staxClient.accountList();
+                        List<AccountInfo> accounts = listResponse.getAccounts();
+                        if (accounts.size() == 1) {
+                            domain = accounts.get(0).getName();
+                        } else {
+                            String accountsString = null;
+                            for (AccountInfo info: accounts) {
+                                if (accountsString == null)
+                                    accountsString = info.getName();
+                                else
+                                    accountsString += "," + info.getName();
+                            }
+                            System.out.println("You have several accounts: " + accountsString);
+                            domain = Helper.promptFor("Enter your default CloudBees account name : ", true);
                         }
-                        System.out.println("You have several accounts: " + accountsString);
-                        domain = Helper.promptFor("Enter your default CloudBees account name : ", true);
                     }
                 }
             }
