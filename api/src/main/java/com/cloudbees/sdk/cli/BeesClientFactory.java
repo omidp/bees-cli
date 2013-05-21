@@ -100,13 +100,20 @@ public class BeesClientFactory implements HasOptions {
     public BeesClientConfiguration createConfigurations() throws IOException {
         Properties properties = getConfigProperties();
 
-        if (key==null)      key = properties.getProperty("bees.api.key");
-        if (secret==null)   secret = properties.getProperty("bees.api.secret");
-        initCredentials();
+        BeesClientConfiguration beesClientConfiguration = new BeesClientConfiguration(getApiUrl());
 
-        String apiUrl = getApiUrl();
+        String token = properties.getProperty("bees.api.oauth_token");
+        if (token!=null) {
+            // use OAuth token for authentication
+            beesClientConfiguration.withOAuthToken(token);
+        } else {
+            // fallback to API key and secret
+            if (key==null)      key = properties.getProperty("bees.api.key");
+            if (secret==null)   secret = properties.getProperty("bees.api.secret");
+            initCredentials();
+            beesClientConfiguration.withApiKeyAndSecret(key,secret);
+        }
 
-        BeesClientConfiguration beesClientConfiguration = new BeesClientConfiguration(apiUrl, key, secret, "xml", "1.0");
 
         // Set proxy information
         beesClientConfiguration.setProxyHost(properties.getProperty("bees.api.proxy.host", proxyHost));
