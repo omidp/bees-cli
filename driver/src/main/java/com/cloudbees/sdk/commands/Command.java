@@ -131,7 +131,7 @@ public abstract class Command extends ACommand {
             addOption(null, "proxyPassword", true, "API server proxy password", true);
             addOption("v", "verbose", false, "verbose output");
             addOption("o", "output", true, "output format [txt | json | xml]  (Default: 'txt')");
-            addOption("ep", "endPoint", true, "CloudBes API end point [us | eu]", true);
+            addOption("ep", "endPoint", true, "CloudBes API end point [us | eu]");
         }
 
         boolean success;
