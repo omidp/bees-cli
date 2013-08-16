@@ -16,6 +16,7 @@
 
         <plugin artifact="com.cloudbees.sdk.plugins:server-plugin:1.2.1" force-upgrade="true"/>
         <plugin artifact="com.cloudbees.sdk.plugins:newrelic-plugin:1.1.0" force-upgrade="true"/>
+        <plugin artifact="com.cloudbees.sdk.plugins:bg-plugin:1.1.3" force-upgrade="true"/>
     </plugins>
 
 </sdk>
