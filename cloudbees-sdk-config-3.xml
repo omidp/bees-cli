@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sdk version="1.5.0" min-version="1.1"
-     href="http://cloudbees-downloads.s3.amazonaws.com/sdk/cloudbees-sdk-1.5.0-bin.zip">
-    <link rel="alternate" href="http://wiki.cloudbees.com/bin/view/RUN/BeesSDK" type="text/html"/>
+<sdk version="1.5.2" min-version="1.1"
+     href="http://cloudbees-downloads.s3.amazonaws.com/sdk/cloudbees-sdk-1.5.2-bin.zip">
+    <link rel="alternate" href="http://developer.cloudbees.com/bin/view/RUN/BeesSDK" type="text/html"/>
 
     <application-templates>
         <application-template id="basic" href="http://cloudbees-downloads.s3.amazonaws.com/app-templates/basic-1.0.zip"/>
