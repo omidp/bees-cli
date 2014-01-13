@@ -39,9 +39,11 @@ import org.sonatype.aether.util.artifact.SubArtifact;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -179,11 +181,12 @@ public class ArtifactInstallFactory {
 //        System.out.println(xStream.toXML(plugin));
 
         File xmlFile = new File(directoryStructure.getPluginDir(), a.getArtifactId() + ".bees");
-        FileWriter fos = null;
+        OutputStreamWriter fos = null;
         try {
             xmlFile.getParentFile().mkdirs();
-            fos = new FileWriter(xmlFile);
-            fos.write(xStream.toXML(plugin));
+            FileOutputStream outputStream = new FileOutputStream(xmlFile);
+            fos = new OutputStreamWriter(outputStream, Charset.forName("UTF-8"));
+            xStream.toXML(plugin, outputStream);
         } finally {
             IOUtils.closeQuietly(fos);
         }
