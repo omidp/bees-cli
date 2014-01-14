@@ -186,7 +186,7 @@ public class ArtifactInstallFactory {
             xmlFile.getParentFile().mkdirs();
             FileOutputStream outputStream = new FileOutputStream(xmlFile);
             fos = new OutputStreamWriter(outputStream, Charset.forName("UTF-8"));
-            xStream.toXML(plugin, outputStream);
+            xStream.toXML(plugin, fos);
         } finally {
             IOUtils.closeQuietly(fos);
         }
